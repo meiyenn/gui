@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+import model.CustomerVoucher;
 /**
  *
  * @author Huay
@@ -53,6 +54,10 @@ public class RegisterServlet extends HttpServlet {
 
                 // Execute the insert query
                 int rowsAffected = stmt.executeUpdate();
+                
+                // Call CustomerVoucher to insert 3 vouchers for the new customer
+                CustomerVoucher customerVoucher = new CustomerVoucher(conn);
+                customerVoucher.createVouchersForCustomer(nextCustId);
 
                 // Redirect based on whether the insert was successful or not
                 if (rowsAffected > 0) {

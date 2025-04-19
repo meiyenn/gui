@@ -31,11 +31,11 @@ CREATE TABLE product (
     status INT NOT NULL
 );
 
--- Cart Table (cartId kept as VARCHAR(10))
+-- Cart Table - Fixed to allow multiple products per customer
 CREATE TABLE cart (
-    custId VARCHAR(6),
-    productId VARCHAR(7),
     cartId VARCHAR(10) PRIMARY KEY,
+    custId VARCHAR(6) NOT NULL,
+    productId VARCHAR(7) NOT NULL,
     quantityPurchased INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     checkOutStatus BOOLEAN DEFAULT FALSE,
@@ -43,10 +43,10 @@ CREATE TABLE cart (
     FOREIGN KEY (productId) REFERENCES product(productId)
 );
 
--- Receipt Table (cartId type matches cart)
+-- Receipt Table
 CREATE TABLE receipt (
     receiptId VARCHAR(7) PRIMARY KEY,
-    cartId VARCHAR(10),
+    cartId VARCHAR(10) NOT NULL,
     creationTime TIMESTAMP NOT NULL,
     FOREIGN KEY (cartId) REFERENCES cart(cartId)
 );
@@ -54,11 +54,23 @@ CREATE TABLE receipt (
 -- Product Rating Table
 CREATE TABLE productRating (
     ratingId VARCHAR(6) PRIMARY KEY,
-    receiptId VARCHAR(7),
+    receiptId VARCHAR(7) NOT NULL,
     ratingDate TIMESTAMP NOT NULL,
     satisfaction INT NOT NULL,
     comment VARCHAR(80) NOT NULL,
     FOREIGN KEY (receiptId) REFERENCES receipt(receiptId)
+);
+
+-- Voucher Table - Fixed custId data type
+CREATE TABLE voucher (
+    voucherId VARCHAR(20) PRIMARY KEY,
+    custId VARCHAR(6),
+    code VARCHAR(50) NOT NULL,
+    discount DECIMAL(6,2) NOT NULL, -- e.g. RM 10.00 off
+    minSpend DECIMAL(10,2),         -- optional: minimum spend to apply voucher
+    expiryDate DATE,
+    used BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (custId) REFERENCES customer(custId)
 );
 
 -- Insert Staff Data
@@ -85,16 +97,16 @@ INSERT INTO product VALUES
 ('prod005', 'Some By Mi AHA.BHA.PHA Toner', 'src/image/prod-5.jpg', 60.00, 150, 'Skin Care', 'Exfoliating toner for acne-prone skin.', 1),
 ('prod006', 'Klavuu Nourishing Face Oil', 'src/image/prod-6.jpg', 120.00, 60, 'Skin Care', 'Facial oil with Korean pearl extract.', 0);
 
--- Insert Cart Data
+-- Insert Cart Data - Fixed to match checkOutStatus with receipt data
 INSERT INTO cart VALUES 
-('cus001', 'prod001', 'cart001', 3, 105.00, TRUE),
-('cus001', 'prod002', 'cart002', 1, 100.00, FALSE),
-('cus002', 'prod003', 'cart003', 2, 180.00, TRUE),
-('cus002', 'prod005', 'cart004', 1, 60.00, FALSE),
-('cus003', 'prod004', 'cart005', 5, 427.50, TRUE),
-('cus004', 'prod006', 'cart006', 2, 240.00, FALSE);
+('cart001', 'cus001', 'prod001', 3, 105.00, TRUE),
+('cart002', 'cus001', 'prod002', 1, 100.00, FALSE),
+('cart003', 'cus002', 'prod003', 2, 180.00, TRUE),
+('cart004', 'cus003', 'prod004', 1, 60.00, TRUE),
+('cart005', 'cus003', 'prod004', 5, 427.50, TRUE),
+('cart006', 'cus004', 'prod006', 2, 240.00, TRUE);
 
--- Insert Receipt Data
+-- Insert Receipt Data - Now only for checked out carts
 INSERT INTO receipt VALUES 
 ('re00001', 'cart001', '2025-03-11 15:00:00'),
 ('re00002', 'cart003', '2025-03-12 16:30:00'),

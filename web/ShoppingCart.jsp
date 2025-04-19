@@ -16,6 +16,9 @@
     CartService cartService = new CartService();
     List<Cart> cartList = null;
     BigDecimal grandTotal = BigDecimal.ZERO;
+    BigDecimal shippingCost = BigDecimal.ZERO;
+    BigDecimal salesTax = BigDecimal.ZERO;
+    BigDecimal finalTotal = BigDecimal.ZERO;
 
     try {
         cartList = cartService.getCartByCustomer(custId);
@@ -54,7 +57,6 @@
         h2 {
             text-align: center;
         }
-        
         .qty-btn {
             background-color: #f8f8f8;
             color: black;
@@ -67,13 +69,8 @@
             transition: background-color 0.3s ease;
         }
 
-        .qty-btn:hover {
-            background-color: #d68910;
-        }
-
-        
         .delete-btn {
-            background-color: #e74c3c; /* soft red */
+            background-color: #e74c3c;
             color: white;
             border: none;
             padding: 6px 12px;
@@ -82,11 +79,29 @@
             font-weight: bold;
             transition: background-color 0.3s ease;
         }
-
         .delete-btn:hover {
-            background-color: #c0392b; /* darker red on hover */
+            background-color: #c0392b;
         }
-
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .action-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .continue-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        .checkout-btn {
+            background-color: #2ecc71;
+            color: white;
+            margin-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -103,60 +118,84 @@
             <th>Action</th>
         </tr>
 
-        <% for (Cart item : cartList) {
-            BigDecimal subtotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantitypurchased()));
-            grandTotal = grandTotal.add(subtotal);
+        <% 
+            for (Cart item : cartList) {
+                BigDecimal subtotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantitypurchased()));
+                grandTotal = grandTotal.add(subtotal);
         %>
             <tr>
-               <td>
-                <img src="<%= item.getProductid().getImglocation() %>" width="80"><br>
-                <%= item.getProductid().getProductname() %> (<%= item.getProductid().getProductid() %>)
-            </td>
+                <td>
+                    <img src="<%= item.getProductid().getImglocation() %>" width="80"><br>
+                    <%= item.getProductid().getProductname() %> (<%= item.getProductid().getProductid() %>)
+                </td>
                 <td><%= item.getPrice() %></td>
                 <td>
                     <form action="updateCart" method="post" style="display: flex; justify-content: center; align-items: center;">
-                        <input type="hidden" name="cartId" value="<%= item.getCartid()%>">
-
+                        <input type="hidden" name="cartId" value="<%= item.getCartid() %>">
                         <button type="submit" name="action" value="decrease" class="qty-btn">-</button>
-
-                        <input type="text" name="quantity" value="<%= item.getQuantitypurchased()%>" readonly 
+                        <input type="text" name="quantity" value="<%= item.getQuantitypurchased() %>" readonly 
                                style="width: 40px; text-align: center; margin: 0 5px;">
-
                         <button type="submit" name="action" value="increase" class="qty-btn">+</button>
                     </form>
-                </td>           
+                </td>
                 <td><%= subtotal %></td>
                 <td>
                     <form action="DeleteCart" method="post" onsubmit="return confirm('Remove this item?');">
-                        <input type="hidden" name="cartId" value="<%= item.getCartid()%>">
+                        <input type="hidden" name="cartId" value="<%= item.getCartid() %>">
                         <input type="submit" class="delete-btn" value="Delete">
                     </form>
                 </td>
             </tr>
         <% } %>
 
+        <%
+            // Apply 6% sales tax
+            salesTax = grandTotal.multiply(BigDecimal.valueOf(0.06));
+            
+            // Shipping cost (free if grandTotal >= 200)
+            if (grandTotal.compareTo(BigDecimal.valueOf(200)) < 0) {
+                shippingCost = new BigDecimal("10.00");
+            }
+
+            // Final total = subtotal + tax + shipping
+            finalTotal = grandTotal.add(salesTax).add(shippingCost);
+        %>
+
         <tr>
-            <td colspan="3" class="total">Grand Total:</td>
-            <td><%= grandTotal %></td>
+            <td colspan="3" class="total">Subtotal:</td>
+            <td><%= grandTotal.setScale(2) %></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="total">Sales Tax (6%):</td>
+            <td><%= salesTax.setScale(2) %></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="total">
+                Shipping:
+                <% if (shippingCost.compareTo(BigDecimal.ZERO) == 0) { %>
+                    <span style="color: green;">(Free over RM200)</span>
+                <% } %>
+            </td>
+            <td><%= shippingCost.setScale(2) %></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="total">Total:</td>
+            <td><strong><%= finalTotal.setScale(2) %></strong></td>
             <td></td>
         </tr>
     </table>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <!-- Button to go back to continue shopping -->
-                <a href="ProductPage.jsp">
-                    <button style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-                        Back to Continue Shopping
-                    </button>
-                </a>
 
-                <!-- Button to proceed to checkout -->
-                <a href="checkout.jsp">
-                    <button style="padding: 10px 20px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 20px;">
-                        Check Out
-                    </button>
-                </a>
-            </div>
+    <div class="action-buttons">
+        <a href="ProductPage.jsp">
+            <button class="continue-btn">Back to Continue Shopping</button>
+        </a>
+        <a href="checkout.jsp">
+            <button class="checkout-btn">Check Out</button>
+        </a>
+    </div>
 
 <% } else { %>
     <p style="text-align: center; color: #999;">Your cart is empty.</p>
