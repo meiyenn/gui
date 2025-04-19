@@ -1,0 +1,166 @@
+<%@ page import="model.CartService" %>
+<%@ page import="model.Cart" %>
+<%@ page import="model.Product" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.math.BigDecimal" %>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ include file="header.jsp" %>
+
+<%
+    String custId = (String) session.getAttribute("custId");
+    if (custId == null) {
+        response.sendRedirect("CustomerLogin.jsp");
+        return;
+    }
+
+    CartService cartService = new CartService();
+    List<Cart> cartList = null;
+    BigDecimal grandTotal = BigDecimal.ZERO;
+
+    try {
+        cartList = cartService.getCartByCustomer(custId);
+    } catch (Exception e) {
+        out.println("<p>Error fetching cart: " + e.getMessage() + "</p>");
+    }
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Shopping Cart</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+            padding-right: 30px;
+        }
+        h2 {
+            text-align: center;
+        }
+        
+        .qty-btn {
+            background-color: #f8f8f8;
+            color: black;
+            border: none;
+            padding: 4px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background-color: #d68910;
+        }
+
+        
+        .delete-btn {
+            background-color: #e74c3c; /* soft red */
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b; /* darker red on hover */
+        }
+
+    </style>
+</head>
+<body>
+
+<h2>My Shopping Cart</h2>
+
+<% if (cartList != null && !cartList.isEmpty()) { %>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Price (RM)</th>
+            <th>Quantity</th>
+            <th>Subtotal (RM)</th>
+            <th>Action</th>
+        </tr>
+
+        <% for (Cart item : cartList) {
+            BigDecimal subtotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantitypurchased()));
+            grandTotal = grandTotal.add(subtotal);
+        %>
+            <tr>
+               <td>
+                <img src="<%= item.getProductid().getImglocation() %>" width="80"><br>
+                <%= item.getProductid().getProductname() %> (<%= item.getProductid().getProductid() %>)
+            </td>
+                <td><%= item.getPrice() %></td>
+                <td>
+                    <form action="updateCart" method="post" style="display: flex; justify-content: center; align-items: center;">
+                        <input type="hidden" name="cartId" value="<%= item.getCartid()%>">
+
+                        <button type="submit" name="action" value="decrease" class="qty-btn">-</button>
+
+                        <input type="text" name="quantity" value="<%= item.getQuantitypurchased()%>" readonly 
+                               style="width: 40px; text-align: center; margin: 0 5px;">
+
+                        <button type="submit" name="action" value="increase" class="qty-btn">+</button>
+                    </form>
+                </td>           
+                <td><%= subtotal %></td>
+                <td>
+                    <form action="DeleteCart" method="post" onsubmit="return confirm('Remove this item?');">
+                        <input type="hidden" name="cartId" value="<%= item.getCartid()%>">
+                        <input type="submit" class="delete-btn" value="Delete">
+                    </form>
+                </td>
+            </tr>
+        <% } %>
+
+        <tr>
+            <td colspan="3" class="total">Grand Total:</td>
+            <td><%= grandTotal %></td>
+            <td></td>
+        </tr>
+    </table>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <!-- Button to go back to continue shopping -->
+                <a href="ProductPage.jsp">
+                    <button style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                        Back to Continue Shopping
+                    </button>
+                </a>
+
+                <!-- Button to proceed to checkout -->
+                <a href="checkout.jsp">
+                    <button style="padding: 10px 20px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 20px;">
+                        Check Out
+                    </button>
+                </a>
+            </div>
+
+<% } else { %>
+    <p style="text-align: center; color: #999;">Your cart is empty.</p>
+<% } %>
+
+</body>
+</html>
