@@ -74,7 +74,7 @@
             color: white;
             border: none;
             padding: 6px 12px;
-            border-radius: 6px;
+            
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s ease;
@@ -89,7 +89,7 @@
         .action-buttons button {
             padding: 10px 20px;
             border: none;
-            border-radius: 5px;
+            
             cursor: pointer;
             font-size: 16px;
         }
@@ -200,6 +200,7 @@
 <% } else { %>
     <p style="text-align: center; color: #999;">Your cart is empty.</p>
 <% } %>
+
 
 </body>
 </html>

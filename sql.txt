@@ -49,6 +49,7 @@ CREATE TABLE receipt (
     cartId VARCHAR(10) NOT NULL,
     creationTime TIMESTAMP NOT NULL,
     FOREIGN KEY (cartId) REFERENCES cart(cartId)
+	
 );
 
 -- Product Rating Table

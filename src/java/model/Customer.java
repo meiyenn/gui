@@ -61,6 +61,8 @@ public class Customer implements Serializable {
     @Size(min = 1, max = 25)
     @Column(name = "CUSTPSWD")
     private String custpswd;
+    @OneToMany(mappedBy = "custid")
+    private Collection<Voucher> voucherCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -169,6 +171,15 @@ public class Customer implements Serializable {
 
     public void setCustpswd(String custpswd) {
         this.custpswd = custpswd;
+    }
+
+    @XmlTransient
+    public Collection<Voucher> getVoucherCollection() {
+        return voucherCollection;
+    }
+
+    public void setVoucherCollection(Collection<Voucher> voucherCollection) {
+        this.voucherCollection = voucherCollection;
     }
     
 }
