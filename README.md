@@ -1,5 +1,5 @@
-netbeans ide 16
-glassfish 5.1.0
+netbeans ide 16,
+glassfish 5.1.0,
 java platform jdk 1.8.0
 
 db name - ass
