@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ import model.ProductDa;
  * @author Mei Yen
  */
 @WebServlet(name = "EditProdServlet", urlPatterns = {"/EditProdServlet"})
+@MultipartConfig // 
 public class EditProdServlet extends HttpServlet {
 
     @PersistenceContext
@@ -100,94 +102,92 @@ public class EditProdServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        //String prodId=request.getParameter("prodId");
+        String prodId=request.getParameter("prodId");
         String prodName=request.getParameter("prodName");
-//        double prodPrice = Double.parseDouble(request.getParameter("prodPrice"));
-//        int prodStock=Integer.parseInt(request.getParameter("prodStock"));
-//        String prodCat=request.getParameter("prodCat");
-//        String prodDesc=request.getParameter("prodDesc");
-//        int prodStatus=Integer.parseInt(request.getParameter("prodStatus"));
+        double prodPrice = Double.parseDouble(request.getParameter("prodPrice"));
+        int prodStock=Integer.parseInt(request.getParameter("prodStock"));
+        String prodCat=request.getParameter("prodCat");
+        String prodDesc=request.getParameter("prodDesc");
+        int prodStatus=Integer.parseInt(request.getParameter("prodStatus"));
+
         
-        //testing
-            out.println("alert('testing2! " + prodName + "');");
+        //current upload button
+        String mdfName;
+        Part imgPath = request.getPart("prodImage");
+        String imgName = Paths.get(imgPath.getSubmittedFileName()).getFileName().toString();
+        mdfName = prodId + "_" + imgName;
         
-//        //current upload button
-//        String mdfName;
-//        Part imgPath = request.getPart("prodImage");
-//        String imgName = Paths.get(imgPath.getSubmittedFileName()).getFileName().toString();
-//        mdfName = prodId + "_" + imgName;
-//        
-//        //old image
-//        //Part oldImgPath = request.getPart("oldProdImage");
-//        String oldImgName = request.getParameter("oldProdImage");
-//
-////make directory called /imgUpload if doesnt exist
-//        String uploadDirectory = getServletContext().getRealPath("/imgUpload");
-//        File uploadDir = new File(uploadDirectory);
-//        if (!uploadDir.exists()) {
-//            uploadDir.mkdir();
-//        }
-//
-//        // Save new image and delete old one
-//        if (imgPath != null && imgPath.getSize() > 0) { //if user got upload
-//            File oldImageFile = new File(uploadDir, oldImgName);
-//
-//            if (oldImageFile.exists()) { //delete existing file if exist
-//                oldImageFile.delete();
-//            }
-//            //then store the new uploaded image
-//            Path storeImg = Paths.get(uploadDirectory, mdfName);
-//            //Files.copy(imgPath.getInputStream(), storeImg, StandardCopyOption.REPLACE_EXISTING);
-//            Files.copy(imgPath.getInputStream(), storeImg);
-//            
-//        } else { //if user doesnt upload (indicate user doesnt want change image)
-//            // Use old image name if no new one is uploaded
-//            mdfName = oldImgName;
-//        }
-//        
-//        // Update product
-//        ProdService prodService = new ProdService(em);
-//        try {
-//            Product prod = prodService.findProduct(prodId);
-//            out.println("<script>alert('Update: " + (prod==null) + "');</script>");
-//            if (prod == null) {
-//                out.println("<script>alert('Update failed1: " + prod + "');</script>");
-//                out.println("<script>alert('Product not found!');</script>");
-//                return;
-//            }
-//
-//            
-//            prod.setProductname(prodName);
-//            prod.setPrice(prodPrice);
-//            prod.setQuantity(prodStock);
-//            prod.setProductdescription(prodDesc);
-//            prod.setStatus(prodStatus);
-//            prod.setImglocation(mdfName);
-//            prod.setCategory(prodCat);
-//
-//            utx.begin();
-//            prodService.updateProduct(prod);
-//            utx.commit();
-//            
-//            //create a session for product(viewProd.jsp)
-//            ProductDa pda=new ProductDa();
-//            List<Product> prodList = pda.getAllProd();
-//            HttpSession session = request.getSession();
-//            //add admin staff session
-//
-//            //set the prodlist session
-//            session.setAttribute("prodList", prodList);
-//
-//            out.println("<script>alert('Update Successfully!');</script>");
-//            RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");
-//            rd.forward(request, response);
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            out.println("<script>alert('Update failed: " + ex.getMessage() + "');</script>");
-//        }
-//   
-//        
+        //old image
+        //Part oldImgPath = request.getPart("oldProdImage");
+        String oldImgName = request.getParameter("oldProdImage");
+
+//make directory called /imgUpload if doesnt exist
+        String uploadDirectory = getServletContext().getRealPath("/imgUpload");
+        File uploadDir = new File(uploadDirectory);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdir();
+        }
+
+        // Save new image and delete old one
+        if (imgPath != null && imgPath.getSize() > 0) { //if user got upload
+            File oldImageFile = new File(uploadDir, oldImgName);
+
+            if (oldImageFile.exists()) { //delete existing file if exist
+                oldImageFile.delete();
+            }
+            //then store the new uploaded image
+            Path storeImg = Paths.get(uploadDirectory, mdfName);
+            //Files.copy(imgPath.getInputStream(), storeImg, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(imgPath.getInputStream(), storeImg);
+            
+        } else { //if user doesnt upload (indicate user doesnt want change image)
+            // Use old image name if no new one is uploaded
+            mdfName = oldImgName;
+        }
+        
+        // Update product
+        ProdService prodService = new ProdService(em);
+        try {
+            Product prod = prodService.findProduct(prodId);
+            out.println("<script>alert('Update: " + (prod==null) + "');</script>");
+            if (prod == null) {
+                out.println("<script>alert('Update failed1: " + prod + "');</script>");
+                out.println("<script>alert('Product not found!');</script>");
+                return;
+            }
+
+            
+            prod.setProductname(prodName);
+            prod.setPrice(prodPrice);
+            prod.setQuantity(prodStock);
+            prod.setProductdescription(prodDesc);
+            prod.setStatus(prodStatus);
+            prod.setImglocation(mdfName);
+            prod.setCategory(prodCat);
+
+            utx.begin();
+            prodService.updateProduct(prod);
+            utx.commit();
+            
+            //create a session for product(viewProd.jsp)
+            ProductDa pda=new ProductDa();
+            List<Product> prodList = pda.getAllProd();
+            HttpSession session = request.getSession();
+            //add admin staff session
+
+            //set the prodlist session
+            session.setAttribute("prodList", prodList);
+
+            out.println("<script>alert('Update Successfully!');</script>");
+            RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");
+            rd.forward(request, response);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            out.println("<script>alert('Update failed: " + ex.getMessage() + "');</script>");
+        }
+   
+        
     }
 
 

@@ -62,7 +62,7 @@
             <% for(Product prod : prodList){ %>
             <tr>
                 <td>&nbsp;</td>
-                <td><img src="imgUpload/<%=prod.getImglocation()%>" alt="<%=prod.getImglocation()%>" border=3 height=100 width=300></img><br><%=prod.getProductid()%><%=prod.getImglocation()%></td>
+                <td><img src="imgUpload/<%=prod.getImglocation()%>" alt="<%=prod.getImglocation()%>" border=1 height=150 width=150></img><br><%=prod.getProductid()%><%=prod.getImglocation()%></td>
                 <td><%=prod.getProductid()%></td>
                 <td><%=prod.getProductname()%></td>
                 <td><%=prod.getPrice()%></td>

@@ -16,7 +16,7 @@ import javax.swing.*;
  * @author Mei Yen
  */
 public class ProductDa {
-    private String host = "jdbc:derby://localhost:1527/gui";
+    private String host = "jdbc:derby://localhost:1527/ass";
     private String user = "nbuser";
     private String password = "nbuser";
     private String tableName = "product";
