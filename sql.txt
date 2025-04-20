@@ -52,6 +52,17 @@ CREATE TABLE receipt (
 	
 );
 
+CREATE TABLE receipt_detail (
+    receiptId VARCHAR(7),
+    productId VARCHAR(7),
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (receiptId, productId),
+    FOREIGN KEY (receiptId) REFERENCES receipt(receiptId),
+    FOREIGN KEY (productId) REFERENCES product(productId)
+);
+
+
 -- Product Rating Table
 CREATE TABLE productRating (
     ratingId VARCHAR(6) PRIMARY KEY,
