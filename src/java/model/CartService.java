@@ -7,169 +7,298 @@ import java.util.List;
 
 public class CartService {
 
-    // ✅ Get the last cartId from DB
+    // Get last cartId
     public String getLastCartId() {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
         String lastId = null;
-
-        try {
-            conn = DBConnection.getConnection();
-            String sql = "SELECT cartId FROM cart ORDER BY cartId DESC FETCH FIRST 1 ROWS ONLY";
-            stmt = conn.prepareStatement(sql);
-            rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                lastId = rs.getString("cartId");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try (
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT cartId FROM cart ORDER BY cartId DESC FETCH FIRST 1 ROWS ONLY");
+            ResultSet rs = stmt.executeQuery()
+        ) {
+            if (rs.next()) lastId = rs.getString("cartId");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
         return lastId;
     }
 
-    // ✅ Generate next cartId based on the last one
-    public String generateNextCartId(String lastId) {
-        if (lastId == null || lastId.isEmpty()) {
-            return "cart001";
+    // Generate next cartId like cart001, cart002, ...
+    public String generateNextCartId() {
+        String lastId = null, nextId = "cart001";
+        try (
+                Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT cartId FROM cart ORDER BY cartId DESC FETCH FIRST 1 ROWS ONLY"); ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                String numeric = rs.getString("cartId").substring(4);
+                int next = Integer.parseInt(numeric) + 1;
+                nextId = "cart" + String.format("%03d", next);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        String numeric = lastId.substring(4); // e.g., "cart005" -> "005"
-        int next = Integer.parseInt(numeric) + 1;
-        return "cart" + String.format("%03d", next);
+        return nextId;
     }
 
-    public void addToCart(String custId, String productId, int quantity, double price) throws Exception {
-    try (Connection con = DBConnection.getConnection()) {
+    // Add item to cart
+public void addToCart(String custId, String productId, int quantity, double price) throws Exception {
+        try (Connection conn = DBConnection.getConnection()) {
 
-        // Step 1: Check if product is already in cart for the same customer
-        String checkSql = "SELECT cartId, quantityPurchased FROM cart WHERE custId = ? AND productId = ? AND checkOutStatus = false";
-        try (PreparedStatement checkStmt = con.prepareStatement(checkSql)) {
-            checkStmt.setString(1, custId);
-            checkStmt.setString(2, productId);
-
-            try (ResultSet rs = checkStmt.executeQuery()) {
+            // Step 1: Check for active cart
+            String cartId = null;
+            String findCartSql = "SELECT cartId FROM cart WHERE custId = ? AND checkOutStatus = FALSE";
+            try (PreparedStatement stmt = conn.prepareStatement(findCartSql)) {
+                stmt.setString(1, custId);
+                ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    // Already exists → update quantity
-                    String existingCartId = rs.getString("cartId");
-                    int existingQty = rs.getInt("quantityPurchased");
-                    int newQty = existingQty + quantity;
+                    cartId = rs.getString("cartId");
+                }
+            }
 
-                    String updateSql = "UPDATE cart SET quantityPurchased = ? WHERE cartId = ?";
-                    try (PreparedStatement updateStmt = con.prepareStatement(updateSql)) {
-                        updateStmt.setInt(1, newQty);
-                        updateStmt.setString(2, existingCartId);
-                        updateStmt.executeUpdate();
-                        System.out.println("✅ Quantity updated for cartId: " + existingCartId);
-                        return;
-                    }
+            // Step 2: Create cart if not found
+            if (cartId == null) {
+                cartId = generateNextCartId();
+                String createCartSql = "INSERT INTO cart (cartId, custId, checkOutStatus) VALUES (?, ?, FALSE)";
+                try (PreparedStatement stmt = conn.prepareStatement(createCartSql)) {
+                    stmt.setString(1, cartId);
+                    stmt.setString(2, custId);
+                    stmt.executeUpdate();
+                }
+            }
+
+            // Step 3: Check if product already in cart
+            String cartItemId = null;
+            int existingQty = 0;
+            String findItemSql = "SELECT cartItemId, quantityPurchased FROM cart_item WHERE cartId = ? AND productId = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(findItemSql)) {
+                stmt.setString(1, cartId);
+                stmt.setString(2, productId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    cartItemId = rs.getString("cartItemId");
+                    existingQty = rs.getInt("quantityPurchased");
+                }
+            }
+
+            if (cartItemId != null) {
+                // Step 4a: Update quantity
+                String updateSql = "UPDATE cart_item SET quantityPurchased = ? WHERE cartItemId = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+                    stmt.setInt(1, existingQty + quantity);
+                    stmt.setString(2, cartItemId);
+                    stmt.executeUpdate();
+                }
+            } else {
+                // Step 4b: Insert new cart item
+                cartItemId = generateNextCartItemId();
+                String insertSql = "INSERT INTO cart_item (cartItemId, cartId, productId, quantityPurchased, price) VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+                    stmt.setString(1, cartItemId);
+                    stmt.setString(2, cartId);
+                    stmt.setString(3, productId);
+                    stmt.setInt(4, quantity);
+                    stmt.setDouble(5, price);
+                    stmt.executeUpdate();
                 }
             }
         }
-
-        // Step 2: If not exists → insert new cart item
-        String lastId = getLastCartId();
-        String cartId = generateNextCartId(lastId);
-
-        String insertSql = "INSERT INTO cart (cartId, custId, productId, quantityPurchased, price, checkOutStatus) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement insertStmt = con.prepareStatement(insertSql)) {
-            insertStmt.setString(1, cartId);
-            insertStmt.setString(2, custId);
-            insertStmt.setString(3, productId);
-            insertStmt.setInt(4, quantity);
-            insertStmt.setDouble(5, price);
-            insertStmt.setBoolean(6, false);
-            insertStmt.executeUpdate();
-            System.out.println("✅ New item inserted: " + cartId);
-        }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-        throw new Exception("Error adding item to cart: " + e.getMessage());
-    }
-}
-
-
-    // ✅ Update quantity (cartId is VARCHAR)
-    public void updateQuantity(String cartId, int quantity) throws Exception {
-        try (Connection con = DBConnection.getConnection()) {
-            String sql = "UPDATE cart SET quantityPurchased = ? WHERE cartId = ?";
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setInt(1, quantity);
-                ps.setString(2, cartId);
-                ps.executeUpdate();
-            }
-        }
     }
 
-    // ✅ Remove from cart (cartId is VARCHAR)
-    public void removeFromCart(String cartId) throws Exception {
-        try (Connection con = DBConnection.getConnection()) {
-            String sql = "DELETE FROM cart WHERE cartId = ?";
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setString(1, cartId);
-                ps.executeUpdate();
-            }
-        }
-    }
 
- public List<Cart> getCartByCustomer(String custId) throws Exception {
-    List<Cart> cartList = new ArrayList<>();
+    // Get all cart items for a customer
+    public List<CartItem> getCartByCustomer(String custId) throws Exception {
+    List<CartItem> itemList = new ArrayList<>();
     try (Connection con = DBConnection.getConnection()) {
-        String sql = "SELECT * FROM cart WHERE custId = ? AND checkOutStatus = false";
+        // Step 1: Get active cart
+        String cartId = null;
+        try (PreparedStatement stmt = con.prepareStatement("SELECT cartId FROM cart WHERE custId = ? AND checkOutStatus = FALSE")) {
+            stmt.setString(1, custId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) cartId = rs.getString("cartId");
+        }
+
+        if (cartId == null) return itemList;
+
+        // Step 2: Get cart items
+        String sql = "SELECT ci.*, p.productName, p.imgLocation FROM cart_item ci " +
+                     "JOIN product p ON ci.productId = p.productId WHERE ci.cartId = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, custId);
-            try (ResultSet rs = ps.executeQuery()) {
+            ps.setString(1, cartId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                CartItem cartitem = new CartItem();
+                cartitem.setCartitemid(rs.getString("cartItemId"));
+                cartitem.setQuantitypurchased(rs.getInt("quantityPurchased"));
+                cartitem.setPrice(rs.getBigDecimal("price"));
 
-                // Prepare statement to fetch product details
-                String productSql = "SELECT * FROM product WHERE productId = ?";
-                try (PreparedStatement productStmt = con.prepareStatement(productSql)) {
+                Product product = new Product();
+                product.setProductid(rs.getString("productId"));
+                product.setProductname(rs.getString("productName"));
+                product.setImglocation(rs.getString("imgLocation"));
+                cartitem.setProductid(product);
 
-                    while (rs.next()) {
-                        Cart item = new Cart();
-                        Customer cust = new Customer();
-                        Product product = new Product();
+                Cart cart = new Cart();
+                cart.setCartid(cartId);
+                cartitem.setCartid(cart);
 
-                        // Set cart fields
-                        item.setCartid(rs.getString("cartId"));
-                        cust.setCustid(rs.getString("custId"));
-                        item.setQuantitypurchased(rs.getInt("quantityPurchased"));
-                        item.setPrice(rs.getBigDecimal("price"));
-                        item.setCheckoutstatus(rs.getBoolean("checkOutStatus"));
-
-                        // Get productId from cart
-                        String pid = rs.getString("productId");
-                        product.setProductid(pid);
-
-                        // Query product details
-                        productStmt.setString(1, pid);
-                        try (ResultSet prs = productStmt.executeQuery()) {
-                            if (prs.next()) {
-                                product.setProductname(prs.getString("productName"));
-                                product.setImglocation(prs.getString("imgLocation")); // ⚠️ Make sure your DB column matches this
-                            }
-                        }
-
-                        // Set product and customer
-                        item.setProductid(product);
-                        item.setCustid(cust);
-
-                        cartList.add(item);
-                    }
-                }
+                itemList.add(cartitem);
             }
         }
     }
-    return cartList;
+    return itemList;
 }
 
+
+    // Remove item from cart
+    public void removeFromCart(String cartItemId) throws Exception {
+        try (Connection con = DBConnection.getConnection()) {
+            try (PreparedStatement stmt = con.prepareStatement("DELETE FROM cart_item WHERE cartItemId = ?")) {
+                stmt.setString(1, cartItemId);
+                stmt.executeUpdate();
+            }
+        }
+    }
+
+    // Update quantity for a cart item
+    public void updateQuantity(String cartItemId, int newQty) throws Exception {
+        try (Connection con = DBConnection.getConnection()) {
+            try (PreparedStatement stmt = con.prepareStatement("UPDATE cart_item SET quantityPurchased = ? WHERE cartItemId = ?")) {
+                stmt.setInt(1, newQty);
+                stmt.setString(2, cartItemId);
+                stmt.executeUpdate();
+            }
+        }
+    }
+
+    // Confirm the order: update checkout status
+    public void confirmOrder(String custId) throws Exception {
+        try (Connection con = DBConnection.getConnection()) {
+            String sql = "UPDATE cart SET checkOutStatus = TRUE WHERE custId = ? AND checkOutStatus = FALSE";
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setString(1, custId);
+                stmt.executeUpdate();
+            }
+        }
+    }
+    
+    public String generateNextCartItemId() {
+        String lastId = null;
+        String nextId = "itm001";
+
+        try (
+                Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(
+                "SELECT cartItemId FROM cart_item WHERE cartItemId LIKE 'itm%' ORDER BY cartItemId DESC FETCH FIRST 1 ROWS ONLY"); ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                lastId = rs.getString("cartItemId"); // e.g., "itm005"
+                if (lastId != null && lastId.length() >= 6) {
+                    String numeric = lastId.substring(3); // gets "005"
+                    int next = Integer.parseInt(numeric) + 1;
+                    nextId = "itm" + String.format("%03d", next);
+                }
+            }
+        } catch (SQLException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return nextId;
+    }
+    
+    public Receipt getReceiptById(String receiptId) throws Exception {
+        Receipt receipt = null;
+
+        try (Connection con = DBConnection.getConnection()) {
+            String sql = "SELECT * FROM receipt WHERE receiptId = ?";
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setString(1, receiptId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    receipt = new Receipt();
+                    receipt.setReceiptid(receiptId);
+                    receipt.setCreationtime(rs.getTimestamp("creationTime"));
+                    // You can add more fields if needed
+                }
+            }
+        }
+
+        return receipt;
+    }
+    
+    public List<Receipt> getReceiptsByCustomer(String custId) {
+        List<Receipt> list = new ArrayList<>();
+        String sql = "SELECT r.* FROM receipt r JOIN cart c ON r.cartId = c.cartId WHERE c.custId = ? ORDER BY r.creationTime DESC";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, custId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Receipt r = new Receipt();
+                r.setReceiptid(rs.getString("receiptId"));
+                r.setCreationtime(rs.getTimestamp("creationTime"));
+
+                Cart cart = new Cart();
+                cart.setCartid(rs.getString("cartId"));
+                r.setCartid(cart);
+
+                list.add(r);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+    
+    public Receipt getLatestReceiptByCustomer(String custId) {
+        Receipt receipt = null;
+        String sql = "SELECT r.* FROM receipt r JOIN cart c ON r.cartId = c.cartId WHERE c.custId = ? ORDER BY r.creationTime DESC FETCH FIRST 1 ROWS ONLY";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, custId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                receipt = new Receipt();
+                receipt.setReceiptid(rs.getString("receiptId"));
+                receipt.setCreationtime(rs.getTimestamp("creationTime"));
+
+                Cart cart = new Cart();
+                cart.setCartid(rs.getString("cartId"));
+                receipt.setCartid(cart);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return receipt;
+    }
+    
+        public List<CartItem> getCartItemsByReceiptId(String receiptId) {
+        List<CartItem> list = new ArrayList<>();
+        String sql = "SELECT rd.productId, rd.quantity, rd.price " +
+                     "FROM receipt_detail rd " +
+                     "WHERE rd.receiptId = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, receiptId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                CartItem item = new CartItem();
+                item.setQuantitypurchased(rs.getInt("quantity"));
+                item.setPrice(rs.getBigDecimal("price"));
+
+                Product p = new Product();
+                p.setProductid(rs.getString("productId"));
+                // Optional: load name and img if needed
+                item.setProductid(p);
+
+                list.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+   
 }

@@ -19,7 +19,7 @@
             font-family: 'Segoe UI', sans-serif;
             background-color: #fff;
             margin: 0;
-            padding: 40px;
+            padding: 10px;
         }
 
         h1 {
@@ -183,21 +183,21 @@
 
 <h1>All Products</h1>
 
-<!-- 🔍 Search Bar -->
+<!--Search Bar -->
 <form method="post" action="ProductPage.jsp" style="text-align: center; margin-bottom: 30px;">
     <input type="text" name="search" placeholder="Search products..." value="<%= (searchQuery != null) ? searchQuery : "" %>" style="padding: 10px; width: 300px; font-size: 16px;" />
     <input type="hidden" name="category" value="<%= (categoryFilter != null) ? categoryFilter : "" %>" />
     <button type="submit" style="padding: 10px 15px; font-size: 16px;">Search</button>
 </form>
 
-<!-- 🗂️ Category Navigation -->
+<!-- Category Navigation -->
 <div class="category-nav">
     <a href="ProductPage.jsp"<%= (categoryFilter == null || categoryFilter.isEmpty()) ? " class='active'" : "" %>>ALL</a>
     <a href="ProductPage.jsp?category=make up<%= (searchQuery != null) ? "&search=" + searchQuery : "" %>"<%= "make up".equalsIgnoreCase(categoryFilter) ? " class='active'" : "" %>>MAKEUP</a>
     <a href="ProductPage.jsp?category=skin care<%= (searchQuery != null) ? "&search=" + searchQuery : "" %>"<%= "skin care".equalsIgnoreCase(categoryFilter) ? " class='active'" : "" %>>SKINCARE</a>
 </div>
 
-<!-- 🛍️ Product Cards -->
+<!-- Product Cards -->
 <div class="product-row">
 <%
     try {
@@ -254,7 +254,8 @@ while(rs.next()) {
         <% if ("customer".equals(userRole)) { %>
         <button type="submit" class="btn-add">Add to Cart</button>
         <% } else { %>
-        <button type="button" class="btn-add" onclick="window.location.href='CustomerLogin.jsp'">Add to Cart</button>
+        <button type="button" class="btn-add" onclick="showLoginAlert()">Add to Cart</button>
+
         <% } %>
     </form>
     <% } else { %>
@@ -302,6 +303,12 @@ if (!hasProduct) {
 
 <!-- 🧠 Modal JavaScript -->
 <script>
+    
+    function showLoginAlert() {
+    alert("Please login first to add items to your cart.");
+    window.location.href = 'CustomerLogin.jsp';
+}
+
     function showProductModal(pid, name, img, price, desc, rating) {
         document.getElementById("modalName").innerText = name;
         document.getElementById("modalImg").src = img;

@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author grace
+ * @author Huay
  */
 @Entity
 @Table(name = "VOUCHER")
@@ -123,6 +123,11 @@ public class Voucher implements Serializable {
     public Boolean getUsed() {
         return used;
     }
+    
+    public boolean isUsed() {
+        return used;
+    }
+
 
     public void setUsed(Boolean used) {
         this.used = used;

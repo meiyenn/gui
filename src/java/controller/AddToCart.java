@@ -1,13 +1,11 @@
 package controller;
 
 import model.CartService;
-import model.Product;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.*;
 
 @WebServlet(name = "AddToCart", urlPatterns = {"/AddToCart"})
@@ -20,40 +18,42 @@ public class AddToCart extends HttpServlet {
         HttpSession session = request.getSession();
         String custId = (String) session.getAttribute("custId");
         String pid = request.getParameter("pid");
-        String pqtyStr = request.getParameter("pqty");
+        String qtyStr = request.getParameter("pqty");
 
-        if (custId == null || pid == null || pqtyStr == null || pid.isEmpty() || pqtyStr.isEmpty()) {
-            response.getWriter().write("Missing or invalid input.");
+        if (custId == null || pid == null || qtyStr == null || custId.isEmpty() || pid.isEmpty() || qtyStr.isEmpty()) {
+            response.getWriter().write("❌ Missing customer ID, product ID, or quantity.");
             return;
         }
 
-        int pqty = Integer.parseInt(pqtyStr);
-        double price = 0;
-
+        int quantity;
         try {
-            // Step 1: Fetch product info via JDBC
+            quantity = Integer.parseInt(qtyStr);
+        } catch (NumberFormatException e) {
+            response.getWriter().write("❌ Invalid quantity.");
+            return;
+        }
+
+        double price = 0.0;
+
+        try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/ass", "nbuser", "nbuser")) {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
-            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/ass", "nbuser", "nbuser");
 
-            String sql = "SELECT * FROM PRODUCT WHERE PRODUCTID = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, pid);
-            ResultSet rs = stmt.executeQuery();
+            String sql = "SELECT PRICE FROM PRODUCT WHERE PRODUCTID = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, pid);
+                ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                price = rs.getBigDecimal("PRICE").doubleValue();
-            } else {
-                response.getWriter().write("Product not found.");
-                return;
+                if (rs.next()) {
+                    price = rs.getBigDecimal("PRICE").doubleValue();
+                } else {
+                    response.getWriter().write("❌ Product not found.");
+                    return;
+                }
             }
 
-            rs.close();
-            stmt.close();
-            conn.close();
-
-            // Step 2: Add to cart using CartService
+            // Add to cart using CartService
             CartService cartService = new CartService();
-            cartService.addToCart(custId, pid, pqty, price);
+            cartService.addToCart(custId, pid, quantity, price);
 
             response.sendRedirect("ShoppingCart.jsp");
 
@@ -62,9 +62,10 @@ public class AddToCart extends HttpServlet {
             response.getWriter().write("❌ Error: " + e.getMessage());
         }
     }
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doPost(request, response);
     }
-    
 }

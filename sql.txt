@@ -31,27 +31,34 @@ CREATE TABLE product (
     status INT NOT NULL
 );
 
--- Cart Table - Fixed to allow multiple products per customer
+-- Cart Table (1 cart per customer)
 CREATE TABLE cart (
     cartId VARCHAR(10) PRIMARY KEY,
     custId VARCHAR(6) NOT NULL,
+    checkOutStatus BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (custId) REFERENCES customer(custId)
+);
+
+-- Cart Item Table (many products per cart)
+CREATE TABLE cart_item (
+    cartItemId VARCHAR(10) PRIMARY KEY,
+    cartId VARCHAR(10) NOT NULL,
     productId VARCHAR(7) NOT NULL,
     quantityPurchased INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    checkOutStatus BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (custId) REFERENCES customer(custId),
+    FOREIGN KEY (cartId) REFERENCES cart(cartId),
     FOREIGN KEY (productId) REFERENCES product(productId)
 );
 
--- Receipt Table
+-- Receipt Table (1 per cart)
 CREATE TABLE receipt (
     receiptId VARCHAR(7) PRIMARY KEY,
     cartId VARCHAR(10) NOT NULL,
     creationTime TIMESTAMP NOT NULL,
     FOREIGN KEY (cartId) REFERENCES cart(cartId)
-	
 );
 
+-- Receipt Detail Table (copied from cart_item)
 CREATE TABLE receipt_detail (
     receiptId VARCHAR(7),
     productId VARCHAR(7),
@@ -61,7 +68,6 @@ CREATE TABLE receipt_detail (
     FOREIGN KEY (receiptId) REFERENCES receipt(receiptId),
     FOREIGN KEY (productId) REFERENCES product(productId)
 );
-
 
 -- Product Rating Table
 CREATE TABLE productRating (
@@ -73,26 +79,27 @@ CREATE TABLE productRating (
     FOREIGN KEY (receiptId) REFERENCES receipt(receiptId)
 );
 
--- Voucher Table - Fixed custId data type
+-- Voucher Table
 CREATE TABLE voucher (
     voucherId VARCHAR(20) PRIMARY KEY,
     custId VARCHAR(6),
     code VARCHAR(50) NOT NULL,
-    discount DECIMAL(6,2) NOT NULL, -- e.g. RM 10.00 off
-    minSpend DECIMAL(10,2),         -- optional: minimum spend to apply voucher
+    discount DECIMAL(6,2) NOT NULL,
+    minSpend DECIMAL(10,2),
     expiryDate DATE,
     used BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (custId) REFERENCES customer(custId)
 );
 
--- Insert Staff Data
+
+-- Insert Staff
 INSERT INTO staff VALUES 
 ('stf001', 'Kai Xin', 'kx456789@gmail.com', '0121235678', 'Manager', 'Kaixin', 'kx555'),
 ('stf002', 'Karena Tan', 'karenatan@gmail.com', '0132359876', 'Sales', 'Karena', 'karena123'),
 ('stf003', 'Faris Bin Jamal', 'farisj@gmail.com', '0161335698', 'Customer Service', 'faris', 'faris123'),
 ('stf004', 'Aina Binti Ahmad', 'aina@gmail.com', '0191229698', 'Sales', 'aina', 'aina123');
 
--- Insert Customer Data
+-- Insert Customer
 INSERT INTO customer VALUES 
 ('cus001', 'Jimmy Wong', '0123567890', 'jimmywong@gmail.com', 'jimmywong', 'jimmy987'),
 ('cus002', 'Jayden Yap', '0198765321', 'jaydenyap@gmail.com', 'jaydenyap', 'jayden987'),
@@ -100,7 +107,7 @@ INSERT INTO customer VALUES
 ('cus004', 'David Lee', '0167778901', 'david.lee@email.com', 'davidlee', 'david456'),
 ('cus005', 'Priya Sharma', '0182345678', 'priya.sharma@email.com', 'priya_sharma', 'priya789');
 
--- Insert Product Data
+-- Insert Product
 INSERT INTO product VALUES 
 ('prod001', 'Biodance Face Mask', 'src/image/prod-1.jpg', 35.00, 100, 'Skin Care', 'Function: Face, Overnight; Skin Type: Combination, Dry, Normal, Oily, Sensitive', 1),
 ('prod002', 'Laneige Lip Sleeping Mask', 'src/image/prod-2.jpg', 100.00, 50, 'Make Up', 'Overnight lip treatment mask.', 1),
@@ -109,27 +116,37 @@ INSERT INTO product VALUES
 ('prod005', 'Some By Mi AHA.BHA.PHA Toner', 'src/image/prod-5.jpg', 60.00, 150, 'Skin Care', 'Exfoliating toner for acne-prone skin.', 1),
 ('prod006', 'Klavuu Nourishing Face Oil', 'src/image/prod-6.jpg', 120.00, 60, 'Skin Care', 'Facial oil with Korean pearl extract.', 0);
 
--- Insert Cart Data - Fixed to match checkOutStatus with receipt data
+-- Insert Cart
 INSERT INTO cart VALUES 
-('cart001', 'cus001', 'prod001', 3, 105.00, TRUE),
-('cart002', 'cus001', 'prod002', 1, 100.00, FALSE),
-('cart003', 'cus002', 'prod003', 2, 180.00, TRUE),
-('cart004', 'cus003', 'prod004', 1, 60.00, TRUE),
-('cart005', 'cus003', 'prod004', 5, 427.50, TRUE),
-('cart006', 'cus004', 'prod006', 2, 240.00, TRUE);
+('cart001', 'cus001', TRUE),
+('cart002', 'cus001', FALSE),
+('cart003', 'cus002', TRUE),
+('cart004', 'cus003', TRUE);
 
--- Insert Receipt Data - Now only for checked out carts
+-- Insert Cart Items
+INSERT INTO cart_item VALUES 
+('itm001', 'cart001', 'prod001', 3, 105.00),
+('itm002', 'cart001', 'prod002', 1, 100.00),
+('itm003', 'cart003', 'prod003', 2, 180.00),
+('itm004', 'cart004', 'prod004', 1, 85.50),
+('itm005', 'cart004', 'prod005', 5, 300.00);
+
+-- Insert Receipts
 INSERT INTO receipt VALUES 
 ('re00001', 'cart001', '2025-03-11 15:00:00'),
 ('re00002', 'cart003', '2025-03-12 16:30:00'),
-('re00003', 'cart004', '2025-03-15 10:30:00'),
-('re00004', 'cart005', '2025-03-18 12:00:00'),
-('re00005', 'cart006', '2025-03-20 14:45:00');
+('re00003', 'cart004', '2025-03-15 10:30:00');
 
--- Insert Product Rating Data
+-- Insert Receipt Details (copied from cart_item)
+INSERT INTO receipt_detail VALUES 
+('re00001', 'prod001', 3, 105.00),
+('re00001', 'prod002', 1, 100.00),
+('re00002', 'prod003', 2, 180.00),
+('re00003', 'prod004', 1, 85.50),
+('re00003', 'prod005', 5, 300.00);
+
+-- Insert Product Ratings
 INSERT INTO productRating VALUES 
 ('rt0001', 're00001', '2025-03-13 15:00:00', 5, 'Excellent product, will buy again!'),
 ('rt0002', 're00002', '2025-03-14 14:00:00', 4, 'Great product, but took a while to arrive.'),
-('rt0003', 're00003', '2025-03-16 11:00:00', 3, 'Good product, but not as expected.'),
-('rt0004', 're00004', '2025-03-17 12:00:00', 5, 'Love it! Totally worth the price.'),
-('rt0005', 're00005', '2025-03-18 13:00:00', 2, 'Did not meet my expectations. Product quality was poor.');
+('rt0003', 're00003', '2025-03-16 11:00:00', 3, 'Good product, but not as expected.');

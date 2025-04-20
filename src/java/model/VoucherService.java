@@ -1,6 +1,7 @@
 package model;
 
 import controller.DBConnection;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Date;
 
 public class VoucherService {
 
-    // Get voucher by code and customer ID
+    // ✅ Get a single voucher by code + customer, with validation
     public Voucher getVoucherByCode(String code, String custId) {
         String sql = "SELECT * FROM voucher WHERE code = ? AND custId = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -22,15 +23,22 @@ public class VoucherService {
 
             if (rs.next()) {
                 Voucher v = new Voucher();
-                Customer cust = new Customer();
-                
                 v.setVoucherid(rs.getString("voucherId"));
-                cust.setCustid(rs.getString("custId"));
                 v.setCode(rs.getString("code"));
                 v.setDiscount(rs.getBigDecimal("discount"));
                 v.setMinspend(rs.getBigDecimal("minSpend"));
                 v.setExpirydate(rs.getDate("expiryDate"));
                 v.setUsed(rs.getBoolean("used"));
+
+                // Validate voucher
+                if (v.isUsed()) {
+                    System.out.println("❌ Voucher already used: " + code);
+                    return null;
+                }
+                if (isExpired(v.getExpirydate())) {
+                    System.out.println("❌ Voucher expired: " + code);
+                    return null;
+                }
                 return v;
             }
 
@@ -40,9 +48,9 @@ public class VoucherService {
         return null;
     }
 
-    // Mark voucher as used
+    // ✅ Mark a voucher as used
     public boolean markVoucherAsUsed(String code, String custId) {
-        String sql = "UPDATE voucher SET used = 1 WHERE code = ? AND custId = ?";
+        String sql = "UPDATE voucher SET used = TRUE WHERE code = ? AND custId = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -56,10 +64,11 @@ public class VoucherService {
         return false;
     }
 
-    // Get all vouchers for a specific customer
+    // ✅ Get all vouchers by customer
     public List<Voucher> getVouchersByCustomer(String custId) {
         List<Voucher> vouchers = new ArrayList<>();
         String sql = "SELECT * FROM voucher WHERE custId = ?";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -68,16 +77,11 @@ public class VoucherService {
 
             while (rs.next()) {
                 Voucher v = new Voucher();
-                Customer cust = new Customer();
-                
                 v.setVoucherid(rs.getString("voucherId"));
-                cust.setCustid(rs.getString("custId"));
                 v.setCode(rs.getString("code"));
                 v.setDiscount(rs.getBigDecimal("discount"));
                 v.setMinspend(rs.getBigDecimal("minSpend"));
-                
                 v.setExpirydate(rs.getDate("expiryDate"));
-                
                 v.setUsed(rs.getBoolean("used"));
                 vouchers.add(v);
             }
@@ -87,10 +91,11 @@ public class VoucherService {
         }
         return vouchers;
     }
-    
-    public static boolean isBefore(Date date) {
+
+    // ✅ Check if voucher is expired
+    public static boolean isExpired(Date date) {
         if (date == null) {
-            return false;
+            return true; // treat null as expired
         }
 
         LocalDate localDate = date.toInstant()
@@ -99,19 +104,12 @@ public class VoucherService {
 
         return localDate.isBefore(LocalDate.now());
     }
+
+    // ✅ Check if voucher is applicable to this cart
+    public boolean isValidForCart(Voucher voucher, BigDecimal cartTotal) {
+        if (voucher == null) {
+            return false;
+        }
+        return cartTotal.compareTo(voucher.getMinspend()) >= 0;
+    }
 }
-    
-    
-    // Optional: get valid vouchers (not used and not expired)
-//    public List<Voucher> getValidVouchers(String custId) {
-//        List<Voucher> all = getVouchersByCustomer(custId);
-//        List<Voucher> valid = new ArrayList<>();
-//
-//        for (Voucher v : all) {
-//            if (!v.isUsed() && v.isBeforeExpiry()) {
-//                valid.add(v);
-//            }
-//        }
-//        return valid;
-//    }
-        
