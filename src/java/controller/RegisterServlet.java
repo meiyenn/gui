@@ -61,7 +61,7 @@ public class RegisterServlet extends HttpServlet {
 
                 // Redirect based on whether the insert was successful or not
                 if (rowsAffected > 0) {
-                    response.sendRedirect("CustomerLogin.jsp");  // Redirect to login page if successful
+                    response.sendRedirect("CustomerLogin.jsp?success=1");  // Redirect to login page if successful
                 } else {
                     response.sendRedirect("CustomerRegister.jsp");  // Stay on the registration page if failed
                 }

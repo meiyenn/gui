@@ -74,7 +74,7 @@
             color: white;
             border: none;
             padding: 6px 12px;
-            
+
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s ease;
@@ -89,7 +89,7 @@
         .action-buttons button {
             padding: 10px 20px;
             border: none;
-            
+
             cursor: pointer;
             font-size: 16px;
         }
@@ -102,6 +102,7 @@
             color: white;
             margin-left: 20px;
         }
+
     </style>
 </head>
 <body>
@@ -138,7 +139,7 @@
                         <button type="submit" name="action" value="increase" class="qty-btn">+</button>
                     </form>
                 </td>
-                <td><%= subtotal %></td>
+                <td><%= subtotal.setScale(2) %></td>
                 <td>
                     <form action="DeleteCart" method="post" onsubmit="return confirm('Remove this item?');">
                         <input type="hidden" name="cartId" value="<%= item.getCartid() %>">
@@ -192,15 +193,16 @@
         <a href="ProductPage.jsp">
             <button class="continue-btn">Back to Continue Shopping</button>
         </a>
-        <a href="checkout.jsp">
-            <button class="checkout-btn">Check Out</button>
-        </a>
+
+        <!-- ✅ Send user to the Checkout servlet instead of direct JSP -->
+        <form action="Checkout" method="post" style="display:inline;">
+            <button type="submit" class="checkout-btn">Check Out</button>
+        </form>
     </div>
 
 <% } else { %>
     <p style="text-align: center; color: #999;">Your cart is empty.</p>
 <% } %>
-
 
 </body>
 </html>

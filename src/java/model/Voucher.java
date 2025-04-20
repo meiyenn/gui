@@ -123,6 +123,10 @@ public class Voucher implements Serializable {
     public Boolean getUsed() {
         return used;
     }
+    
+    public boolean isUsed(){
+        return used;
+    }
 
     public void setUsed(Boolean used) {
         this.used = used;

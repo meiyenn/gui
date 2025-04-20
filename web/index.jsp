@@ -47,6 +47,7 @@
         <%@include file="header.jsp" %>
         <%@include file="banner.jsp" %>
         <%@include file="Promotion.jsp" %>
+        <%@include file="home_product.jsp" %>
         <%@include file="about.jsp"%>
         <%@include file="ContactMe.jsp"%>
         <%

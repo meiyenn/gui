@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,10 +141,55 @@
         .login-btn:hover {
             background-color: #7070db;
         }
+        
+        .popup-box {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            z-index: 999;
+            animation: fadeInOut 3s ease-in-out;
+        }
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
 
     </style>
 </head>
 <body>
+    <%
+        String success = request.getParameter("success");
+        if ("1".equals(success)) {
+    %>
+    <div id="login-success-popup" class="popup-box">Register Successful !</div>
+    <%
+        }
+    %>
+    
+    <script>
+    setTimeout(() => {
+        document.getElementById("login-success-popup").style.display = 'none';
+    }, 3000);
+    </script>
+
     
     <div class="container">
         <!-- Left Section with Welcome Text -->

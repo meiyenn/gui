@@ -9,7 +9,7 @@
             font-family: 'Segoe UI', sans-serif;
             background-color: #fff;
             margin: 0;
-            padding: 40px;
+            padding: 10px;
         }
 
         h1 {
@@ -53,6 +53,12 @@
             overflow: hidden;
             text-align: center;
             padding: 10px;
+            background-color: #fafafa;
+            transition: box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .product-card img {
@@ -77,6 +83,20 @@
             color: #000;
         }
 
+        .product-rating {
+            margin: 8px 0;
+        }
+
+        .product-rating .star {
+            font-size: 16px;
+            color: #FFD700;
+            margin: 0 1px;
+        }
+
+        .product-rating .star.gray {
+            color: #ccc;
+        }
+
         .btn-add {
             display: block;
             background-color: #000;
@@ -87,6 +107,7 @@
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
+            border-radius: 4px;
         }
 
         .btn-add:hover {
@@ -108,17 +129,15 @@
         .btn-view-all:hover {
             background-color: #444;
         }
+        
+        
     </style>
 </head>
 <body>
 
 <h1>DISCOVER OUR BESTSELLERS & NEW ICONS</h1>
 
-<div class="category-nav">
-    <span>NEW</span>
-    <span>SKINCARE</span>
-    <span>MAKEUP</span>
-</div>
+
 
 <div class="product-row">
 <%
@@ -135,10 +154,8 @@
     <div class="product-card">
         <img src="<%= rs.getString("imgLocation") %>" alt="Product">
         <div class="product-name"><%= rs.getString("productName") %></div>
-        <div class="product-size">One size only</div>
-        <div class="product-size"><%= rs.getString("productDescription") %></div>
         <div class="product-price">RM <%= rs.getDouble("price") %></div>
-        <form method="get" action="AddToCartServlet">
+        <form method="get" action="AddToCart">
             <input type="hidden" name="pid" value="<%= rs.getString("productId") %>">
             <input type="hidden" name="pqty" value="1">
             <button class="btn-add" type="submit">Add to Cart</button>
