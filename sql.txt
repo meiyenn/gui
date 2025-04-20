@@ -150,9 +150,3 @@ INSERT INTO productRating VALUES
 ('rt0001', 're00001', '2025-03-13 15:00:00', 5, 'Excellent product, will buy again!'),
 ('rt0002', 're00002', '2025-03-14 14:00:00', 4, 'Great product, but took a while to arrive.'),
 ('rt0003', 're00003', '2025-03-16 11:00:00', 3, 'Good product, but not as expected.');
-
--- Insert Vouchers
-INSERT INTO voucher VALUES 
-('VOUCHER10', 'cus001', 'WELCOME10', 10.00, 50.00, '2025-06-01', FALSE),
-('VOUCHER20', 'cus002', 'SAVE20', 20.00, 100.00, '2025-05-15', TRUE);
-
