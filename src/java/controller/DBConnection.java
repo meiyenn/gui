@@ -11,7 +11,7 @@ import java.sql.*;
  * @author Huay
  */
 public class DBConnection {
-    private static final String URL = "jdbc:derby://localhost:1527/ass"; // Change URL according to your database
+    private static final String URL = "jdbc:derby://localhost:1527/gui"; // Change URL according to your database
     private static final String USERNAME = "nbuser";
     private static final String PASSWORD = "nbuser";
 
