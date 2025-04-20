@@ -62,15 +62,19 @@
         <%--filter--%>
         <div id="filter">
             <div class="search">
-            <select name="filterBy" id="filterBy" onchange="emptySearch()">
-                <option selected disabled>Filter By</option>
-                <option value=0>Product ID</option>
-                <option value=1>Name</option>
-                <option value=2>Categories</option>
-                <option value=3>Status</option>
-                <option value=4>No Filter</option>
-            </select>
-            <input type="text" id="search" onkeyup="searchProd()" placeholder="Search for products...">
+                <form action="FilterServlet" action="post">
+                    <select name="filter" id="filter">
+                        <option selected disabled>Filter By</option>
+                        <option value=1>Product ID</option>
+                        <option value=2>Name</option>
+                        <option value=3>Categories</option>
+                        <option value=4>Status</option>
+                        <option value=5>No Filter</option>
+                    </select>
+                    
+                    <input type="text" id="searchText" name="searchText" placeholder="Search for products...">
+                    <input type="submit" id="search" name="search" placeholder="Search">
+                </form>
             </div>
         </div>
         <%--end filter--%>
@@ -94,6 +98,7 @@
             
             <%--product list get from add prod servlet to list down all the product--%>
             <% List<Product> prodList = (List) session.getAttribute("prodList");%>
+            <% List<Product> filterList = (List) session.getAttribute("filterList");%>
             
             <% for(Product prod : prodList){ %>
             <tr>

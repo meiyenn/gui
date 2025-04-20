@@ -182,6 +182,41 @@ public class ProductDa {
         return prodId;
     }
     
+    public List<Product> filterProd(String column, String value){
+       List<Product> prodList = new ArrayList<>();
+
+        //Product prod = new Product();
+        //prod=null; //initiale value
+
+        try {
+            String selectStr = "select * from product where lower("+column+") like ?";
+            stmt = conn.prepareStatement(selectStr);
+            stmt.setString(1, "%" + value.toLowerCase() + "%");
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next())
+            {
+                    Product prod = new Product();
+                    prod.setProductid(rs.getString(1));
+                    prod.setProductname(rs.getString(2));
+                    prod.setImglocation(rs.getString(3));
+                    prod.setPrice(rs.getDouble(4));
+                    prod.setQuantity(rs.getInt(5));
+                    prod.setCategory(rs.getString(6));
+                    prod.setProductdescription(rs.getString(7));
+                    prod.setStatus(rs.getInt(8));
+                    prodList.add(prod);
+
+            }
+
+            }catch (Exception e) {
+                    System.out.println(e.getMessage());
+            }
+
+            return prodList;
+    }
+    
     
 //    //testing
 //    public static void main(String[] args) {
@@ -206,7 +241,15 @@ public class ProductDa {
 ////        boolean addStatus=pda.addProduct(p);
 ////        System.out.println(addStatus);
 //
-//        System.out.println(pda.autoProdId());
+//        //System.out.println(pda.autoProdId());
+//        
+//                //filterprod()
+//        prod=pda.filterProd("category","ake up");
+//        for (Product p : prod) {
+//            System.out.println(p);  // Automatically calls toString()
+//        }
+//        //end
+//        
 //    }
 
 
