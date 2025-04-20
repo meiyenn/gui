@@ -22,7 +22,7 @@
               }
               
               thead{
-                  background-color: #bbd2ed;
+                  background-color: #f2f2f2;
                   font-weight: bold;
               }
 
@@ -31,10 +31,29 @@
                 text-align: left;
                 padding: 8px;
               }
+
+              .edit-btn{
+                background-color:#8cd98c;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+              }
               
-              
-              
-            
+              .delete-btn{
+                background-color:#ff704d;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+              }
+
         </style>
     </head>
     <body>
@@ -42,7 +61,7 @@
         <table>
             
             <thead>
-                <tr>
+                <tr style="height:70px">
                   <th>&nbsp;</th>
                   <th>Image</th>
                   <th>ID</th>
@@ -70,8 +89,8 @@
                 <td><%=prod.getCategory()%></td>
                 <td><%=prod.getProductdescription()%></td>
                 <td><%=prod.getStatus()%></td>
-                <td>&nbsp;<a href="EditProdServlet?prodId=<%=prod.getProductid()%>">Edit</a>&nbsp;</td>
-                <td>&nbsp;<a href="DeleteProdServlet?prodId=<%=prod.getProductid()%>">Delete</a>&nbsp;</td>
+                <td>&nbsp;<a href="EditProdServlet?prodId=<%=prod.getProductid()%>" class="edit-btn">Edit</a>&nbsp;</td>
+                <td>&nbsp;<a href="DeleteProdServlet?prodId=<%=prod.getProductid()%>" class="delete-btn">Delete</a>&nbsp;</td>
             </tr>
             <%}%>
 
