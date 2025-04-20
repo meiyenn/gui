@@ -43,7 +43,7 @@ public class FilterServlet extends HttpServlet {
         column=Integer.parseInt(request.getParameter("filter"));
         String value=request.getParameter("searchText");
 
-        List<Product> filteredList;
+        List<Product> filteredList = null;
         ProductDa pda = new ProductDa();
 
         try {
@@ -67,6 +67,10 @@ public class FilterServlet extends HttpServlet {
                 response.sendRedirect("viewProd.jsp");
 
             }else{
+                //set the prodlist session
+                HttpSession session = request.getSession();
+                session.setAttribute("filterList", filteredList);
+                
                 filteredList=pda.getAllProd();
                 response.sendRedirect("viewProd.jsp");
 

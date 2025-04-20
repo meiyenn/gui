@@ -134,6 +134,9 @@ public class AddProdServlet extends HttpServlet {
             HttpSession session = request.getSession();
             //add admin staff session
             
+            //remove filterlist before proceed to viewProd.jsp since user doesnt perform search
+            session.removeAttribute("filterList");
+            
             //set the prodlist session
             session.setAttribute("prodList", prodList);
             

@@ -62,14 +62,14 @@
         <%--filter--%>
         <div id="filter">
             <div class="search">
-                <form action="FilterServlet" action="post">
+                <form action="FilterServlet" method="post">
                     <select name="filter" id="filter">
                         <option selected disabled>Filter By</option>
                         <option value=1>Product ID</option>
                         <option value=2>Name</option>
                         <option value=3>Categories</option>
                         <option value=4>Status</option>
-                        <option value=5>No Filter</option>
+                        <option value=0>No Filter</option>
                     </select>
                     
                     <input type="text" id="searchText" name="searchText" placeholder="Search for products...">
@@ -97,10 +97,23 @@
             </thead>
             
             <%--product list get from add prod servlet to list down all the product--%>
-            <% List<Product> prodList = (List) session.getAttribute("prodList");%>
-            <% List<Product> filterList = (List) session.getAttribute("filterList");%>
+            <% List<Product> prodList = (List) session.getAttribute("prodList");
+                if (prodList == null) {
+                // redirect to servlet if accessed directly without data
+                response.sendRedirect("ViewProdServlet");
+                return;
+            }
+            %>
             
-            <% for(Product prod : prodList){ %>
+            <%
+                List<Product> filterList = (List<Product>) session.getAttribute("filterList");
+
+                if (filterList == null) { //no search are perform
+                    filterList = prodList;
+                }
+            %>
+            
+            <% for(Product prod : filterList){ %>
             <tr>
                 <td>&nbsp;</td>
                 <td><img src="imgUpload/<%=prod.getImglocation()%>" alt="<%=prod.getImglocation()%>" border=1 height=150 width=150></img><br><%=prod.getProductid()%><%=prod.getImglocation()%></td>
