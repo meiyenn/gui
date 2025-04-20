@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -39,13 +40,20 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Product.findByStatus", query = "SELECT p FROM Product p WHERE p.status = :status")})
 public class Product implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 7)
+    @Column(name = "PRODUCTID")
+    private String productid;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "PRODUCTNAME")
     private String productname;
     @Basic(optional = false)
-    @NotNull()
+    @NotNull
     @Size(min = 1, max = 250)
     @Column(name = "IMGLOCATION")
     private String imglocation;
@@ -58,7 +66,6 @@ public class Product implements Serializable {
     @NotNull
     @Column(name = "QUANTITY")
     private int quantity;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -71,15 +78,10 @@ public class Product implements Serializable {
     @NotNull
     @Column(name = "STATUS")
     private int status;
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 7)
-    @Column(name = "PRODUCTID")
-    private String productid;
-    @OneToMany(mappedBy = "productid")
-    private Collection<Cart> cartCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private Collection<ReceiptDetail> receiptDetailCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productid")
+    private Collection<CartItem> cartItemCollection;
 
     public Product() {
     }
@@ -104,41 +106,6 @@ public class Product implements Serializable {
 
     public void setProductid(String productid) {
         this.productid = productid;
-    }
-
-
-    @XmlTransient
-    public Collection<Cart> getCartCollection() {
-        return cartCollection;
-    }
-
-    public void setCartCollection(Collection<Cart> cartCollection) {
-        this.cartCollection = cartCollection;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (productid != null ? productid.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Product)) {
-            return false;
-        }
-        Product other = (Product) object;
-        if ((this.productid == null && other.productid != null) || (this.productid != null && !this.productid.equals(other.productid))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "model.Product[ productid=" + productid + " ]";
     }
 
     public String getProductname() {
@@ -195,6 +162,49 @@ public class Product implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @XmlTransient
+    public Collection<ReceiptDetail> getReceiptDetailCollection() {
+        return receiptDetailCollection;
+    }
+
+    public void setReceiptDetailCollection(Collection<ReceiptDetail> receiptDetailCollection) {
+        this.receiptDetailCollection = receiptDetailCollection;
+    }
+
+    @XmlTransient
+    public Collection<CartItem> getCartItemCollection() {
+        return cartItemCollection;
+    }
+
+    public void setCartItemCollection(Collection<CartItem> cartItemCollection) {
+        this.cartItemCollection = cartItemCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (productid != null ? productid.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Product)) {
+            return false;
+        }
+        Product other = (Product) object;
+        if ((this.productid == null && other.productid != null) || (this.productid != null && !this.productid.equals(other.productid))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "model.Product[ productid=" + productid + " ]";
     }
     
 }

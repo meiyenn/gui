@@ -7,6 +7,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     Author     : Huay
 */
 
+
+
 * {
     box-sizing: border-box;
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -304,3 +306,14 @@ input#cardNumber::placeholder {
     transition: all 0.3s ease;
 }
 
+.checkout-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.cart-section {
+    order: 1; /* Lower order means it appears first */
+}
+.shipping-section {
+    order: 2;
+}

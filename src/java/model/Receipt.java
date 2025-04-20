@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -37,6 +38,14 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Receipt.findByCreationtime", query = "SELECT r FROM Receipt r WHERE r.creationtime = :creationtime")})
 public class Receipt implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATIONTIME")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationtime;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "receipt")
+    private Collection<ReceiptDetail> receiptDetailCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -44,11 +53,6 @@ public class Receipt implements Serializable {
     @Size(min = 1, max = 7)
     @Column(name = "RECEIPTID")
     private String receiptid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "CREATIONTIME")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationtime;
     @OneToMany(mappedBy = "receiptid")
     private Collection<Productrating> productratingCollection;
     @JoinColumn(name = "CARTID", referencedColumnName = "CARTID")
@@ -75,13 +79,6 @@ public class Receipt implements Serializable {
         this.receiptid = receiptid;
     }
 
-    public Date getCreationtime() {
-        return creationtime;
-    }
-
-    public void setCreationtime(Date creationtime) {
-        this.creationtime = creationtime;
-    }
 
     @XmlTransient
     public Collection<Productrating> getProductratingCollection() {
@@ -123,6 +120,24 @@ public class Receipt implements Serializable {
     @Override
     public String toString() {
         return "model.Receipt[ receiptid=" + receiptid + " ]";
+    }
+
+
+    @XmlTransient
+    public Collection<ReceiptDetail> getReceiptDetailCollection() {
+        return receiptDetailCollection;
+    }
+
+    public void setReceiptDetailCollection(Collection<ReceiptDetail> receiptDetailCollection) {
+        this.receiptDetailCollection = receiptDetailCollection;
+    }
+
+    public Date getCreationtime() {
+        return creationtime;
+    }
+
+    public void setCreationtime(Date creationtime) {
+        this.creationtime = creationtime;
     }
     
 }

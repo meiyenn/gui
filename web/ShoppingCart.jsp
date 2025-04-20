@@ -1,5 +1,5 @@
 <%@ page import="model.CartService" %>
-<%@ page import="model.Cart" %>
+<%@ page import="model.CartItem" %>
 <%@ page import="model.Product" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.math.BigDecimal" %>
@@ -14,7 +14,7 @@
     }
 
     CartService cartService = new CartService();
-    List<Cart> cartList = null;
+    List<CartItem> cartList = null;
     BigDecimal grandTotal = BigDecimal.ZERO;
     BigDecimal shippingCost = BigDecimal.ZERO;
     BigDecimal salesTax = BigDecimal.ZERO;
@@ -68,13 +68,11 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .delete-btn {
             background-color: #e74c3c;
             color: white;
             border: none;
             padding: 6px 12px;
-
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s ease;
@@ -89,7 +87,6 @@
         .action-buttons button {
             padding: 10px 20px;
             border: none;
-
             cursor: pointer;
             font-size: 16px;
         }
@@ -102,7 +99,6 @@
             color: white;
             margin-left: 20px;
         }
-
     </style>
 </head>
 <body>
@@ -120,7 +116,7 @@
         </tr>
 
         <% 
-            for (Cart item : cartList) {
+            for (CartItem item : cartList) {
                 BigDecimal subtotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantitypurchased()));
                 grandTotal = grandTotal.add(subtotal);
         %>
@@ -132,7 +128,7 @@
                 <td><%= item.getPrice() %></td>
                 <td>
                     <form action="updateCart" method="post" style="display: flex; justify-content: center; align-items: center;">
-                        <input type="hidden" name="cartId" value="<%= item.getCartid() %>">
+                        <input type="hidden" name="cartItemId" value="<%= item.getCartitemid() %>">
                         <button type="submit" name="action" value="decrease" class="qty-btn">-</button>
                         <input type="text" name="quantity" value="<%= item.getQuantitypurchased() %>" readonly 
                                style="width: 40px; text-align: center; margin: 0 5px;">
@@ -142,7 +138,7 @@
                 <td><%= subtotal.setScale(2) %></td>
                 <td>
                     <form action="DeleteCart" method="post" onsubmit="return confirm('Remove this item?');">
-                        <input type="hidden" name="cartId" value="<%= item.getCartid() %>">
+                        <input type="hidden" name="cartItemId" value="<%= item.getCartitemid() %>">
                         <input type="submit" class="delete-btn" value="Delete">
                     </form>
                 </td>
@@ -194,7 +190,6 @@
             <button class="continue-btn">Back to Continue Shopping</button>
         </a>
 
-        <!-- ✅ Send user to the Checkout servlet instead of direct JSP -->
         <form action="Checkout" method="post" style="display:inline;">
             <button type="submit" class="checkout-btn">Check Out</button>
         </form>

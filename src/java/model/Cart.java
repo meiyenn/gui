@@ -5,9 +5,9 @@
 package model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -32,8 +32,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Cart.findAll", query = "SELECT c FROM Cart c"),
     @NamedQuery(name = "Cart.findByCartid", query = "SELECT c FROM Cart c WHERE c.cartid = :cartid"),
-    @NamedQuery(name = "Cart.findByQuantitypurchased", query = "SELECT c FROM Cart c WHERE c.quantitypurchased = :quantitypurchased"),
-    @NamedQuery(name = "Cart.findByPrice", query = "SELECT c FROM Cart c WHERE c.price = :price"),
     @NamedQuery(name = "Cart.findByCheckoutstatus", query = "SELECT c FROM Cart c WHERE c.checkoutstatus = :checkoutstatus")})
 public class Cart implements Serializable {
 
@@ -44,25 +42,15 @@ public class Cart implements Serializable {
     @Size(min = 1, max = 10)
     @Column(name = "CARTID")
     private String cartid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "QUANTITYPURCHASED")
-    private int quantitypurchased;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PRICE")
-    private BigDecimal price;
     @Column(name = "CHECKOUTSTATUS")
     private Boolean checkoutstatus;
-    @OneToMany(mappedBy = "cartid")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cartid")
     private Collection<Receipt> receiptCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cartid")
+    private Collection<CartItem> cartItemCollection;
     @JoinColumn(name = "CUSTID", referencedColumnName = "CUSTID")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Customer custid;
-    @JoinColumn(name = "PRODUCTID", referencedColumnName = "PRODUCTID")
-    @ManyToOne
-    private Product productid;
 
     public Cart() {
     }
@@ -71,34 +59,12 @@ public class Cart implements Serializable {
         this.cartid = cartid;
     }
 
-    public Cart(String cartid, int quantitypurchased, BigDecimal price) {
-        this.cartid = cartid;
-        this.quantitypurchased = quantitypurchased;
-        this.price = price;
-    }
-
     public String getCartid() {
         return cartid;
     }
 
     public void setCartid(String cartid) {
         this.cartid = cartid;
-    }
-
-    public int getQuantitypurchased() {
-        return quantitypurchased;
-    }
-
-    public void setQuantitypurchased(int quantitypurchased) {
-        this.quantitypurchased = quantitypurchased;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 
     public Boolean getCheckoutstatus() {
@@ -118,20 +84,21 @@ public class Cart implements Serializable {
         this.receiptCollection = receiptCollection;
     }
 
+    @XmlTransient
+    public Collection<CartItem> getCartItemCollection() {
+        return cartItemCollection;
+    }
+
+    public void setCartItemCollection(Collection<CartItem> cartItemCollection) {
+        this.cartItemCollection = cartItemCollection;
+    }
+
     public Customer getCustid() {
         return custid;
     }
 
     public void setCustid(Customer custid) {
         this.custid = custid;
-    }
-
-    public Product getProductid() {
-        return productid;
-    }
-
-    public void setProductid(Product productid) {
-        this.productid = productid;
     }
 
     @Override
@@ -158,10 +125,5 @@ public class Cart implements Serializable {
     public String toString() {
         return "model.Cart[ cartid=" + cartid + " ]";
     }
-
-    public void setPrice(double price) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
     
 }

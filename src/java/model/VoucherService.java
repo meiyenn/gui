@@ -11,9 +11,11 @@ import java.util.Date;
 
 public class VoucherService {
 
+    // ✅ Get a single voucher by code + customer, with validation
     public Voucher getVoucherByCode(String code, String custId) {
         String sql = "SELECT * FROM voucher WHERE code = ? AND custId = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, code);
             stmt.setString(2, custId);
@@ -30,26 +32,25 @@ public class VoucherService {
 
                 // Validate voucher
                 if (v.isUsed()) {
-                    System.out.println("Voucher already used: " + code);
+                    System.out.println("❌ Voucher already used: " + code);
                     return null;
                 }
                 if (isExpired(v.getExpirydate())) {
-                    System.out.println("Voucher expired: " + code);
+                    System.out.println("❌ Voucher expired: " + code);
                     return null;
                 }
                 return v;
             }
 
-            
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
-    
-    // Mark voucher as used
+
+    // ✅ Mark a voucher as used
     public boolean markVoucherAsUsed(String code, String custId) {
-        String sql = "UPDATE voucher SET used = 1 WHERE code = ? AND custId = ?";
+        String sql = "UPDATE voucher SET used = TRUE WHERE code = ? AND custId = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -63,10 +64,11 @@ public class VoucherService {
         return false;
     }
 
-    // Get all vouchers for a specific customer
+    // ✅ Get all vouchers by customer
     public List<Voucher> getVouchersByCustomer(String custId) {
         List<Voucher> vouchers = new ArrayList<>();
         String sql = "SELECT * FROM voucher WHERE custId = ?";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -75,16 +77,11 @@ public class VoucherService {
 
             while (rs.next()) {
                 Voucher v = new Voucher();
-                Customer cust = new Customer();
-                
                 v.setVoucherid(rs.getString("voucherId"));
-                cust.setCustid(rs.getString("custId"));
                 v.setCode(rs.getString("code"));
                 v.setDiscount(rs.getBigDecimal("discount"));
                 v.setMinspend(rs.getBigDecimal("minSpend"));
-                
                 v.setExpirydate(rs.getDate("expiryDate"));
-                
                 v.setUsed(rs.getBoolean("used"));
                 vouchers.add(v);
             }
@@ -94,10 +91,11 @@ public class VoucherService {
         }
         return vouchers;
     }
-    
+
+    // ✅ Check if voucher is expired
     public static boolean isExpired(Date date) {
         if (date == null) {
-            return true; // Treat null as expired
+            return true; // treat null as expired
         }
 
         LocalDate localDate = date.toInstant()
@@ -106,7 +104,8 @@ public class VoucherService {
 
         return localDate.isBefore(LocalDate.now());
     }
-    
+
+    // ✅ Check if voucher is applicable to this cart
     public boolean isValidForCart(Voucher voucher, BigDecimal cartTotal) {
         if (voucher == null) {
             return false;
@@ -114,5 +113,3 @@ public class VoucherService {
         return cartTotal.compareTo(voucher.getMinspend()) >= 0;
     }
 }
-    
-        

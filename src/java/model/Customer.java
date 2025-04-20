@@ -7,6 +7,7 @@ package model;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -36,6 +37,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Customer.findByCustpswd", query = "SELECT c FROM Customer c WHERE c.custpswd = :custpswd")})
 public class Customer implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 6)
+    @Column(name = "CUSTID")
+    private String custid;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
@@ -63,15 +71,7 @@ public class Customer implements Serializable {
     private String custpswd;
     @OneToMany(mappedBy = "custid")
     private Collection<Voucher> voucherCollection;
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 6)
-    @Column(name = "CUSTID")
-    private String custid;
-    @OneToMany(mappedBy = "custid")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "custid")
     private Collection<Cart> cartCollection;
 
     public Customer() {
@@ -96,41 +96,6 @@ public class Customer implements Serializable {
 
     public void setCustid(String custid) {
         this.custid = custid;
-    }
-
-
-    @XmlTransient
-    public Collection<Cart> getCartCollection() {
-        return cartCollection;
-    }
-
-    public void setCartCollection(Collection<Cart> cartCollection) {
-        this.cartCollection = cartCollection;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (custid != null ? custid.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Customer)) {
-            return false;
-        }
-        Customer other = (Customer) object;
-        if ((this.custid == null && other.custid != null) || (this.custid != null && !this.custid.equals(other.custid))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "model.Customer[ custid=" + custid + " ]";
     }
 
     public String getCustname() {
@@ -180,6 +145,40 @@ public class Customer implements Serializable {
 
     public void setVoucherCollection(Collection<Voucher> voucherCollection) {
         this.voucherCollection = voucherCollection;
+    }
+
+    @XmlTransient
+    public Collection<Cart> getCartCollection() {
+        return cartCollection;
+    }
+
+    public void setCartCollection(Collection<Cart> cartCollection) {
+        this.cartCollection = cartCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (custid != null ? custid.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Customer)) {
+            return false;
+        }
+        Customer other = (Customer) object;
+        if ((this.custid == null && other.custid != null) || (this.custid != null && !this.custid.equals(other.custid))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "model.Customer[ custid=" + custid + " ]";
     }
     
 }

@@ -115,7 +115,12 @@
 <div class="thank-you-box">
     <div class="check-icon"></div>
     <h2>Thank you for Purchasing!</h2>
-    <p>Thank You for your payment <br> Your order will be processed.<br> Receipt ID:</p>
+    <p>
+        Thank you for your payment.<br>
+        Your order will be processed.<br>
+        <strong>Receipt ID:</strong> <%= request.getAttribute("receipt") != null ? ((model.Receipt) request.getAttribute("receipt")).getReceiptid() : "Unavailable"%>
+    </p>
+
     <div class="btn-group">
         <form action="OrderDetails.jsp" method="get">
             <button class="btn btn-view" type="submit">VIEW ORDER</button>

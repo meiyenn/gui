@@ -37,7 +37,12 @@
         }
 
         // Get cart count
-        stmt = conn.prepareStatement("SELECT COUNT(*) FROM cart WHERE custId = ?");
+        stmt = conn.prepareStatement(
+                    "SELECT COUNT(*) FROM cart_item ci "
+                    + "JOIN cart c ON ci.cartId = c.cartId "
+                    + "WHERE c.custId = ? AND c.checkOutStatus = FALSE"
+            );
+
         stmt.setString(1, custId);
         rs = stmt.executeQuery();
         if (rs.next()) cartCount = rs.getInt(1);
@@ -225,7 +230,7 @@
         <h3>Quick Access</h3>
         <ul>
             <li><a href="ShoppingCart.jsp">🛒 My Cart</a> <span><%= cartCount %></span></li>
-            <li><a href="MyOrders.jsp">📦 My Orders</a> <span><%= orderCount %></span></li>
+            <li><a href="MyOrder.jsp">📦 My Orders</a> <span><%= orderCount %></span></li>
             <li><a href="MyReviews.jsp">⭐ My Reviews</a> <span><%= reviewCount %></span></li>
         </ul>
     </div>

@@ -58,7 +58,7 @@ public class Productrating implements Serializable {
     @Column(name = "COMMENT")
     private String comment;
     @JoinColumn(name = "RECEIPTID", referencedColumnName = "RECEIPTID")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Receipt receiptid;
 
     public Productrating() {

@@ -302,10 +302,3 @@
         }
     });
     
-function showConfirmation() {
-    document.getElementById("confirmationOverlay").style.display = "flex";
-}
-
-function hideConfirmation() {
-    document.getElementById("confirmationOverlay").style.display = "none";
-}
