@@ -165,7 +165,7 @@
                 <select id="prodStatus" name="prodStatus">
                     <option disabled>Choose an option</option>
                     <option value="1" <%= prod.getStatus() == 1 ? "selected" : "" %>>Show</option>
-                    <option value="2" <%= prod.getStatus() == 2 ? "selected" : "" %>>Hide</option>
+                    <option value="0" <%= prod.getStatus() == 0 ? "selected" : "" %>>Hide</option>
                 </select></br>   
             </div>
             </div>

@@ -58,6 +58,23 @@
     </head>
     <body>
         <h1>Product Listing</h1>
+        
+        <%--filter--%>
+        <div id="filter">
+            <div class="search">
+            <select name="filterBy" id="filterBy" onchange="emptySearch()">
+                <option selected disabled>Filter By</option>
+                <option value=0>Product ID</option>
+                <option value=1>Name</option>
+                <option value=2>Categories</option>
+                <option value=3>Status</option>
+                <option value=4>No Filter</option>
+            </select>
+            <input type="text" id="search" onkeyup="searchProd()" placeholder="Search for products...">
+            </div>
+        </div>
+        <%--end filter--%>
+        
         <table>
             
             <thead>
@@ -88,12 +105,21 @@
                 <td><%=prod.getQuantity()%></td>
                 <td><%=prod.getCategory()%></td>
                 <td><%=prod.getProductdescription()%></td>
-                <td><%=prod.getStatus()%></td>
+                
+                <td>
+                    <form action="EditStatus" method="post">
+                        <input type="hidden" value="<%=prod.getProductid()%>" name="prodId">
+                        <input type="hidden" value="<%=prod.getStatus()%>" name="prodStatus">
+                        <input type="submit" class="status-btn" value="<%=prod.getStatus() == 1 ? "Show" : "Hide" %>">
+                    </form>
+                </td>
+                
                 <td>&nbsp;<a href="EditProdServlet?prodId=<%=prod.getProductid()%>" class="edit-btn">Edit</a>&nbsp;</td>
                 <td>&nbsp;<a href="DeleteProdServlet?prodId=<%=prod.getProductid()%>" class="delete-btn">Delete</a>&nbsp;</td>
             </tr>
             <%}%>
 
         </table>
+
     </body>
 </html>

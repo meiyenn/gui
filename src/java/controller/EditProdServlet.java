@@ -49,14 +49,6 @@ public class EditProdServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String prodId=request.getParameter("prodId");
-        
-        //testing
-        out.println("alert('testing2! " + prodId + "');");
-
-                //testing
-        out.println("<script type=\"text/javascript\">");
-        out.println("alert('testing2! (" + prodId + ")');");
-        out.println("</script>");
 
         ProdService prodService = new ProdService(em);
 
@@ -149,7 +141,7 @@ public class EditProdServlet extends HttpServlet {
         ProdService prodService = new ProdService(em);
         try {
             Product prod = prodService.findProduct(prodId);
-            out.println("<script>alert('Update: " + (prod==null) + "');</script>");
+            //out.println("<script>alert('Update: " + (prod==null) + "');</script>");
             if (prod == null) {
                 out.println("<script>alert('Update failed1: " + prod + "');</script>");
                 out.println("<script>alert('Product not found!');</script>");
