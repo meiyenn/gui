@@ -159,7 +159,7 @@
                 </select></br>
 
                 <label for="prodDesc">Description:</label>
-                <textarea id="prodDesc" name="prodDesc"><%=prod.getProductdescription()%></textarea></br>
+                <textarea id="prodDesc" name="prodDesc" required><%=prod.getProductdescription()%></textarea></br>
 
                 <label for="prodStatus">Status:</label>
                 <select id="prodStatus" name="prodStatus">

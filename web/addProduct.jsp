@@ -67,6 +67,8 @@
         </style>
     </head>
     <body>
+        <%@include file="StaffManagerDashboard.jsp"%>
+        
         
         <div class="form-container">
             

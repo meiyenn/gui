@@ -40,26 +40,13 @@ public class FilterServlet extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-//        int column=0;
-//        column=Integer.parseInt(request.getParameter("filter"));
-//        
-//        
-////testing
-//        out.println("<script type=\"text/javascript\">");
-//        out.println("alert('testing2! (" + column + ")');");
-//        out.println("</script>");
-//        
-//        String value=request.getParameter("searchText");
-//        
-////testing
-//        out.println("<script type=\"text/javascript\">");
-//        out.println("alert('testing! (" + value + ")');");
-//        out.println("</script>");
+
 
         String filterParam = request.getParameter("filter");
         String value = request.getParameter("searchText");
         int column = 0;
 
+        //extra - validation
         if (filterParam != null && !filterParam.isEmpty())  {
             try {
                 column = Integer.parseInt(filterParam);
@@ -95,16 +82,16 @@ public class FilterServlet extends HttpServlet {
 //                rd.forward(request, response);
 
                 response.sendRedirect("viewProd.jsp");
-            }else if(column==0){
-                filteredList=pda.getAllProd();
-                
-                //set the prodlist session
-                HttpSession session = request.getSession();
-                session.setAttribute("filterList", filteredList);
-                
-                RequestDispatcher rd = request.getRequestDispatcher("AddProdServlet");
-                rd.forward(request, response);       
-                        
+//            }else if(column==0){
+//                filteredList=pda.getAllProd();
+//                
+//                //set the prodlist session
+//                HttpSession session = request.getSession();
+//                session.setAttribute("filterList", filteredList);
+//                
+//                RequestDispatcher rd = request.getRequestDispatcher("AddProdServlet");
+//                rd.forward(request, response);       
+//                        
             }else{
                 filteredList=pda.getAllProd();
                 
