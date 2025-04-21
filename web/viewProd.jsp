@@ -8,6 +8,7 @@
 <%@page import="java.util.List"%>
 <%@page import="model.Product"%>
 <%@page import="model.ProductDa"%>
+<%@include file="staffHeader.jsp" %>
 <%--set session for admin and staff--%>
 
 <!DOCTYPE html>
@@ -16,10 +17,20 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Product Listing</title>
         <style>
+            
+            .content-area {
+                flex: 2;
+                padding: 10px;
+                width:100%;
+                margin-left: 250px;
+                margin-right: 50px;
+            }
+            
             table {
                 font-family: arial, sans-serif;
                 border-collapse: collapse;
                 width: 100%;
+                
               }
               
               thead{
@@ -90,11 +101,12 @@
                 align-items: center;
                 margin-bottom: 20px;
             }
-              
+
               
         </style>
     </head>
     <body>
+        <div class="content-area">
         <h1>Product Listing</h1>
 
         <%--filter--%>
@@ -214,6 +226,6 @@
             }
         }
         </script>
-
+        </div>
     </body>
 </html>
