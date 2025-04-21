@@ -5,8 +5,8 @@
 package model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Huay
+ * @author Mei Yen
  */
 @Entity
 @Table(name = "PRODUCT")
@@ -61,7 +61,7 @@ public class Product implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "PRICE")
-    private BigDecimal price;
+    private double price;
     @Basic(optional = false)
     @NotNull
     @Column(name = "QUANTITY")
@@ -90,13 +90,14 @@ public class Product implements Serializable {
         this.productid = productid;
     }
 
-    public Product(String productid, String productname, String imglocation, BigDecimal price, int quantity, String category, int status) {
+    public Product(String productid, String productname, String imglocation, double price, int quantity, String category, String productdescription, int status) {
         this.productid = productid;
         this.productname = productname;
         this.imglocation = imglocation;
         this.price = price;
         this.quantity = quantity;
         this.category = category;
+        this.productdescription=productdescription;
         this.status = status;
     }
 
@@ -124,11 +125,11 @@ public class Product implements Serializable {
         this.imglocation = imglocation;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
