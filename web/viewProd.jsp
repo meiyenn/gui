@@ -7,6 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Product"%>
+<%@page import="model.ProductDa"%>
 <%--set session for admin and staff--%>
 
 <!DOCTYPE html>
@@ -54,26 +55,72 @@
                 display: inline-block;
               }
 
+              .search{
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 15px;
+              }
+              
+              
+              #searchText{
+                height:30px;
+              }
+              
+              #search-btn,#filter{
+                height:35px;
+              }
+              
+              .addProd{
+                background-color:#5c85d6;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold; 
+                display: inline-block;
+                align-items: center;
+                justify-content: center;
+                height: 30px;
+              }
+              
+            .filter {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+              
+              
         </style>
     </head>
     <body>
         <h1>Product Listing</h1>
         
+        
+        
         <%--filter--%>
-        <div id="filter">
+        <div class="filter">
+            
+        <%--add prod button--%>
+        <div style="text-align: center; margin-bottom: 20px;display: inline-block; align-items: center; justify-content: center;">
+        <a href="addProduct.jsp" class="addProd">Add Product</a>
+        </div>
+        
             <div class="search">
                 <form action="FilterServlet" method="post">
-                    <select name="filter" id="filter">
-                        <option selected disabled>Filter By</option>
+
+                    <select name="filter" id="filter" required>
+                        <option value="" disabled selected hidden>Filter By</option>
+                        <option value=0>No Filter</option>
                         <option value=1>Product ID</option>
                         <option value=2>Name</option>
                         <option value=3>Categories</option>
-                        <option value=4>Status</option>
-                        <option value=0>No Filter</option>
+                        
                     </select>
                     
                     <input type="text" id="searchText" name="searchText" placeholder="Search for products...">
-                    <input type="submit" id="search" name="search" placeholder="Search">
+                    <input type="submit" id="search-btn" name="search" value="Search">
                 </form>
             </div>
         </div>
@@ -92,14 +139,14 @@
                   <th>Category</th>
                   <th>Product Description</th>
                   <th>Status</th>
-                  <th colspan="3">Actions</th>
+                  <th colspan="2">Actions</th>
                 </tr>
             </thead>
             
             <%--product list get from add prod servlet to list down all the product--%>
             <% List<Product> prodList = (List) session.getAttribute("prodList");
-                if (prodList == null) {
-                // redirect to servlet if accessed directly without data
+            if (prodList == null) {
+                //redirect to servlet if accessed directly without data
                 response.sendRedirect("ViewProdServlet");
                 return;
             }
@@ -112,6 +159,25 @@
                     filterList = prodList;
                 }
             %>
+            
+            <%--<%
+                ProductDa pda=new ProductDa();
+                List<Product> prodList = pda.getAllProd();
+                List<Product> filterList = (List<Product>) session.getAttribute("filterList");
+                
+                if (filterList == null) { //no search are perform
+                    filterList = prodList;
+                }
+            %>--%>
+            
+            
+            <% if (filterList == null || filterList.isEmpty()) { %>
+                <tr>
+                    <td colspan="12" style="text-align:center; font-weight:bold; color:#808080;">
+                        No such product found.
+                    </td>
+                </tr>
+            <% } else { %>
             
             <% for(Product prod : filterList){ %>
             <tr>
@@ -136,6 +202,8 @@
                 <td>&nbsp;<a href="DeleteProdServlet?prodId=<%=prod.getProductid()%>" class="delete-btn">Delete</a>&nbsp;</td>
             </tr>
             <%}%>
+            <% } %>
+
 
         </table>
 

@@ -82,7 +82,7 @@ public class DeleteProdServlet extends HttpServlet {
                 session.setAttribute("prodList", prodList);
                 
                 //redirect to view prod page
-                RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");//
+                RequestDispatcher rd = request.getRequestDispatcher("AddProdServlet");//
                 rd.forward(request, response);
 
             }
