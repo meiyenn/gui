@@ -3,8 +3,6 @@
 <%@ page import="java.util.*" %>
 
 <%
-    // Simulate login session (remove this block in actual implementation)
-    // session.setAttribute("role", "manager"); // or "staff"
 
     String role = (String) session.getAttribute("role");
     if (role == null) {
@@ -51,14 +49,42 @@
     <meta charset="UTF-8">
     <title>Customer Management</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 90%; margin: auto; border-collapse: collapse; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background-color: #eee; }
-        form { text-align: center; margin: 20px; }
-        .btn-delete { background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer; }
-        .btn-search, .btn-edit { padding: 5px 10px; }
-        .role-banner { text-align: center; margin-bottom: 10px; color: darkblue; font-weight: bold; }
+        body { 
+            font-family: Arial, sans-serif; 
+        }
+        table { 
+            width: 90%; 
+            margin: auto; 
+            border-collapse: collapse; 
+        }
+        th, td { 
+            border: 1px solid #ccc; 
+            padding: 8px; 
+            text-align: center; 
+        }
+        th { 
+            background-color: #eee; 
+        }
+        form { 
+            text-align: center; 
+            margin: 20px; 
+        }
+        .btn-delete { 
+            background-color: red; 
+            color: white; 
+            border: none; 
+            padding: 5px 10px; 
+            cursor: pointer; 
+        }
+        .btn-search, .btn-edit { 
+            padding: 5px 10px; 
+        }
+        .role-banner { 
+            text-align: center; 
+            margin-bottom: 10px; 
+            color: darkblue; 
+            font-weight: bold; 
+        }
     </style>
 </head>
 <body>
@@ -108,7 +134,7 @@
                 <% if ("manager".equals(role)) { %>
                     <%= rs.getString("custPswd") %>
                 <% } else { %>
-                    ••••••••
+                    •••••••• 
                 <% } %>
             </td>
             <td>

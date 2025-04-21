@@ -200,6 +200,7 @@
     </style>
 </head>
 <body>
+    
 <div class="container">
     <h2>Welcome, <%= custName %>!</h2>
 
@@ -231,7 +232,7 @@
         <ul>
             <li><a href="ShoppingCart.jsp">🛒 My Cart</a> <span><%= cartCount %></span></li>
             <li><a href="MyOrder.jsp">📦 My Orders</a> <span><%= orderCount %></span></li>
-            <li><a href="MyReviews.jsp">⭐ My Reviews</a> <span><%= reviewCount %></span></li>
+            <li><a href="MyReview.jsp">⭐ My Reviews</a> <span><%= reviewCount %></span></li>
         </ul>
     </div>
 

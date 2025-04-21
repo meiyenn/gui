@@ -1,6 +1,7 @@
 package model;
 
 import controller.DBConnection;
+import static controller.DBConnection.getConnection;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,39 +14,31 @@ public class VoucherService {
 
     // ✅ Get a single voucher by code + customer, with validation
     public Voucher getVoucherByCode(String code, String custId) {
-        String sql = "SELECT * FROM voucher WHERE code = ? AND custId = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Voucher voucher = null;
+        try (Connection conn = getConnection(); 
+                PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM voucher WHERE code = ? AND custId = ?")) {
 
             stmt.setString(1, code);
             stmt.setString(2, custId);
+
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
-                Voucher v = new Voucher();
-                v.setVoucherid(rs.getString("voucherId"));
-                v.setCode(rs.getString("code"));
-                v.setDiscount(rs.getBigDecimal("discount"));
-                v.setMinspend(rs.getBigDecimal("minSpend"));
-                v.setExpirydate(rs.getDate("expiryDate"));
-                v.setUsed(rs.getBoolean("used"));
-
-                // Validate voucher
-                if (v.isUsed()) {
-                    System.out.println("❌ Voucher already used: " + code);
-                    return null;
-                }
-                if (isExpired(v.getExpirydate())) {
-                    System.out.println("❌ Voucher expired: " + code);
-                    return null;
-                }
-                return v;
+                voucher = new Voucher();
+                voucher.setVoucherid(rs.getString("voucherId"));
+                Customer customer = new Customer();
+                customer.setCustid(rs.getString("custId"));
+                voucher.setCustid(customer); 
+                voucher.setCode(rs.getString("code"));
+                voucher.setDiscount(rs.getBigDecimal("discount"));
+                voucher.setMinspend(rs.getBigDecimal("minSpend"));
+                voucher.setExpirydate(rs.getDate("expiryDate"));
+                voucher.setUsed(rs.getBoolean("used"));
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return voucher;
     }
 
     // ✅ Mark a voucher as used

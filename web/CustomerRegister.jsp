@@ -14,10 +14,10 @@
         body {
             font-family: 'Poppins', sans-serif;
             height: 100vh;
-            background-image: url('src/image/login-container.jpg'); /* Background image */
-            background-size: cover;  /* Ensures the image fills the container while maintaining its aspect ratio */
-            background-position: center;  /* Center the image */
-            background-repeat: no-repeat; /* Prevent image from repeating */
+            background-image: url('src/image/login-container.jpg'); 
+            background-size: cover;  
+            background-position: center;  
+            background-repeat: no-repeat; 
             display: flex;
             justify-content: center;
             align-items: center;

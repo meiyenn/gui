@@ -39,7 +39,7 @@ public class CartService {
     }
 
     // Add item to cart
-public void addToCart(String custId, String productId, int quantity, double price) throws Exception {
+    public void addToCart(String custId, String productId, int quantity, double price) throws Exception {
         try (Connection conn = DBConnection.getConnection()) {
 
             // Step 1: Check for active cart
@@ -179,6 +179,7 @@ public void addToCart(String custId, String productId, int quantity, double pric
         }
     }
     
+    //nextcartid
     public String generateNextCartItemId() {
         String lastId = null;
         String nextId = "itm001";
@@ -201,6 +202,7 @@ public void addToCart(String custId, String productId, int quantity, double pric
         return nextId;
     }
     
+    //get receipt id
     public Receipt getReceiptById(String receiptId) throws Exception {
         Receipt receipt = null;
 
@@ -221,6 +223,7 @@ public void addToCart(String custId, String productId, int quantity, double pric
         return receipt;
     }
     
+    // get receipt list by customer (one customer have many receipt)
     public List<Receipt> getReceiptsByCustomer(String custId) {
         List<Receipt> list = new ArrayList<>();
         String sql = "SELECT r.* FROM receipt r JOIN cart c ON r.cartId = c.cartId WHERE c.custId = ? ORDER BY r.creationTime DESC";
@@ -247,6 +250,7 @@ public void addToCart(String custId, String productId, int quantity, double pric
         return list;
     }
     
+    
     public Receipt getLatestReceiptByCustomer(String custId) {
         Receipt receipt = null;
         String sql = "SELECT r.* FROM receipt r JOIN cart c ON r.cartId = c.cartId WHERE c.custId = ? ORDER BY r.creationTime DESC FETCH FIRST 1 ROWS ONLY";
@@ -270,14 +274,14 @@ public void addToCart(String custId, String productId, int quantity, double pric
         return receipt;
     }
     
-        public List<CartItem> getCartItemsByReceiptId(String receiptId) {
+    public List<CartItem> getCartItemsByReceiptId(String receiptId) {
         List<CartItem> list = new ArrayList<>();
-        String sql = "SELECT rd.productId, rd.quantity, rd.price " +
-                     "FROM receipt_detail rd " +
-                     "WHERE rd.receiptId = ?";
+        String sql = "SELECT rd.productId, rd.quantity, rd.price, p.productName, p.imgLocation "
+                + "FROM receipt_detail rd "
+                + "JOIN product p ON rd.productId = p.productId "
+                + "WHERE rd.receiptId = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, receiptId);
             ResultSet rs = stmt.executeQuery();
 
@@ -288,7 +292,8 @@ public void addToCart(String custId, String productId, int quantity, double pric
 
                 Product p = new Product();
                 p.setProductid(rs.getString("productId"));
-                // Optional: load name and img if needed
+                p.setProductname(rs.getString("productName"));   
+                p.setImglocation(rs.getString("imgLocation"));  
                 item.setProductid(p);
 
                 list.add(item);
@@ -298,7 +303,5 @@ public void addToCart(String custId, String productId, int quantity, double pric
         }
 
         return list;
-    }
-
-   
+    }  
 }

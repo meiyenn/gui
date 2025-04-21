@@ -136,6 +136,7 @@ public class Voucher implements Serializable {
     public Customer getCustid() {
         return custid;
     }
+    
 
     public void setCustid(Customer custid) {
         this.custid = custid;
