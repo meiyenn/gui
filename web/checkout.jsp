@@ -14,15 +14,30 @@
         cartItems = cartService.getCartByCustomer(custId);
     }
 
-    double subtotal = request.getAttribute("subtotal") != null ? Double.parseDouble(request.getAttribute("subtotal").toString()) : 0.0;
-    double discount = request.getAttribute("discount") != null ? Double.parseDouble(request.getAttribute("discount").toString()) : 0.0;
-    double tax = request.getAttribute("tax") != null ? Double.parseDouble(request.getAttribute("tax").toString()) : 0.0;
-    double shipping = request.getAttribute("shipping") != null ? Double.parseDouble(request.getAttribute("shipping").toString()) : 0.0;
-    double grandTotal = request.getAttribute("total") != null ? Double.parseDouble(request.getAttribute("total").toString()) : 0.0;
+    double subtotal = request.getAttribute("subtotal") != null
+            ? Double.parseDouble(request.getAttribute("subtotal").toString()) : 0.0;
 
-    String voucherCode = request.getAttribute("voucherCode") != null ? (String) request.getAttribute("voucherCode") : "";
-    String voucherMsg = request.getAttribute("voucherMsg") != null ? (String) request.getAttribute("voucherMsg") : "";
-    String deliveryMethod = request.getAttribute("deliveryMethod") != null ? (String) request.getAttribute("deliveryMethod") : "delivery";
+    double discount = request.getAttribute("discount") != null
+            ? Double.parseDouble(request.getAttribute("discount").toString()) : 0.0;
+
+    double shipping = request.getAttribute("shipping") != null
+            ? Double.parseDouble(request.getAttribute("shipping").toString()) : 0.0;
+
+    double tax = request.getAttribute("tax") != null
+            ? Double.parseDouble(request.getAttribute("tax").toString()) : 0.0;
+
+    double grandTotal = request.getAttribute("total") != null
+            ? Double.parseDouble(request.getAttribute("total").toString())
+            : subtotal + tax + shipping - discount;
+
+    String voucherCode = request.getAttribute("voucherCode") != null
+            ? request.getAttribute("voucherCode").toString() : "";
+
+    String voucherMsg = request.getAttribute("voucherMsg") != null
+            ? request.getAttribute("voucherMsg").toString() : "";
+
+    String deliveryMethod = request.getAttribute("deliveryMethod") != null
+            ? request.getAttribute("deliveryMethod").toString() : "delivery";
 %>
 
 <!DOCTYPE html>
@@ -63,13 +78,14 @@
 
         <!-- 🎁 Voucher Form -->
         <form method="post" action="appliedVoucher">
+            <input type="hidden" name="custId" value="<%= custId %>">
             <input type="hidden" name="deliveryMethod" value="<%= deliveryMethod %>">
             <div class="voucher-form">
                 <input type="text" name="Code" class="voucher-input" placeholder="Discount code" value="<%= voucherCode %>">
                 <button type="submit" class="voucher-btn">Apply</button>
             </div>
-            <% if (!voucherMsg.isEmpty()) { 
-                String msgClass = voucherMsg.contains("successfully") ? "success" : "error";
+            <% if (!voucherMsg.isEmpty()) {
+                String msgClass = voucherMsg.toLowerCase().contains("success") ? "success" : "error";
             %>
                 <div class="voucher-message <%= msgClass %>">
                     <%= msgClass.equals("success") ? "✓" : "⚠" %> <%= voucherMsg %>
@@ -216,8 +232,6 @@
                         <option value="">Select State</option>
                         <option value="Selangor">Selangor</option>
                         <option value="KL">Kuala Lumpur</option>
-                        <option value="Penang">Penang</option>
-                        <option value="Johor">Johor</option>
                     </select>
                 </div>
             </div>

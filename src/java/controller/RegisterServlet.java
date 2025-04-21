@@ -19,75 +19,75 @@ import model.CustomerVoucher;
  */
 @WebServlet(name = "RegisterServlet", urlPatterns = {"/RegisterServlet"})
 public class RegisterServlet extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
     private static final String DB_URL = "jdbc:derby://localhost:1527/ass";
     private static final String USER = "nbuser";
     private static final String PASS = "nbuser";
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
-            // Generate next customer ID
+
+            String email = request.getParameter("email");
+            String username = request.getParameter("username");
+
+            //Check if email or username already exists
+            String checkSql = "SELECT custId FROM customer WHERE custUserName = ? OR custEmail = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, username);
+                checkStmt.setString(2, email);
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next()) {
+                        // Duplicate user found, redirect back with error
+                        response.sendRedirect("CustomerRegister.jsp?error=exists");
+                        return;
+                    }
+                }
+            }
+
+            //Generate next customer ID
             String nextCustId = generateNextCustomerId(conn);
 
-            // Prepare SQL query for inserting new customer
+            //Insert customer
             String sql = "INSERT INTO customer (custId, custName, custContactNo, custEmail, custUserName, custPswd) "
                     + "VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // Set parameters from form data
-                stmt.setString(1, nextCustId); // New customer ID
+                stmt.setString(1, nextCustId);
                 stmt.setString(2, request.getParameter("fullName"));
                 stmt.setString(3, request.getParameter("phone"));
-                stmt.setString(4, request.getParameter("email"));
-                stmt.setString(5, request.getParameter("username"));
-                stmt.setString(6, request.getParameter("password"));
+                stmt.setString(4, email);
+                stmt.setString(5, username);
+                stmt.setString(6, request.getParameter("password")); // Consider hashing here!
 
-                // Execute the insert query
                 int rowsAffected = stmt.executeUpdate();
-                
-                // Call CustomerVoucher to insert 3 vouchers for the new customer
-                CustomerVoucher customerVoucher = new CustomerVoucher(conn);
-                customerVoucher.createVouchersForCustomer(nextCustId);
 
-                // Redirect based on whether the insert was successful or not
-                if (rowsAffected > 0) {
-                    response.sendRedirect("CustomerLogin.jsp?success=1");  // Redirect to login page if successful
+                if (rowsAffected >= 0) {
+                    //Create vouchers
+                    CustomerVoucher customerVoucher = new CustomerVoucher(conn);
+                    customerVoucher.createVouchersForCustomer(nextCustId);
+
+                    response.sendRedirect("CustomerLogin.jsp?success=1");
                 } else {
-                    response.sendRedirect("CustomerRegister.jsp");  // Stay on the registration page if failed
+                    response.sendRedirect("CustomerRegister.jsp?error=insert_failed");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("registration-exception.jsp"); // Database connection error
+            response.sendRedirect("registration-exception.jsp");
         }
     }
 
-    // Method to generate the next customer ID based on the current maximum ID in the table
     private String generateNextCustomerId(Connection conn) throws SQLException {
-        String maxCustId = "cus001"; // Default starting value if no customers exist
+        String maxCustId = "cus001";
         String sql = "SELECT MAX(custId) FROM customer";
         try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-
             if (rs.next() && rs.getString(1) != null) {
                 maxCustId = rs.getString(1);
             }
         }
-
-        // Extract the numeric part from the ID and increment
-        String numericPart = maxCustId.substring(3); // Skip the "cus" part
-        int nextNum = Integer.parseInt(numericPart) + 1;
-
-        // Format the new ID with leading zeros
+        int nextNum = Integer.parseInt(maxCustId.substring(3)) + 1;
         return "cus" + String.format("%03d", nextNum);
     }
 }

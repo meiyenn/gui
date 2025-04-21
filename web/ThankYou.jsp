@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Thank You for Purchasing</title>
+    <title>Thank You for Review</title>
     <style>
         body {
             background-color: #f1f2f4;
@@ -28,7 +28,7 @@
         }
 
         .check-icon {
-            background: #166534;
+            background: #ffc107;
             border-radius: 50%;
             width: 80px;
             height: 80px;
@@ -40,7 +40,7 @@
         }
 
         .check-icon::after {
-            content: '✔';
+            content: '🎁';
             font-size: 36px;
             color: white;
         }
@@ -50,7 +50,7 @@
             position: absolute;
             width: 100px;
             height: 100px;
-            background: rgba(22, 101, 52, 0.2);
+            background: rgba(255, 193, 7, 0.2);
             border-radius: 50%;
             z-index: -1;
             animation: pulse 1.5s infinite;
@@ -99,12 +99,12 @@
         }
 
         .btn-continue {
-            background-color: #166534;
-            color: white;
+            background-color:  #ffc107;
+            color: black;
         }
 
         .btn-continue:hover {
-            background-color:  #14532d;
+            background-color:  #e0a800;
         }
 
         @keyframes fadeIn {
@@ -117,30 +117,15 @@
 
 <div class="thank-you-box">
     <div class="check-icon"></div>
-    <h2>Thank you for Purchasing!</h2>
+    <h2>Thank you for Support!</h2>
     <p>
-        Thank you for your payment.<br>
-        Your order will be processed.<br>
-        <%
-            String receiptId = request.getParameter("receiptId");
-            Receipt receipt = null;
-
-            if (receiptId != null && !receiptId.isEmpty()) {
-                CartService cartService = new CartService(); // Or your ReceiptService if you have one
-                receipt = cartService.getReceiptById(receiptId);
-            }
-        %>
-        <strong>Receipt ID:</strong> <%= receiptId%>
+        Thank you for your review.<br>
+        Your review will be received.<br>
     </p>
 
     <div class="btn-group">
-        <form action="ReceiptView.jsp" method="get">
-            <input type="hidden" name="receiptId" value="<%= receiptId%>">
-            <button class="btn btn-view" type="submit">VIEW ORDER</button>
-        </form>
-
         <form action="index.jsp" method="get">
-            <button class="btn btn-continue" type="submit">CONTINUE SHOPPING</button>
+            <button class="btn btn-continue" type="submit">Go Back to Home</button>
         </form>
     </div>
 </div>

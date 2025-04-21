@@ -54,9 +54,12 @@ public class Productrating implements Serializable {
     private int satisfaction;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 80)
+    @Size(min = 1, max = 200)
     @Column(name = "COMMENT")
     private String comment;
+    @JoinColumn(name = "PRODUCTID", referencedColumnName = "PRODUCTID")
+    @ManyToOne(optional = false)
+    private Product productid;
     @JoinColumn(name = "RECEIPTID", referencedColumnName = "RECEIPTID")
     @ManyToOne(optional = false)
     private Receipt receiptid;
@@ -105,6 +108,14 @@ public class Productrating implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Product getProductid() {
+        return productid;
+    }
+
+    public void setProductid(Product productid) {
+        this.productid = productid;
     }
 
     public Receipt getReceiptid() {
