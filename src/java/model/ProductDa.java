@@ -160,16 +160,23 @@ public class ProductDa {
     
     public String autoProdId(){
         int idDigit=0;
+        String numPart="0";
         String prodId="";
 
         try {
-            String countTotalStr="SELECT COUNT(*) AS total FROM product";
-            stmt = conn.prepareStatement(countTotalStr);
+            String findMaxId="SELECT MAX(productid) AS maxId FROM product";
+            stmt = conn.prepareStatement(findMaxId);
 
             ResultSet rs = stmt.executeQuery();
             
             while(rs.next()){
-                idDigit=rs.getInt("total");  
+                String maxId=rs.getString("maxId");
+                
+                if (maxId != null) {
+                    numPart = maxId.substring(4);
+                    idDigit=Integer.parseInt(numPart);
+                }
+                
             }
             
             idDigit++;
@@ -218,39 +225,39 @@ public class ProductDa {
     }
     
     
-//    //testing
-//    public static void main(String[] args) {
-//        
-//        List<Product> prod=new ArrayList<>();
-//        ProductDa pda=new ProductDa();
-////        //get all prod()
-////        prod=pda.getAllProd();
-////        for (Product p : prod) {
-////            System.out.println(p);  // Automatically calls toString()
-////        }
-////        //end
-//        
-////        //checkExist
-////        Product prod2=new Product();
-////        prod2=pda.checkExist("prod002");
-////        System.out.println(prod2.getProductid()+prod2.getProductname());
-////        //end
-//        
-////        //add prod ()
-////        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
-////        boolean addStatus=pda.addProduct(p);
-////        System.out.println(addStatus);
-//
-//        //System.out.println(pda.autoProdId());
-//        
+    //testing
+    public static void main(String[] args) {
+        
+        List<Product> prod=new ArrayList<>();
+        ProductDa pda=new ProductDa();
+//        //get all prod()
+//        prod=pda.getAllProd();
+//        for (Product p : prod) {
+//            System.out.println(p);  // Automatically calls toString()
+//        }
+//        //end
+        
+//        //checkExist
+//        Product prod2=new Product();
+//        prod2=pda.checkExist("prod002");
+//        System.out.println(prod2.getProductid()+prod2.getProductname());
+//        //end
+        
+//        //add prod ()
+//        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
+//        boolean addStatus=pda.addProduct(p);
+//        System.out.println(addStatus);
+
+        System.out.println(pda.autoProdId());
+        
 //                //filterprod()
 //        prod=pda.filterProd("category","ake up");
 //        for (Product p : prod) {
 //            System.out.println(p);  // Automatically calls toString()
 //        }
 //        //end
-//        
-//    }
+        
+    }
 
 
 }
