@@ -96,9 +96,7 @@
     </head>
     <body>
         <h1>Product Listing</h1>
-        
-        
-        
+
         <%--filter--%>
         <div class="filter">
             
@@ -199,13 +197,23 @@
                 </td>
                 
                 <td>&nbsp;<a href="EditProdServlet?prodId=<%=prod.getProductid()%>" class="edit-btn">Edit</a>&nbsp;</td>
-                <td>&nbsp;<a href="DeleteProdServlet?prodId=<%=prod.getProductid()%>" class="delete-btn">Delete</a>&nbsp;</td>
+                <%--<td>&nbsp;<a href="DeleteProdServlet?prodId=<%=prod.getProductid()%>" class="delete-btn">Delete</a>&nbsp;</td>--%>
+                <td>&nbsp;<a href="#" onclick="confirmDelete('<%=prod.getProductid()%>')" class="delete-btn">Delete</a>&nbsp;</td>
             </tr>
             <%}%>
             <% } %>
 
 
         </table>
+            
+        <script type="text/javascript">
+        function confirmDelete(productId) {
+            if (confirm("Are you sure you want to delete this product?")) {
+                // If confirmed, redirect to the delete servlet
+                window.location.href = "DeleteProdServlet?prodId=" + productId;
+            }
+        }
+        </script>
 
     </body>
 </html>
