@@ -225,6 +225,32 @@ public class ProductDa {
             return prodList;
     }
     
+    public boolean isProdInUse(String prodId){
+
+        try {
+            String countInUse="SELECT COUNT(*) FROM cart WHERE productid = ?"; 
+            //count how many time this prod id appear in cart table
+
+            stmt = conn.prepareStatement(countInUse);
+            stmt.setString(1,prodId);
+            ResultSet rs = stmt.executeQuery();
+                
+            if(rs.next()){
+                int count = rs.getInt(1);//get value of first column
+                if(count>0){
+                    return true;
+                }
+                
+            }
+
+        }catch (Exception e) {
+                System.out.println(e.getMessage());
+        }
+
+        return false;
+
+    }
+    
     
 //    //testing
 //    public static void main(String[] args) {
@@ -249,7 +275,7 @@ public class ProductDa {
 ////        boolean addStatus=pda.addProduct(p);
 ////        System.out.println(addStatus);
 //
-//        System.out.println(pda.autoProdId());
+//        //System.out.println(pda.autoProdId());
 //        
 ////                //filterprod()
 ////        prod=pda.filterProd("category","ake up");
@@ -257,6 +283,10 @@ public class ProductDa {
 ////            System.out.println(p);  // Automatically calls toString()
 ////        }
 ////        //end
+//
+//        //is in use()
+//        boolean checkInUse=pda.isProdInUse("prod003");
+//        System.out.println(checkInUse);
 //        
 //    }
 

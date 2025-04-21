@@ -100,7 +100,7 @@
                 <select id="prodStatus" name="prodStatus">
                     <option disabled selected>Choose an option</option>
                     <option value="1">Show</option>
-                    <option value="2">Hide</option>
+                    <option value="0">Hide</option>
                 </select></br>
 
                 <label for="prodImage">Upload Product Image:</label></br>

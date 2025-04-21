@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 import model.ProdService;
+import model.ProductDa;
 import model.Product;
 
 /**
@@ -52,39 +53,48 @@ public class DeleteProdServlet extends HttpServlet {
             
         
         ProdService prodService = new ProdService(em);
+        ProductDa pda = new ProductDa();
 
         //extra - check exist before delete product from db
         //make sure product exist if want to perform delete
         boolean prodExist=prodService.productExists(prodId);
-        out.println(prodExist);
 
         try {
             if(prodExist){
-//                utx.begin();
-//                Product prod = em.find(Product.class, prodId);
-//
-//                //testing
-//                out.println("alert('find or not! " + prod + "');");
-//                em.remove(prod);
-//
-//                out.println("alert('after remove! " + prod + "');");
+                //check whether product is in use(already add to cart/checkout by customer)
+                boolean checkInUse=pda.isProdInUse(prodId);
                 
-                //out.println(prodExist);
-                utx.begin();
-                prodService.deleteProduct(prodId);
-                utx.commit();
-                //out.println("alert('after remove! " + prodId + "');");
-                //window pop box
-                
-                //set product session
-                List<Product> prodList = prodService.findAll();
-                HttpSession session = request.getSession();
-                session.setAttribute("prodList", prodList);
-                
-                //redirect to view prod page
-                RequestDispatcher rd = request.getRequestDispatcher("AddProdServlet");//
-                rd.forward(request, response);
+                if(checkInUse){ //true - product is in use
+                    // Show alert and redirect back
+                    out.println("<script type='text/javascript'>");
+                    out.println("alert('This product is currently in use and cannot be deleted. You may change its status to \"Hide\" instead.');");
+                    out.println("window.location.href = 'viewProd.jsp';"); // or 'AddProdServlet'
+                    out.println("</script>");
+                    
+                }else{ //false - product is not in use
 
+                    utx.begin();
+                    prodService.deleteProduct(prodId);
+                    utx.commit();
+                    //out.println("alert('after remove! " + prodId + "');");
+                    //window pop box
+
+                    //set product session
+                    List<Product> prodList = prodService.findAll();
+                    HttpSession session = request.getSession();
+                    session.setAttribute("prodList", prodList);
+
+                    //redirect to view prod page
+                    RequestDispatcher rd = request.getRequestDispatcher("AddProdServlet");//
+                    rd.forward(request, response);
+                }
+
+            }else{
+                // Show alert and redirect back
+                    out.println("<script type='text/javascript'>");
+                    out.println("alert('Product not found!');");
+                    out.println("window.location.href = 'viewProd.jsp';"); // or 'AddProdServlet'
+                    out.println("</script>");
             }
         } catch (Exception ex) {
             out.println(ex.getMessage());
