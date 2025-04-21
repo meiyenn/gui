@@ -175,12 +175,13 @@ public class ProductDa {
                 if (maxId != null) {
                     numPart = maxId.substring(4);
                     idDigit=Integer.parseInt(numPart);
+                    idDigit++;
+                    prodId=String.format("prod%03d",idDigit);
                 }
                 
             }
             
-            idDigit++;
-            prodId=String.format("prod%03d",idDigit);
+            
 
         }catch (Exception e) {
             System.out.println(e.getMessage());
@@ -225,39 +226,39 @@ public class ProductDa {
     }
     
     
-    //testing
-    public static void main(String[] args) {
-        
-        List<Product> prod=new ArrayList<>();
-        ProductDa pda=new ProductDa();
-//        //get all prod()
-//        prod=pda.getAllProd();
-//        for (Product p : prod) {
-//            System.out.println(p);  // Automatically calls toString()
-//        }
-//        //end
-        
-//        //checkExist
-//        Product prod2=new Product();
-//        prod2=pda.checkExist("prod002");
-//        System.out.println(prod2.getProductid()+prod2.getProductname());
-//        //end
-        
-//        //add prod ()
-//        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
-//        boolean addStatus=pda.addProduct(p);
-//        System.out.println(addStatus);
-
-        System.out.println(pda.autoProdId());
-        
-//                //filterprod()
-//        prod=pda.filterProd("category","ake up");
-//        for (Product p : prod) {
-//            System.out.println(p);  // Automatically calls toString()
-//        }
-//        //end
-        
-    }
+//    //testing
+//    public static void main(String[] args) {
+//        
+//        List<Product> prod=new ArrayList<>();
+//        ProductDa pda=new ProductDa();
+////        //get all prod()
+////        prod=pda.getAllProd();
+////        for (Product p : prod) {
+////            System.out.println(p);  // Automatically calls toString()
+////        }
+////        //end
+//        
+////        //checkExist
+////        Product prod2=new Product();
+////        prod2=pda.checkExist("prod002");
+////        System.out.println(prod2.getProductid()+prod2.getProductname());
+////        //end
+//        
+////        //add prod ()
+////        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
+////        boolean addStatus=pda.addProduct(p);
+////        System.out.println(addStatus);
+//
+//        System.out.println(pda.autoProdId());
+//        
+////                //filterprod()
+////        prod=pda.filterProd("category","ake up");
+////        for (Product p : prod) {
+////            System.out.println(p);  // Automatically calls toString()
+////        }
+////        //end
+//        
+//    }
 
 
 }
