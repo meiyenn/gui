@@ -64,13 +64,13 @@ public class FilterServlet extends HttpServlet {
             try {
                 column = Integer.parseInt(filterParam);
             } catch (NumberFormatException e) {
-                column = 0; // default to no filter
+                column = 0; // set default to no filter if doesnt choose the filter
             }
         }
 
         List<Product> filteredList = null;
         ProductDa pda = new ProductDa();
-
+        
         try {
             if(filterParam != null && !filterParam.trim().isEmpty()){
                 if(column==1){
@@ -88,10 +88,13 @@ public class FilterServlet extends HttpServlet {
 
                 //set the prodlist session
                 HttpSession session = request.getSession();
+                session.setAttribute("prodList", filteredList);
                 session.setAttribute("filterList", filteredList);
                 
-                RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");
-                rd.forward(request, response);
+//                RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");
+//                rd.forward(request, response);
+
+                response.sendRedirect("viewProd.jsp");
             }else if(column==0){
                 filteredList=pda.getAllProd();
                 
@@ -115,6 +118,7 @@ public class FilterServlet extends HttpServlet {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+            response.sendRedirect("viewProd.jsp");
         }
         
     }

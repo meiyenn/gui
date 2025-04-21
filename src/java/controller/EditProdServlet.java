@@ -169,6 +169,7 @@ public class EditProdServlet extends HttpServlet {
 
             //set the prodlist session
             session.setAttribute("prodList", prodList);
+            session.setAttribute("filterList", prodList);//extra
 
             out.println("<script>alert('Update Successfully!');</script>");
             RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");
@@ -177,6 +178,7 @@ public class EditProdServlet extends HttpServlet {
         } catch (Exception ex) {
             ex.printStackTrace();
             out.println("<script>alert('Update failed: " + ex.getMessage() + "');</script>");
+            response.sendRedirect("viewProd.jsp");
         }
    
         

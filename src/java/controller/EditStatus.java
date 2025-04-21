@@ -76,6 +76,7 @@ public class EditStatus extends HttpServlet {
 
                 //set the prodlist session
                 session.setAttribute("prodList", prodList);
+                session.setAttribute("filterList", prodList);
                 
                 response.sendRedirect("viewProd.jsp");
 

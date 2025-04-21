@@ -142,19 +142,19 @@
             </thead>
             
             <%--product list get from add prod servlet to list down all the product--%>
-            <% List<Product> prodList = (List) session.getAttribute("prodList");
-            if (prodList == null) {
-                //redirect to servlet if accessed directly without data
-                response.sendRedirect("ViewProdServlet");
-                return;
-            }
-            %>
-            
-            <%
-                List<Product> filterList = (List<Product>) session.getAttribute("filterList");
+            <% 
+                List<Product> displayList = null;
 
-                if (filterList == null) { //no search are perform
-                    filterList = prodList;
+                List<Product> filterList = (List<Product>) session.getAttribute("filterList");
+                List<Product> prodList = (List<Product>) session.getAttribute("prodList");
+
+                if (filterList != null) {
+                    displayList = filterList;
+                } else if (prodList != null) {
+                    displayList = prodList;
+                } else {
+                    // Redirect to the session from servlet
+                    response.sendRedirect("ViewProdServlet");
                 }
             %>
             
@@ -169,7 +169,7 @@
             %>--%>
             
             
-            <% if (filterList == null || filterList.isEmpty()) { %>
+            <% if (displayList == null || displayList.isEmpty()) { %>
                 <tr>
                     <td colspan="12" style="text-align:center; font-weight:bold; color:#808080;">
                         No such product found.
@@ -177,7 +177,7 @@
                 </tr>
             <% } else { %>
             
-            <% for(Product prod : filterList){ %>
+            <% for(Product prod : displayList){ %>
             <tr>
                 <td>&nbsp;</td>
                 <td><img src="imgUpload/<%=prod.getImglocation()%>" alt="<%=prod.getImglocation()%>" border=1 height=150 width=150></img><br></td>
