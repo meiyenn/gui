@@ -58,39 +58,42 @@ public class AddProdServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        String prodId=request.getParameter("prodId");
-        String prodName=request.getParameter("prodName");
-        double prodPrice = Double.parseDouble(request.getParameter("prodPrice"));
-        int prodStock=Integer.parseInt(request.getParameter("prodStock"));
-        String prodCat=request.getParameter("prodCat");
-        String prodDesc=request.getParameter("prodDesc");
-        int prodStatus=Integer.parseInt(request.getParameter("prodStatus"));
-
-        //obtain image path
-        //retrieves the uploaded file from the HTTP request
-        Part imgPath=request.getPart("prodImage");
-        //obtain file name
-        String imgName = Paths.get(imgPath.getSubmittedFileName()).getFileName().toString();
-        String mdfName=prodId+"_"+imgName;
-        
-        InputStream imgContent = imgPath.getInputStream();
-        
-        // Construct the path to store the images
-        String uploadDirectory = getServletContext().getRealPath("/imgUpload");
-        File uploadDir = new File(uploadDirectory);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdir();
-        }
-
-        // Save the images to the folder
-        Path storeImg = Paths.get(uploadDirectory, mdfName);
-        Files.copy(imgContent, storeImg);
-        
-        response.getWriter().print("The image file uploaded sucessfully.");
-
-        Product prod = new Product(prodId,prodName,mdfName,prodPrice,prodStock,prodCat,prodDesc,prodStatus);
-        
         try {
+        
+            String prodId=request.getParameter("prodId");
+            String prodName=request.getParameter("prodName");
+            double prodPrice = Double.parseDouble(request.getParameter("prodPrice"));
+            int prodStock=Integer.parseInt(request.getParameter("prodStock"));
+            String prodCat=request.getParameter("prodCat");
+            String prodDesc=request.getParameter("prodDesc");
+            int prodStatus=Integer.parseInt(request.getParameter("prodStatus"));
+
+            //obtain image path
+            //retrieves the uploaded file from the HTTP request
+            Part imgPath=request.getPart("prodImage");
+
+            //obtain file name
+            String imgName = Paths.get(imgPath.getSubmittedFileName()).getFileName().toString();
+            String mdfName=prodId+"_"+imgName;
+
+            InputStream imgContent = imgPath.getInputStream();
+
+            // Construct the path to store the images
+            String uploadDirectory = getServletContext().getRealPath("/imgUpload");
+            File uploadDir = new File(uploadDirectory);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            // Save the images to the folder
+            Path storeImg = Paths.get(uploadDirectory, mdfName);
+            Files.copy(imgContent, storeImg);
+
+            response.getWriter().print("The image file uploaded sucessfully.");
+
+            Product prod = new Product(prodId,prodName,mdfName,prodPrice,prodStock,prodCat,prodDesc,prodStatus);
+        
+        
             ProdService prodService = new ProdService(em);
             ProductDa pda=new ProductDa();
 
@@ -112,15 +115,23 @@ public class AddProdServlet extends HttpServlet {
                 RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");//
                 rd.forward(request, response);
             }else{
+                response.sendRedirect("addProduct.jsp?error=Failed to add new product! Product (" + prodId + ") already exists in the database!");
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Failed to add new product! Product (" + prodId + ") already exists in the database!');");
                 out.println("</script>");
                 
             }
+            
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        }catch(NullPointerException np){
+            //ex.printStackTrace();
+            out.println("<script>alert('ERROR: " + np.getMessage() + "');</script>");
+            response.sendRedirect("addProduct.jsp?error=Please fill in all input field.");
+                
+        }catch (Exception ex) {
+            //ex.printStackTrace();
             out.println("<script>alert('ERROR: " + ex.getMessage() + "');</script>");
+            response.sendRedirect("addProduct.jsp?error=An error occurred.");
         }
         
     }

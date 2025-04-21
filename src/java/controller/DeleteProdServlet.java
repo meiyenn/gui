@@ -68,7 +68,7 @@ public class DeleteProdServlet extends HttpServlet {
                     // Show alert and redirect back
                     out.println("<script type='text/javascript'>");
                     out.println("alert('This product is currently in use and cannot be deleted. You may change its status to \"Hide\" instead.');");
-                    out.println("window.location.href = 'viewProd.jsp';"); // or 'AddProdServlet'
+                    out.println("window.location.href = 'viewProd.jsp';"); 
                     out.println("</script>");
                     
                 }else{ //false - product is not in use

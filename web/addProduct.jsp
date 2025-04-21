@@ -87,29 +87,38 @@
                 <input type="number" id="prodStock" name="prodStock" min="1" max="5000" step=any required></br>
 
                 <label for="prodCat">Category</label>
-                <select id="prodCat" name="prodCat">
-                    <option disabled selected>Choose an option</option>
+                <select id="prodCat" name="prodCat" required>
+                    <option value="" selected disabled>Choose an option</option>
                     <option value="Make Up">Make Up</option>
                     <option value="Skincare">Skincare</option>
                 </select></br>
 
                 <label for="prodDesc">Description:</label>
-                <textarea id="prodDesc" name="prodDesc"></textarea></br>
+                <textarea id="prodDesc" name="prodDesc" required></textarea></br>
 
                 <label for="prodStatus">Status:</label>
-                <select id="prodStatus" name="prodStatus">
-                    <option disabled selected>Choose an option</option>
+                <select id="prodStatus" name="prodStatus" required>
+                    <option value="" selected disabled>Choose an option</option>
                     <option value="1">Show</option>
                     <option value="0">Hide</option>
                 </select></br>
 
                 <label for="prodImage">Upload Product Image:</label></br>
-                <input type="file" id="prodImage" name="prodImage" accept="image/png, image/gif, image/jpeg"></br></br>
+                <input type="file" id="prodImage" name="prodImage" accept="image/png, image/gif, image/jpeg" required></br></br>
 
                 <input type="reset" value="RESET" class="shadow">
                 <input type="submit" value="ADD PRODUCT" class="shadow">
 
+                <div>
+                    <% String error = request.getParameter("error");
+                        if (error != null) {
+                    %>
+                            <p style="color: red;font-size: 20px;font-weight: bold;"><%=error%></p>
+                    <%}%>
+                </div>
+                
             </form>
+                
         </div>
 
     </body>

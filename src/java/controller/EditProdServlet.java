@@ -79,7 +79,7 @@ public class EditProdServlet extends HttpServlet {
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Product no exist!');");
                 out.println("</script>");
-                RequestDispatcher rd = request.getRequestDispatcher("AddProdServlet");//
+                RequestDispatcher rd = request.getRequestDispatcher("AddProdServlet");
                 rd.forward(request, response);
             }
         } catch (Exception ex) {
@@ -171,7 +171,7 @@ public class EditProdServlet extends HttpServlet {
             session.setAttribute("prodList", prodList);
 
             out.println("<script>alert('Update Successfully!');</script>");
-            RequestDispatcher rd = request.getRequestDispatcher("AddProdServlet");
+            RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");
             rd.forward(request, response);
 
         } catch (Exception ex) {

@@ -180,7 +180,7 @@
             <% for(Product prod : filterList){ %>
             <tr>
                 <td>&nbsp;</td>
-                <td><img src="imgUpload/<%=prod.getImglocation()%>" alt="<%=prod.getImglocation()%>" border=1 height=150 width=150></img><br><%=prod.getProductid()%><%=prod.getImglocation()%></td>
+                <td><img src="imgUpload/<%=prod.getImglocation()%>" alt="<%=prod.getImglocation()%>" border=1 height=150 width=150></img><br></td>
                 <td><%=prod.getProductid()%></td>
                 <td><%=prod.getProductname()%></td>
                 <td><%=prod.getPrice()%></td>
