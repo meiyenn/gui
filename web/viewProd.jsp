@@ -107,7 +107,7 @@
     </head>
     <body>
         <div class="content-area">
-        <h1>Product Listing</h1>
+        <h1>Product Management</h1>
 
         <%--filter--%>
         <div class="filter">

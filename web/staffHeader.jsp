@@ -20,7 +20,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
     <style>
         body {
             margin: 0;

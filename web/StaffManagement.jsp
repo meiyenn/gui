@@ -1,5 +1,7 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
+
+
 <%
     // Simulate session role (REMOVE in production)
     // session.setAttribute("role", "manager"); // or "staff"
@@ -57,41 +59,121 @@
     <meta charset="UTF-8">
     <title>Staff List</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 90%; margin: auto; border-collapse: collapse; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background-color: #f2f2f2; }
-        .btn-delete, .btn-edit, .btn-add {
-            padding: 5px 10px;
-            border: none;
-            color: white;
-            cursor: pointer;
-        }
-        .btn-delete { background-color: red; }
-        .btn-edit { background-color: orange; }
-        .btn-add { background-color: green; text-decoration: none; display: inline-block; }
-        .top-bar { text-align: center; margin: 20px; }
-        form.search-form { text-align: center; margin-bottom: 20px; }
-        input[type="text"] { padding: 5px; width: 250px; }
-        input[type="submit"] { padding: 5px 10px; }
+        .content-area {
+                flex: 2;
+                padding: 10px;
+                width:100%;
+                margin-left: 250px;
+                margin-right: 50px;
+            }
+            
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+                
+              }
+              
+              thead{
+                  background-color: #f2f2f2;
+                  font-weight: bold;
+              }
+
+              td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+              }
+
+              .edit-btn{
+                background-color:#8cd98c;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+              }
+              
+              .delete-btn{
+                background-color:#ff704d;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+              }
+
+              .search{
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 55px;
+                margin-bottom: 15px;
+              }
+              
+              
+              #searchText{
+                height:30px;
+              }
+              
+              #search-btn,#filter{
+                height:35px;
+              }
+              
+              .addProd{
+                background-color:#5c85d6;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold; 
+                display: inline-block;
+                align-items: center;
+                justify-content: center;
+                height: 30px;
+              }
+              
+            .filter {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .role-banner{ 
+                text-align: center; 
+                margin-bottom: 10px; 
+                color: darkblue; 
+                font-weight: bold; 
+            }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
+<!--<div class="top-bar">
     <p>Logged in as: <%= role %> | <a href="Logout">Logout</a></p>
     <% if ("manager".equals(role)) { %>
         <a href="AddStaff.jsp" class="btn-add">Add New Staff</a>
     <% } %>
+</div>-->
+
+<h1>Staff List</h1>
+
+<div class="content-area">
+    
+<div class="filter">
+    <div class="search">
+        <!-- Search Form -->
+        <form method="get" class="search-form">
+            <input type="text" name="search" placeholder="Search by Staff ID or Name" value="<%= keyword != null ? keyword : "" %>">
+            <input type="submit" value="Search">
+        </form>
+    </div>
 </div>
-
-<h2 style="text-align:center;">Staff List</h2>
-
-<!-- Search Form -->
-<form method="get" class="search-form">
-    <input type="text" name="search" placeholder="Search by Staff ID or Name" value="<%= keyword != null ? keyword : "" %>">
-    <input type="submit" value="Search">
-</form>
 
 <table>
     <thead>
@@ -151,7 +233,8 @@
         %>
     </tbody>
 </table>
-
+</div>
+    
 </body>
 </html>
 
