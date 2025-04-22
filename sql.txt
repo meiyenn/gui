@@ -22,16 +22,16 @@ CREATE TABLE customer (
 -- Product Table
 CREATE TABLE product (
     productId VARCHAR(7) PRIMARY KEY,
-    productName VARCHAR(50) NOT NULL,
+    productName VARCHAR(100) NOT NULL,
     imgLocation VARCHAR(250) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL,
     category VARCHAR(50) NOT NULL,
-    productDescription VARCHAR(300),
+    productDescription VARCHAR(250),
     status INT NOT NULL
 );
 
--- Cart Table (1 cart per customer)
+-- Cart Table
 CREATE TABLE cart (
     cartId VARCHAR(10) PRIMARY KEY,
     custId VARCHAR(6) NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE cart (
     FOREIGN KEY (custId) REFERENCES customer(custId)
 );
 
--- Cart Item Table (many products per cart)
+-- Cart Item Table
 CREATE TABLE cart_item (
     cartItemId VARCHAR(10) PRIMARY KEY,
     cartId VARCHAR(10) NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE cart_item (
     FOREIGN KEY (productId) REFERENCES product(productId)
 );
 
--- Receipt Table (1 per cart)
+-- Receipt Table
 CREATE TABLE receipt (
     receiptId VARCHAR(7) PRIMARY KEY,
     cartId VARCHAR(10) NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE receipt (
     FOREIGN KEY (cartId) REFERENCES cart(cartId)
 );
 
--- Receipt Detail Table (copied from cart_item)
+-- Receipt Detail Table
 CREATE TABLE receipt_detail (
     receiptId VARCHAR(7),
     productId VARCHAR(7),
@@ -99,12 +99,12 @@ CREATE TABLE voucher (
     FOREIGN KEY (custId) REFERENCES customer(custId)
 );
 
+-- Insert Data
 INSERT INTO staff VALUES 
 ('stf001', 'Kai Xin', 'kx456789@gmail.com', '0121235678', 'Manager', 'Kaixin', 'kx555'),
 ('stf002', 'Karena Tan', 'karenatan@gmail.com', '0132359876', 'Sales', 'Karena', 'karena123'),
 ('stf003', 'Faris Bin Jamal', 'farisj@gmail.com', '0161335698', 'Customer Service', 'faris', 'faris123'),
 ('stf004', 'Aina Binti Ahmad', 'aina@gmail.com', '0191229698', 'Sales', 'aina', 'aina123');
-
 
 INSERT INTO customer VALUES 
 ('cus001', 'Jimmy Wong', '0123567890', 'jimmywong@gmail.com', 'jimmywong', 'jimmy987'),
@@ -123,7 +123,7 @@ INSERT INTO product VALUES
 ('prod007', 'COSRX Advanced Snail 96 Mucin Power Essence', 'src/image/prod-7.jpg', 75.00, 90, 'Skin Care', 'Repairing essence that helps with skin regeneration.', 1),
 ('prod008', 'The Ordinary Niacinamide 10% + Zinc 1%', 'src/image/prod-8.jpg', 55.00, 110, 'Skin Care', 'Reduces the appearance of blemishes and congestion.', 1),
 ('prod009', 'Dr. Jart+ Cicapair Tiger Grass Cream', 'src/image/prod-9.jpg', 110.00, 70, 'Skin Care', 'Soothing cream that calms sensitive and irritated skin.', 1),
-('prod010', 'SK-II Facial Treatment Essence', 'src/image/prod-10.jpg', 290.00, 40, 'Skin Care', 'Pore-refining essence for crystal clear skin.', 1);
+('prod010', 'SK-II Facial Treatment Essence', 'src/image/prod-10.jpg', 290.00, 40, 'Skin Care', 'Pore-refining essence for crystal clear skin.', 1),
 ('prod011', 'MAC Studio Fix Powder Plus Foundation', 'src/image/prod-11.jpg', 130.00, 70, 'Make Up', 'Full coverage powder foundation for a matte finish.', 1),
 ('prod012', 'Huda Beauty Faux Filter Foundation', 'src/image/prod-12.jpg', 150.00, 60, 'Make Up', 'High coverage liquid foundation with a flawless effect.', 1),
 ('prod013', 'MAC Cream Blush', 'src/image/prod-13.jpg', 90.00, 80, 'Make Up', 'Creamy blush for a natural flush of color.', 1),
@@ -141,17 +141,17 @@ INSERT INTO cart VALUES
 ('cart003', 'cus002', TRUE),
 ('cart004', 'cus003', TRUE);
 
+INSERT INTO receipt VALUES 
+('re00001', 'cart001', '2025-03-11 15:00:00', 205.00, 10.00, 12.30, 10.00, 217.30, 'BEAUTY10'),
+('re00002', 'cart003', '2025-03-12 16:30:00', 180.00, 0.00, 10.80, 10.00, 200.80, NULL),
+('re00003', 'cart004', '2025-03-15 10:30:00', 385.50, 20.00, 23.13, 0.00, 388.63, 'FREESHIP');
+
 INSERT INTO cart_item VALUES 
 ('itm001', 'cart001', 'prod001', 3, 105.00),
 ('itm002', 'cart001', 'prod002', 1, 100.00),
 ('itm003', 'cart003', 'prod003', 2, 180.00),
 ('itm004', 'cart004', 'prod004', 1, 85.50),
 ('itm005', 'cart004', 'prod005', 5, 300.00);
-
-INSERT INTO receipt (receiptId, cartId, creationTime, subtotal, discount, tax, shipping, total, voucher_code) VALUES
-('re00001', 'cart001', '2025-03-11 15:00:00', 205.00, 10.00, 12.30, 10.00, 217.30, 'BEAUTY10'),
-('re00002', 'cart003', '2025-03-12 16:30:00', 180.00, 0.00, 10.80, 10.00, 200.80, NULL),
-('re00003', 'cart004', '2025-03-15 10:30:00', 385.50, 20.00, 23.13, 0.00, 388.63, 'FREESHIP');
 
 INSERT INTO receipt_detail VALUES 
 ('re00001', 'prod001', 3, 105.00),
