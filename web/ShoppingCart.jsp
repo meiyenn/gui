@@ -150,8 +150,8 @@
             salesTax = grandTotal.multiply(BigDecimal.valueOf(0.06));
             
             // Shipping cost (free if grandTotal >= 200)
-            if (grandTotal.compareTo(BigDecimal.valueOf(200)) < 0) {
-                shippingCost = new BigDecimal("10.00");
+            if (grandTotal.compareTo(BigDecimal.valueOf(1000)) < 0) {
+                shippingCost = new BigDecimal("25.00");
             }
 
             // Final total = subtotal + tax + shipping
@@ -172,7 +172,7 @@
             <td colspan="3" class="total">
                 Shipping:
                 <% if (shippingCost.compareTo(BigDecimal.ZERO) == 0) { %>
-                    <span style="color: green;">(Free over RM200)</span>
+                    <span style="color: green;">(Free over RM1000)</span>
                 <% } %>
             </td>
             <td><%= shippingCost.setScale(2) %></td>
