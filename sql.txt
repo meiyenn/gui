@@ -83,6 +83,7 @@ CREATE TABLE productRating (
     ratingDate TIMESTAMP NOT NULL,
     satisfaction INT NOT NULL,
     comment VARCHAR(200) NOT NULL,
+    reply VARCHAR(200),
     FOREIGN KEY (receiptId) REFERENCES receipt(receiptId),
     FOREIGN KEY (productId) REFERENCES product(productId)
 );
