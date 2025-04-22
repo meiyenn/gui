@@ -42,7 +42,7 @@ public class CartService {
     public void addToCart(String custId, String productId, int quantity, double price) throws Exception {
         try (Connection conn = DBConnection.getConnection()) {
 
-            // Step 1: Check for active cart
+            // Check for active cart
             String cartId = null;
             String findCartSql = "SELECT cartId FROM cart WHERE custId = ? AND checkOutStatus = FALSE";
             try (PreparedStatement stmt = conn.prepareStatement(findCartSql)) {
@@ -53,7 +53,7 @@ public class CartService {
                 }
             }
 
-            // Step 2: Create cart if not found
+            // Create cart 
             if (cartId == null) {
                 cartId = generateNextCartId();
                 String createCartSql = "INSERT INTO cart (cartId, custId, checkOutStatus) VALUES (?, ?, FALSE)";
@@ -64,7 +64,7 @@ public class CartService {
                 }
             }
 
-            // Step 3: Check if product already in cart
+            //Check if product already in cart 
             String cartItemId = null;
             int existingQty = 0;
             String findItemSql = "SELECT cartItemId, quantityPurchased FROM cart_item WHERE cartId = ? AND productId = ?";
@@ -79,7 +79,7 @@ public class CartService {
             }
 
             if (cartItemId != null) {
-                // Step 4a: Update quantity
+                // Update quantity
                 String updateSql = "UPDATE cart_item SET quantityPurchased = ? WHERE cartItemId = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
                     stmt.setInt(1, existingQty + quantity);
@@ -87,7 +87,7 @@ public class CartService {
                     stmt.executeUpdate();
                 }
             } else {
-                // Step 4b: Insert new cart item
+                // Insert new cart item
                 cartItemId = generateNextCartItemId();
                 String insertSql = "INSERT INTO cart_item (cartItemId, cartId, productId, quantityPurchased, price) VALUES (?, ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
@@ -103,11 +103,11 @@ public class CartService {
     }
 
 
-    // Get all cart items for a customer
+    // Get all cart items for a customer 
     public List<CartItem> getCartByCustomer(String custId) throws Exception {
     List<CartItem> itemList = new ArrayList<>();
     try (Connection con = DBConnection.getConnection()) {
-        // Step 1: Get active cart
+        //Get active cart
         String cartId = null;
         try (PreparedStatement stmt = con.prepareStatement("SELECT cartId FROM cart WHERE custId = ? AND checkOutStatus = FALSE")) {
             stmt.setString(1, custId);
@@ -117,7 +117,7 @@ public class CartService {
 
         if (cartId == null) return itemList;
 
-        // Step 2: Get cart items
+        // Get cart items
         String sql = "SELECT ci.*, p.productName, p.imgLocation FROM cart_item ci " +
                      "JOIN product p ON ci.productId = p.productId WHERE ci.cartId = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -168,7 +168,7 @@ public class CartService {
         }
     }
 
-    // Confirm the order: update checkout status
+    // Confirm the order: update checkout status 
     public void confirmOrder(String custId) throws Exception {
         try (Connection con = DBConnection.getConnection()) {
             String sql = "UPDATE cart SET checkOutStatus = TRUE WHERE custId = ? AND checkOutStatus = FALSE";
@@ -215,7 +215,12 @@ public class CartService {
                     receipt = new Receipt();
                     receipt.setReceiptid(receiptId);
                     receipt.setCreationtime(rs.getTimestamp("creationTime"));
-                    // You can add more fields if needed
+                    receipt.setSubtotal(rs.getBigDecimal("subtotal"));
+                    receipt.setDiscount(rs.getBigDecimal("discount"));
+                    receipt.setTax(rs.getBigDecimal("tax"));
+                    receipt.setShipping(rs.getBigDecimal("shipping"));
+                    receipt.setTotal(rs.getBigDecimal("total"));
+                    receipt.setVoucherCode(rs.getString("voucher_code"));
                 }
             }
         }
@@ -274,6 +279,7 @@ public class CartService {
         return receipt;
     }
     
+    //get purchased item by receipt id
     public List<CartItem> getCartItemsByReceiptId(String receiptId) {
         List<CartItem> list = new ArrayList<>();
         String sql = "SELECT rd.productId, rd.quantity, rd.price, p.productName, p.imgLocation "

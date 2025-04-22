@@ -34,7 +34,7 @@ public class CompleteOrder extends HttpServlet {
             BigDecimal shipping = new BigDecimal(request.getParameter("shipping"));
             BigDecimal grandTotal = new BigDecimal(request.getParameter("grandTotal"));
 
-            // Step 1: Get active cart
+            // Get active cart
             String cartId = null;
             try (PreparedStatement stmt = conn.prepareStatement(
                     "SELECT cartId FROM cart WHERE custId = ? AND checkOutStatus = FALSE")) {
@@ -43,22 +43,22 @@ public class CompleteOrder extends HttpServlet {
                 if (rs.next()) {
                     cartId = rs.getString("cartId");
                 } else {
-                    response.getWriter().write("❌ No active cart found.");
+                    response.getWriter().write(" No active cart found.");
                     return;
                 }
             }
 
-            // Step 2: Mark cart as checked out
+            // Mark cart as checked out
             try (PreparedStatement stmt = conn.prepareStatement(
                     "UPDATE cart SET checkOutStatus = TRUE WHERE cartId = ?")) {
                 stmt.setString(1, cartId);
                 stmt.executeUpdate();
             }
 
-            // Step 3: Generate new receipt ID
+            // Generate new receipt ID
             String receiptId = generateNextReceiptId(conn);
 
-            // Step 4: Insert into receipt table
+            // Insert into receipt table
             try (PreparedStatement stmt = conn.prepareStatement(
                     "INSERT INTO receipt (receiptId, cartId, creationTime, subtotal, discount, tax, shipping, total, voucher_code) "
                             + "VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)")) {
@@ -73,7 +73,7 @@ public class CompleteOrder extends HttpServlet {
                 stmt.executeUpdate();
             }
 
-            // Step 5: Insert receipt details
+            // Insert receipt details
             try (
                 PreparedStatement selectStmt = conn.prepareStatement(
                         "SELECT productId, quantityPurchased, price FROM cart_item WHERE cartId = ?");
@@ -94,7 +94,7 @@ public class CompleteOrder extends HttpServlet {
                 insertStmt.executeBatch();
             }
 
-            // Step 6: Decrease product stock (with validation)
+            // Decrease product stock (with validation)
             try (
                 PreparedStatement selectStmt = conn.prepareStatement(
                         "SELECT productId, quantityPurchased FROM cart_item WHERE cartId = ?");
@@ -132,7 +132,7 @@ public class CompleteOrder extends HttpServlet {
                 stockUpdateStmt.executeBatch();
             }
 
-            // Step 7: Mark voucher as used if applicable
+            // Mark voucher as used if applicable
             if (voucherCode != null && !voucherCode.isEmpty() && discount.compareTo(BigDecimal.ZERO) > 0) {
                 try {
                     VoucherService voucherService = new VoucherService();
@@ -158,7 +158,7 @@ public class CompleteOrder extends HttpServlet {
                 session.setAttribute("state", request.getParameter("state"));
             }
 
-            // Final step: Redirect to confirmation
+            //Redirect to confirmation
             response.sendRedirect("OrderSuccessful.jsp?receiptId=" + receiptId);
 
         } catch (Exception e) {

@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class VoucherService {
 
-    // ✅ Get a single voucher by code + customer, with validation
+    // Get a single voucher by code + customer, with validation
     public Voucher getVoucherByCode(String code, String custId) {
         Voucher voucher = null;
         try (Connection conn = getConnection(); 
@@ -41,7 +41,7 @@ public class VoucherService {
         return voucher;
     }
 
-    // ✅ Mark a voucher as used
+    // Mark a voucher as used
     public boolean markVoucherAsUsed(String code, String custId) {
         String sql = "UPDATE voucher SET used = TRUE WHERE code = ? AND custId = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -57,7 +57,7 @@ public class VoucherService {
         return false;
     }
 
-    // ✅ Get all vouchers by customer
+    // Get all vouchers by customer
     public List<Voucher> getVouchersByCustomer(String custId) {
         List<Voucher> vouchers = new ArrayList<>();
         String sql = "SELECT * FROM voucher WHERE custId = ?";
@@ -85,7 +85,7 @@ public class VoucherService {
         return vouchers;
     }
 
-    // ✅ Check if voucher is expired
+    //Check if voucher is expired
     public static boolean isExpired(Date date) {
         if (date == null) {
             return true; // treat null as expired
@@ -98,7 +98,7 @@ public class VoucherService {
         return localDate.isBefore(LocalDate.now());
     }
 
-    // ✅ Check if voucher is applicable to this cart
+    // Check if voucher is applicable to this cart
     public boolean isValidForCart(Voucher voucher, BigDecimal cartTotal) {
         if (voucher == null) {
             return false;

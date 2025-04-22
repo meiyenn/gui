@@ -241,6 +241,11 @@
         </form>
     </div>
     <% } %>
+    
+    <%
+        session.removeAttribute("voucherCode");
+    %>
+
 </div>
 
 <script src="src/js/checkout.js"></script>

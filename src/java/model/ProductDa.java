@@ -4,6 +4,7 @@
  */
 package model;
 
+import controller.DBConnection;
 import model.Product;
 import java.sql.*;
 import java.util.ArrayList;
@@ -249,6 +250,30 @@ public class ProductDa {
 
         return false;
 
+    }
+    
+    public Product getProductById(String productId) {
+        Product product = null;
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM product WHERE productId = ?")) {
+
+            stmt.setString(1, productId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                product = new Product();
+                product.setProductid(rs.getString("productId"));
+                product.setProductname(rs.getString("productName"));
+                product.setImglocation(rs.getString("imgLocation"));
+                product.setPrice(rs.getBigDecimal("price").doubleValue());
+                product.setCategory(rs.getString("category"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return product;
     }
     
     

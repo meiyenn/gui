@@ -58,21 +58,21 @@ public class Checkout extends HttpServlet {
                 subtotal = subtotal.add(itemSubtotal);
             }
 
-            // 📦 Shipping
+            // Shipping
             BigDecimal shipping = BigDecimal.ZERO;
             if ("delivery".equalsIgnoreCase(deliveryMethod) && subtotal.compareTo(BigDecimal.valueOf(200)) < 0) {
                 shipping = BigDecimal.valueOf(10);
             }
 
-            // 💰 Tax (6%)
+            // Tax (6%)
             BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.06));
 
-            // 🎁 Voucher
+            // Voucher
             BigDecimal discount = BigDecimal.ZERO;
             String voucherCode = (String) session.getAttribute("voucherCode");
             Voucher voucher = (Voucher) session.getAttribute("validVoucher");
 
-            // 🟡 Load voucher message from session (from appliedVoucher)
+            // Load voucher message from session (from appliedVoucher)
             String voucherMsg = (String) session.getAttribute("voucherMsg");
             if (voucherMsg != null) {
                 session.removeAttribute("voucherMsg");
@@ -91,10 +91,10 @@ public class Checkout extends HttpServlet {
                 }
             }
 
-            // 💳 Final total
+            //Final total
             BigDecimal total = subtotal.add(tax).add(shipping).subtract(discount);
 
-            // 🌟 Store values to show on JSP
+            //Store values to show on JSP
             request.setAttribute("cartList", cartList);
             request.setAttribute("subtotal", subtotal);
             request.setAttribute("tax", tax);
@@ -105,7 +105,7 @@ public class Checkout extends HttpServlet {
             request.setAttribute("voucherCode", voucherCode);
             request.setAttribute("deliveryMethod", deliveryMethod);
 
-            // 🧾 When user confirms checkout
+            //When user confirms checkout
             if ("processCheckout".equals(action)) {
                 if (voucher != null && discount.compareTo(BigDecimal.ZERO) > 0) {
                     voucherService.markVoucherAsUsed(voucher.getCode(), custId);
@@ -113,15 +113,15 @@ public class Checkout extends HttpServlet {
                     session.removeAttribute("voucherCode");
                 }
 
-                // ✅ Mark cart as checked out (optional)
+                // Mark cart as checked out
                 cartService.confirmOrder(custId);
 
-                // ✅ Redirect to confirmation page
+                // Redirect to confirmation page
                 response.sendRedirect("checkoutConfirmation.jsp");
                 return;
             }
 
-            // 👇 Forward to checkout page
+            //Forward to checkout page
             RequestDispatcher dispatcher = request.getRequestDispatcher("checkout.jsp");
             dispatcher.forward(request, response);
 

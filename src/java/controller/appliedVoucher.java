@@ -7,8 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.time.LocalDate;
-
 /**
  * Servlet specifically for handling voucher code application
  */
@@ -65,8 +63,8 @@ public class appliedVoucher extends HttpServlet {
             }
 
             // Store code + message
-            session.setAttribute("voucherCode", voucherCode.trim());
-            session.setAttribute("voucherMsg", voucherMsg);
+            //session.setAttribute("voucherCode", voucherCode.trim());
+            //session.setAttribute("voucherMsg", voucherMsg);
 
             // Redirect back to Checkout (recalculate totals)
             response.sendRedirect("Checkout");
