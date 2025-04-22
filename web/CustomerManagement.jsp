@@ -96,10 +96,19 @@
 <h2 style="text-align:center;">Customer List</h2>
 
 <!-- Search Form -->
-<form method="get">
-    <input type="text" name="search" placeholder="Search by ID or Name" value="<%= (keyword != null ? keyword : "") %>">
-    <input type="submit" value="Search" class="btn-search">
-</form>
+<div style="text-align: center; margin: 20px;">
+    <form method="get" style="display: inline-block;">
+        <input type="text" name="search" placeholder="Search by ID or Name" value="<%= (keyword != null ? keyword : "")%>">
+        <input type="submit" value="Search" class="btn-search">
+    </form>
+
+    <form action="AddCustomer.jsp" method="get" style="display: inline-block; margin-left: 10px;">
+        <button type="submit" class="btn-add" style="padding: 6px 12px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+           Add Customer
+        </button>
+    </form>
+</div>
+
 
 <!-- Customer Table -->
 <table>
@@ -145,11 +154,11 @@
                         <input type="submit" value="Delete" class="btn-delete" onclick="return confirm('Are you sure?')">
                     </form>
                     <!-- Edit Button -->
-                    <form action="editCustomer.jsp" method="get" style="display:inline;">
-                        <input type="hidden" name="custId" value="<%= rs.getString("custId") %>">
+                    <form action="EditCustomer.jsp" method="get" style="display:inline;">
+                        <input type="hidden" name="custId" value="<%= rs.getString("custId")%>">
                         <input type="submit" value="Edit" class="btn-edit">
                     </form>
-                <% } else { %>
+                    <% } else { %>
                     <em>View Only</em>
                 <% } %>
             </td>

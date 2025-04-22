@@ -60,8 +60,8 @@ public class Checkout extends HttpServlet {
 
             // Shipping
             BigDecimal shipping = BigDecimal.ZERO;
-            if ("delivery".equalsIgnoreCase(deliveryMethod) && subtotal.compareTo(BigDecimal.valueOf(200)) < 0) {
-                shipping = BigDecimal.valueOf(10);
+            if ("delivery".equalsIgnoreCase(deliveryMethod) && subtotal.compareTo(BigDecimal.valueOf(1000)) < 0) {
+                shipping = BigDecimal.valueOf(25);
             }
 
             // Tax (6%)
