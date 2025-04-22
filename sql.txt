@@ -115,11 +115,25 @@ INSERT INTO customer VALUES
 
 INSERT INTO product VALUES 
 ('prod001', 'Biodance Face Mask', 'src/image/prod-1.jpg', 35.00, 100, 'Skin Care', 'Function: Face, Overnight; Skin Type: Combination, Dry, Normal, Oily, Sensitive', 1),
-('prod002', 'Laneige Lip Sleeping Mask', 'src/image/prod-2.jpg', 100.00, 50, 'Make Up', 'Overnight lip treatment mask.', 1),
-('prod003', 'NARS Velvet Lipstick', 'src/image/prod-3.jpg', 90.00, 80, 'Make Up', 'Long-lasting matte lipstick with intense color payoff.', 1),
+('prod002', 'Laneige Lip Sleeping Mask', 'src/image/prod-2.jpg', 100.00, 50, 'Skin Care', 'Overnight lip treatment mask.', 1),
+('prod003', 'NARS Velvet Lipstick', 'src/image/prod-3.jpg', 90.00, 80, 'Skin Care', 'Long-lasting matte lipstick with intense color payoff.', 1),
 ('prod004', 'Innisfree Green Tea Serum', 'src/image/prod-4.jpg', 85.50, 200, 'Skin Care', 'Hydrating serum with green tea extract.', 1),
 ('prod005', 'Some By Mi AHA.BHA.PHA Toner', 'src/image/prod-5.jpg', 60.00, 150, 'Skin Care', 'Exfoliating toner for acne-prone skin.', 1),
-('prod006', 'Klavuu Nourishing Face Oil', 'src/image/prod-6.jpg', 120.00, 60, 'Skin Care', 'Facial oil with Korean pearl extract.', 0);
+('prod006', 'Klavuu Nourishing Face Oil', 'src/image/prod-6.jpg', 120.00, 60, 'Skin Care', 'Facial oil with Korean pearl extract.', 1),
+('prod007', 'COSRX Advanced Snail 96 Mucin Power Essence', 'src/image/prod-7.jpg', 75.00, 90, 'Skin Care', 'Repairing essence that helps with skin regeneration.', 1),
+('prod008', 'The Ordinary Niacinamide 10% + Zinc 1%', 'src/image/prod-8.jpg', 55.00, 110, 'Skin Care', 'Reduces the appearance of blemishes and congestion.', 1),
+('prod009', 'Dr. Jart+ Cicapair Tiger Grass Cream', 'src/image/prod-9.jpg', 110.00, 70, 'Skin Care', 'Soothing cream that calms sensitive and irritated skin.', 1),
+('prod010', 'SK-II Facial Treatment Essence', 'src/image/prod-10.jpg', 290.00, 40, 'Skin Care', 'Pore-refining essence for crystal clear skin.', 1);
+('prod011', 'MAC Studio Fix Powder Plus Foundation', 'src/image/prod-11.jpg', 130.00, 70, 'Make Up', 'Full coverage powder foundation for a matte finish.', 1),
+('prod012', 'Huda Beauty Faux Filter Foundation', 'src/image/prod-12.jpg', 150.00, 60, 'Make Up', 'High coverage liquid foundation with a flawless effect.', 1),
+('prod013', 'MAC Cream Blush', 'src/image/prod-13.jpg', 90.00, 80, 'Make Up', 'Creamy blush for a natural flush of color.', 1),
+('prod014', 'MAC Ruby Woo Lipstick', 'src/image/prod-14.jpg', 95.00, 100, 'Make Up', 'Iconic matte red lipstick with high pigment.', 1),
+('prod015', 'Etude House Lovely Cookie Blusher', 'src/image/prod-15.jpg', 45.00, 90, 'Make Up', 'Cute and vibrant powder blush for daily makeup.', 1),
+('prod016', 'NARS Blush Palette', 'src/image/prod-16.jpg', 180.00, 50, 'Make Up', 'Multi-shade blush palette for customized looks.', 1),
+('prod017', 'Fenty Beauty Setting Powder', 'src/image/prod-17.jpg', 110.00, 75, 'Make Up', 'Finely-milled setting powder to blur and set makeup.', 1),
+('prod018', 'Huda Beauty Eyeshadow Palette', 'src/image/prod-18.jpg', 210.00, 40, 'Make Up', 'Versatile eyeshadow palette with rich pigmentation.', 1),
+('prod019', 'Zoeva Rose Golden Brush Set', 'src/image/prod-19.jpg', 160.00, 30, 'Make Up', 'Premium makeup brush set with rose gold finish.', 1),
+('prod020', 'YSL Rouge Pur Couture Lipstick', 'src/image/prod-20.jpg', 140.00, 60, 'Make Up', 'Luxurious satin finish lipstick in bold colors.', 1);
 
 INSERT INTO cart VALUES 
 ('cart001', 'cus001', TRUE),
