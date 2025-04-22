@@ -1,21 +1,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
-
+<%@include file="staffHeader.jsp" %>
 
 <%
     // Simulate session role (REMOVE in production)
     // session.setAttribute("role", "manager"); // or "staff"
 
-    String role = (String) session.getAttribute("role");
-    if (role == null) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
-    
-    if (!"manager".equals(role)) {
-            response.sendRedirect("NoAccess.jsp");
-            return;
-        }
+//    String role = (String) session.getAttribute("role");
+//    if (role == null) {
+//        response.sendRedirect("login.jsp");
+//        return;
+//    }
+//    
+//    if (!"manager".equals(role)) {
+//            response.sendRedirect("NoAccess.jsp");
+//            return;
+//        }
 
 
     String deleteId = request.getParameter("delete");
@@ -112,6 +112,7 @@
                 justify-content: flex-end;
                 margin-top: 55px;
                 margin-bottom: 15px;
+                
               }
               
               
@@ -160,24 +161,23 @@
         <a href="AddStaff.jsp" class="btn-add">Add New Staff</a>
     <% } %>
 </div>-->
-
-<h1>Staff List</h1>
-
-<div class="content-area">
     
-<div class="filter">
-    <div class="search">
-        <!-- Search Form -->
-        <form method="get" class="search-form">
-            <input type="text" name="search" placeholder="Search by Staff ID or Name" value="<%= keyword != null ? keyword : "" %>">
-            <input type="submit" value="Search">
-        </form>
+<div class="content-area">
+    <div class="filter">
+        <h1>Staff List</h1>
+
+        <div class="search">
+            <!-- Search Form -->
+            <form method="get" class="search-form">
+                <input type="text" id="searchText" name="search" placeholder="Search by Staff ID or Name" value="<%= keyword != null ? keyword : "" %>">
+                <input type="submit" value="Search" id="search-btn">
+            </form>
+        </div>
     </div>
-</div>
 
 <table>
     <thead>
-        <tr>
+        <tr style="height:70px">
             <th>ID</th>
             <th>Name</th>
             <th>Email</th>
@@ -186,7 +186,7 @@
             <th>Username</th>
             <th>Password</th>
             <% if ("manager".equals(role)) { %>
-                <th>Actions</th>
+                <th colspan="2">Action</th>
             <% } %>
         </tr>
     </thead>
@@ -207,16 +207,18 @@
                 <%= "manager".equals(role) ? rs.getString("stfPswd") : "••••••••" %>
             </td>
             <% if ("manager".equals(role)) { %>
-            <td>
+            <td style="text-align:center; vertical-align:middle;">
                 <!-- Edit Button -->
                 <form action="editStaff.jsp" method="get" style="display:inline;">
                     <input type="hidden" name="staffId" value="<%= rs.getString("staffId") %>">
-                    <input type="submit" value="Edit" class="btn-edit">
+                    <input type="submit" value="Edit" class="edit-btn">
                 </form>
+            </td>
+            <td style="text-align:center; vertical-align:middle;">
                 <!-- Delete Button -->
                 <form method="get" style="display:inline;">
                     <input type="hidden" name="delete" value="<%= rs.getString("staffId") %>">
-                    <input type="submit" value="Delete" class="btn-delete" onclick="return confirm('Are you sure?')">
+                    <input type="submit" value="Delete" class="delete-btn" onclick="return confirm('Are you sure?')">
                 </form>
             </td>
             <% } %>
@@ -226,7 +228,7 @@
             if (!hasData) {
         %>
         <tr>
-            <td colspan="<%= "manager".equals(role) ? "8" : "7" %>">No staff found.</td>
+            <td colspan="<%= "manager".equals(role) ? "9" : "8" %>">No staff found.</td>
         </tr>
         <%
             }

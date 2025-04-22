@@ -150,15 +150,17 @@
 <body>
     
 <div class="content-area">
-<%--filter--%>
-<div class="filter">    
+   
 <!--<div class="role-banner">
     Logged in as: <%= role %> | <a href="logout.jsp">Logout</a>
 </div>-->
-
+<%--filter--%>
+<div class="filter">
+    
 <h1>Customer List</h1>
 
 <div class="search">
+    
 <!-- Search Form -->
 <form method="get">
     <input type="text" id="searchText" name="search" placeholder="Search by ID or Name" value="<%= (keyword != null ? keyword : "") %>">
@@ -206,7 +208,7 @@
             </td>
             <td style="text-align:center; vertical-align:middle;">
                 <% if ("manager".equals(role)) { %>
-                                        <!-- Edit Button -->
+                    <!-- Edit Button -->
                     <form action="editCustomer.jsp" method="get" style="display:inline;">
                         <input type="hidden" name="custId" value="<%= rs.getString("custId") %>">
                         <input type="submit" value="Edit" class="edit-btn">
