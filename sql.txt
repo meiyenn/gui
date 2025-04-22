@@ -22,12 +22,12 @@ CREATE TABLE customer (
 -- Product Table
 CREATE TABLE product (
     productId VARCHAR(7) PRIMARY KEY,
-    productName VARCHAR(30) NOT NULL,
+    productName VARCHAR(50) NOT NULL,
     imgLocation VARCHAR(250) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL,
     category VARCHAR(50) NOT NULL,
-    productDescription VARCHAR(250),
+    productDescription VARCHAR(300),
     status INT NOT NULL
 );
 
