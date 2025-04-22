@@ -32,37 +32,34 @@ public class submitReview extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
              
-            // 1. Get form parameters
             String productId = request.getParameter("productId");
             String receiptId = request.getParameter("receiptId");
             int satisfaction = Integer.parseInt(request.getParameter("rating"));
             String comment = request.getParameter("comment");
 
-            // 2. Create Product and Receipt objects
             Product product = new Product();
             product.setProductid(productId);
 
             Receipt receipt = new Receipt();
             receipt.setReceiptid(receiptId);
 
-            // 3. Create Productrating object
             Productrating review = new Productrating();
-            review.setProductid(product);         // Using ManyToOne Product
-            review.setReceiptid(receipt);         // Using ManyToOne Receipt
+            review.setProductid(product);         
+            review.setReceiptid(receipt);         
             review.setSatisfaction(satisfaction);
             review.setComment(comment);
 
-            // 4. Insert using ReviewService
+            // Insert using ReviewService
             ReviewService service = new ReviewService();
             boolean success = service.insertReview(review);
 
             if (success) {
-                // Optional: You can redirect to a product detail or order history
                 response.sendRedirect("ThankYou.jsp");
             } else {
                 request.setAttribute("error", "Failed to submit review.");

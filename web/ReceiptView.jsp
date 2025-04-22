@@ -145,13 +145,14 @@
             </tbody>
         </table>
 
-        <div class="totals">
-            <div><strong>Subtotal:</strong> RM <%= String.format("%.2f", receipt.getSubtotal()) %></div>
-            <div><strong>Discount:</strong> -RM <%= String.format("%.2f", receipt.getDiscount()) %></div>
-            <div><strong>Tax (6%):</strong> RM <%= String.format("%.2f", receipt.getTax()) %></div>
-            <div><strong>Shipping:</strong> RM <%= String.format("%.2f", receipt.getShipping()) %></div>
-            <div><strong>Total Paid:</strong> <strong>RM <%= String.format("%.2f", receipt.getTotal()) %></strong></div>
-        </div>
+            <div class="totals">
+                <div><strong>Subtotal:</strong> RM <%= receipt.getSubtotal() != null ? String.format("%.2f", receipt.getSubtotal()) : "0.00"%></div>
+                <div><strong>Discount:</strong> -RM <%= receipt.getDiscount() != null ? String.format("%.2f", receipt.getDiscount()) : "0.00"%></div>
+                <div><strong>Tax (6%):</strong> RM <%= receipt.getTax() != null ? String.format("%.2f", receipt.getTax()) : "0.00"%></div>
+                <div><strong>Shipping:</strong> RM <%= receipt.getShipping() != null ? String.format("%.2f", receipt.getShipping()) : "0.00"%></div>
+                <div><strong>Total Paid:</strong> <strong>RM <%= receipt.getTotal() != null ? String.format("%.2f", receipt.getTotal()) : "0.00"%></strong></div>
+            </div>
+
     <% } else { %>
         <p style="text-align:center; color: red;"> Receipt not found. Please check the receipt ID.</p>
     <% } %>

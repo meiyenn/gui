@@ -4,7 +4,7 @@
 
 <%
     ReviewService reviewService = new ReviewService();
-    ProductService productService = new ProductService();
+    ProductDa productService = new ProductDa();
 
     List<String> productIds = reviewService.getProductIdsWithRatings(1); // get all with at least 1 rating
 %>

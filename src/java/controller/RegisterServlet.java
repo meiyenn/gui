@@ -59,7 +59,7 @@ public class RegisterServlet extends HttpServlet {
                 stmt.setString(3, request.getParameter("phone"));
                 stmt.setString(4, email);
                 stmt.setString(5, username);
-                stmt.setString(6, request.getParameter("password")); // Consider hashing here!
+                stmt.setString(6, request.getParameter("password")); 
 
                 int rowsAffected = stmt.executeUpdate();
 
