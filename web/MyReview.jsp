@@ -81,6 +81,16 @@
             color: #444;
         }
 
+        .reply-box {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9fafb;
+            border-left: 4px solid #4f46e5;
+            color: #333;
+            font-style: italic;
+            border-radius: 4px;
+        }
+
         .product-name {
             font-weight: bold;
             margin-bottom: 6px;
@@ -91,30 +101,36 @@
 </head>
 <body>
 
-    <%@include file="header.jsp" %>
+<%@ include file="header.jsp" %>
+
 <div class="review-container">
     <h2>My Reviews</h2>
 
     <% if (reviews == null || reviews.isEmpty()) { %>
         <p style="text-align: center;">You haven't submitted any reviews yet.</p>
-    <% } else { 
+    <% } else {
         for (Productrating review : reviews) {
-            Product product = review.getProductid(); 
+            Product product = review.getProductid();
     %>
-        <div class="review-box">
-            <img src="<%= product.getImglocation() %>" class="product-img" alt="Product Image">
-            <div class="review-details">
-                <span class="product-name"><%= product.getProductname() %></span>
-                <div class="stars">
-                    <% for (int i = 1; i <= 5; i++) { %>
-                        <%= i <= review.getSatisfaction() ? "★" : "☆" %>
-                    <% } %>
-                </div>
-                <div class="review-comment"><%= review.getComment() %></div>
-                <div class="review-date">Reviewed on: <%= review.getRatingdate() %></div>
+    <div class="review-box">
+        <img src="<%= product.getImglocation()%>" class="product-img" alt="Product Image">
+        <div class="review-details">
+            <span class="product-name"><%= product.getProductname()%></span>
+            <div class="stars">
+                <% for (int i = 1; i <= 5; i++) {%>
+                <%= i <= review.getSatisfaction() ? "★" : "☆"%>
+                <% }%>
             </div>
+            <div class="review-comment"><%= review.getComment()%></div>
+            <div class="review-date">Reviewed on: <%= review.getRatingdate()%></div>
+            <% if (review.getReply() != null && !review.getReply().trim().isEmpty()) {%>
+            <div style="margin-top: 8px; color: #2f855a; font-style: italic;">
+                Reply: <%= review.getReply()%>
+            </div>
+            <% } %>
         </div>
-    <%  } 
+    </div>
+    <%  }
     } %>
 </div>
 

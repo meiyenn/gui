@@ -90,12 +90,17 @@
                 (<%= String.format("%.1f", avg)%> from <%= count%> review<%= count != 1 ? "s" : ""%>)
             </div>
 
-            <% for (Productrating r : top3) {%>
-            <div class="review-comment">
-                <%= r.getComment()%>
-                <div class="review-date">Reviewed on <%= r.getRatingdate()%></div>
-            </div>
-            <% } %>
+                <% for (Productrating r : top3) {%>
+                <div class="review-comment">
+                    <%= r.getComment()%>
+                    <div class="review-date">Reviewed on <%= r.getRatingdate()%></div>
+                    <% if (r.getReply() != null && !r.getReply().trim().isEmpty()) {%>
+                    <div style="margin-top: 8px; color: #2f855a; font-style: italic;">
+                        <strong>Reply:</strong> <%= r.getReply()%>
+                    </div>
+                    <% } %>
+                </div>
+                <% } %>
 
             <% if (count > 3) {%>
             <a class="view-link" href="ViewReviews.jsp?productId=<%= pid%>">🔗 View all <%= count%> reviews</a>

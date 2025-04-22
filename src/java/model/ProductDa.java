@@ -67,7 +67,7 @@ public class ProductDa {
                         prod.setProductid(rs.getString(1));
                         prod.setProductname(rs.getString(2));
                         prod.setImglocation(rs.getString(3));
-                        prod.setPrice(rs.getDouble(4));
+                        prod.setPrice(rs.getBigDecimal(4));
                         prod.setQuantity(rs.getInt(5));
                         prod.setCategory(rs.getString(6));
                         prod.setProductdescription(rs.getString(7));
@@ -104,7 +104,7 @@ public class ProductDa {
                 prod.setProductid(rs.getString(1));
                 prod.setProductname(rs.getString(2));
                 prod.setImglocation(rs.getString(3));
-                prod.setPrice(rs.getDouble(4));
+                prod.setPrice(rs.getBigDecimal(4));
                 prod.setQuantity(rs.getInt(5));
                 prod.setCategory(rs.getString(6));
                 prod.setProductdescription(rs.getString(7));
@@ -137,7 +137,7 @@ public class ProductDa {
                 stmt.setString(1, prod.getProductid());
                 stmt.setString(2, prod.getProductname());
                 stmt.setString(3, prod.getImglocation());
-                stmt.setDouble(4, prod.getPrice());
+                stmt.setBigDecimal(4, prod.getPrice());
                 stmt.setInt(5, prod.getQuantity());
                 stmt.setString(6, prod.getCategory());
                 stmt.setString(7, prod.getProductdescription());
@@ -210,7 +210,7 @@ public class ProductDa {
                     prod.setProductid(rs.getString(1));
                     prod.setProductname(rs.getString(2));
                     prod.setImglocation(rs.getString(3));
-                    prod.setPrice(rs.getDouble(4));
+                    prod.setPrice(rs.getBigDecimal(4));
                     prod.setQuantity(rs.getInt(5));
                     prod.setCategory(rs.getString(6));
                     prod.setProductdescription(rs.getString(7));
@@ -265,7 +265,7 @@ public class ProductDa {
                 product.setProductid(rs.getString("productId"));
                 product.setProductname(rs.getString("productName"));
                 product.setImglocation(rs.getString("imgLocation"));
-                product.setPrice(rs.getBigDecimal("price").doubleValue());
+                product.setPrice(rs.getBigDecimal("price")); 
                 product.setCategory(rs.getString("category"));
             }
 

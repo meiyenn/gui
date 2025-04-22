@@ -5,6 +5,7 @@
 package model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
@@ -40,20 +41,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Product.findByStatus", query = "SELECT p FROM Product p WHERE p.status = :status")})
 public class Product implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 7)
-    @Column(name = "PRODUCTID")
-    private String productid;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 30)
+    @Size(min = 1, max = 100)
     @Column(name = "PRODUCTNAME")
     private String productname;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 250)
     @Column(name = "IMGLOCATION")
     private String imglocation;
@@ -61,11 +55,12 @@ public class Product implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "PRICE")
-    private double price;
+    private BigDecimal price;
     @Basic(optional = false)
     @NotNull
     @Column(name = "QUANTITY")
     private int quantity;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -78,6 +73,15 @@ public class Product implements Serializable {
     @NotNull
     @Column(name = "STATUS")
     private int status;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productid")
+    private Collection<Productrating> productratingCollection;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 7)
+    @Column(name = "PRODUCTID")
+    private String productid;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<ReceiptDetail> receiptDetailCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productid")
@@ -94,7 +98,7 @@ public class Product implements Serializable {
         this.productid = productid;
         this.productname = productname;
         this.imglocation = imglocation;
-        this.price = price;
+        this.price = BigDecimal.valueOf(price);
         this.quantity = quantity;
         this.category = category;
         this.productdescription=productdescription;
@@ -109,61 +113,6 @@ public class Product implements Serializable {
         this.productid = productid;
     }
 
-    public String getProductname() {
-        return productname;
-    }
-
-    public void setProductname(String productname) {
-        this.productname = productname;
-    }
-
-    public String getImglocation() {
-        return imglocation;
-    }
-
-    public void setImglocation(String imglocation) {
-        this.imglocation = imglocation;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getProductdescription() {
-        return productdescription;
-    }
-
-    public void setProductdescription(String productdescription) {
-        this.productdescription = productdescription;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 
     @XmlTransient
     public Collection<ReceiptDetail> getReceiptDetailCollection() {
@@ -206,6 +155,71 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "model.Product[ productid=" + productid + " ]";
+    }
+
+    public String getProductname() {
+        return productname;
+    }
+
+    public void setProductname(String productname) {
+        this.productname = productname;
+    }
+
+    public String getImglocation() {
+        return imglocation;
+    }
+
+    public void setImglocation(String imglocation) {
+        this.imglocation = imglocation;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getProductdescription() {
+        return productdescription;
+    }
+
+    public void setProductdescription(String productdescription) {
+        this.productdescription = productdescription;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    @XmlTransient
+    public Collection<Productrating> getProductratingCollection() {
+        return productratingCollection;
+    }
+
+    public void setProductratingCollection(Collection<Productrating> productratingCollection) {
+        this.productratingCollection = productratingCollection;
     }
     
 }
