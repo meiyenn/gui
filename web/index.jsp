@@ -49,7 +49,6 @@
         <%@include file="Promotion.jsp" %>
         <%@include file="home_product.jsp" %>
         <%@include file="about.jsp"%>
-        <%@include file="ContactMe.jsp"%>
         <%
             String loginStatus = request.getParameter("login");
  

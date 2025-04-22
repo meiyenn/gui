@@ -73,14 +73,13 @@ public class ReviewService {
     public List<Productrating> getReviewsByCustomer(String custId) {
         List<Productrating> list = new ArrayList<>();
 
-        String sql = "SELECT pr.ratingId, pr.ratingDate, pr.satisfaction, pr.comment, "
+        String sql = "SELECT pr.ratingId, pr.ratingDate, pr.satisfaction, pr.comment, pr.reply, "
                 + "p.productId, p.productName, p.imgLocation "
                 + "FROM productRating pr "
                 + "JOIN receipt r ON pr.receiptId = r.receiptId "
                 + "JOIN cart c ON r.cartId = c.cartId "
                 + "JOIN product p ON pr.productId = p.productId "
                 + "WHERE c.custId = ? ORDER BY pr.ratingDate DESC";
-
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -93,6 +92,7 @@ public class ReviewService {
                 review.setRatingdate(rs.getTimestamp("ratingDate"));
                 review.setSatisfaction(rs.getInt("satisfaction"));
                 review.setComment(rs.getString("comment"));
+                review.setReply(rs.getString("reply"));
 
                 Product product = new Product();
                 product.setProductid(rs.getString("productId"));
@@ -173,7 +173,8 @@ public class ReviewService {
     public List<Productrating> getTop3ReviewsByProduct(String productId) {
         List<Productrating> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM productRating WHERE productId = ? ORDER BY ratingDate DESC FETCH FIRST 3 ROWS ONLY";
+        String sql = "SELECT ratingId, satisfaction, comment, reply, ratingDate FROM productRating "
+                + "WHERE productId = ? ORDER BY ratingDate DESC FETCH FIRST 3 ROWS ONLY";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, productId);
@@ -185,6 +186,7 @@ public class ReviewService {
                 pr.setRatingdate(rs.getTimestamp("ratingDate"));
                 pr.setSatisfaction(rs.getInt("satisfaction"));
                 pr.setComment(rs.getString("comment"));
+                pr.setReply(rs.getString("reply"));  // ✅ Include reply here
                 list.add(pr);
             }
 
@@ -195,5 +197,54 @@ public class ReviewService {
         return list;
     }
 
+    
+    public List<Productrating> getAllRatings() {
+        List<Productrating> ratings = new ArrayList<>();
+        String sql = "SELECT * FROM productRating";
 
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Productrating rating = new Productrating();
+                rating.setRatingid(rs.getString("ratingId"));
+                rating.setSatisfaction(rs.getInt("satisfaction"));
+                rating.setComment(rs.getString("comment"));
+                rating.setReply(rs.getString("reply"));
+                rating.setRatingdate(rs.getTimestamp("ratingDate"));
+
+                // Set product & receipt as dummy for now
+                Product product = new Product();
+                product.setProductid(rs.getString("productId"));
+                rating.setProductid(product);
+
+                Receipt receipt = new Receipt();
+                receipt.setReceiptid(rs.getString("receiptId"));
+                rating.setReceiptid(receipt);
+
+                ratings.add(rating);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ratings;
+    }
+
+
+    public void updateReply(String ratingId, String replyText) {
+        String sql = "UPDATE productRating SET reply = ? WHERE ratingId = ?";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, replyText);
+            stmt.setString(2, ratingId);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
 }
