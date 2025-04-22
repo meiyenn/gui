@@ -251,44 +251,91 @@ public class ProductDa {
 
     }
     
+    public ResultSet topSalesProd(){
+        ResultSet rs=null;
+        //Product prod = new Product();
+        //prod=null; //initiale value
+
+        try {
+            String topSalesStr = "SELECT " +
+            "p.productId, " +
+            "p.productName, " +
+            "p.category, " +
+            "p.price, " +
+            "SUM(ci.quantitypurchased) AS Units_Sold, " +
+            "SUM(ci.quantitypurchased * p.price) AS Total_Sales " +
+            "FROM cart_item ci " +
+            "JOIN product p ON ci.productId = p.productId " +
+            "WHERE p.status=1 " +
+            "GROUP BY p.productId, p.productName, p.category, p.price " +
+            "ORDER BY Units_Sold DESC " +
+            "FETCH FIRST 10 ROWS ONLY ";
+
+            stmt = conn.prepareStatement(topSalesStr);
+
+            rs = stmt.executeQuery();
+
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return rs;
+        }
     
-//    //testing
-//    public static void main(String[] args) {
-//        
-//        List<Product> prod=new ArrayList<>();
-//        ProductDa pda=new ProductDa();
-////        //get all prod()
-////        prod=pda.getAllProd();
-////        for (Product p : prod) {
-////            System.out.println(p);  // Automatically calls toString()
-////        }
-////        //end
-//        
-////        //checkExist
-////        Product prod2=new Product();
-////        prod2=pda.checkExist("prod002");
-////        System.out.println(prod2.getProductid()+prod2.getProductname());
-////        //end
-//        
-////        //add prod ()
-////        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
-////        boolean addStatus=pda.addProduct(p);
-////        System.out.println(addStatus);
-//
-//        //System.out.println(pda.autoProdId());
-//        
-////                //filterprod()
-////        prod=pda.filterProd("category","ake up");
-////        for (Product p : prod) {
-////            System.out.println(p);  // Automatically calls toString()
-////        }
-////        //end
-//
+    
+    //testing
+    public static void main(String[] args) throws SQLException {
+        
+        List<Product> prod=new ArrayList<>();
+        ProductDa pda=new ProductDa();
+//        //get all prod()
+//        prod=pda.getAllProd();
+//        for (Product p : prod) {
+//            System.out.println(p);  // Automatically calls toString()
+//        }
+//        //end
+        
+//        //checkExist
+//        Product prod2=new Product();
+//        prod2=pda.checkExist("prod002");
+//        System.out.println(prod2.getProductid()+prod2.getProductname());
+//        //end
+        
+//        //add prod ()
+//        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
+//        boolean addStatus=pda.addProduct(p);
+//        System.out.println(addStatus);
+
+        //System.out.println(pda.autoProdId());
+        
+//                //filterprod()
+//        prod=pda.filterProd("category","ake up");
+//        for (Product p : prod) {
+//            System.out.println(p);  // Automatically calls toString()
+//        }
+//        //end
+
 //        //is in use()
 //        boolean checkInUse=pda.isProdInUse("prod003");
 //        System.out.println(checkInUse);
-//        
-//    }
+
+        ResultSet rs=pda.topSalesProd();
+        while (rs.next()) {
+            String productId = rs.getString(1);
+            String productName = rs.getString(2);
+            String category = rs.getString(3);
+            int quantity = rs.getInt(4);
+            double price = rs.getDouble(5);
+
+            System.out.println("ID: " + productId);
+            System.out.println("Name: " + productName);
+            System.out.println("category: " + category);
+            System.out.println("Price: " + price);
+            System.out.println("Quantity: " + quantity);
+            System.out.println("-------------------------\n");
+        }
+        
+    }
 
 
 }

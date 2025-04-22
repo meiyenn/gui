@@ -5,13 +5,88 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*" %>
+<%@ page import="model.ProductDa" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Top 10 Sales Report</title>
+        <style>
+            table {
+              border-collapse: collapse;
+              width: 100%;
+            }
+
+            th,td {
+                border-bottom: 1px solid gray;
+                padding: 12px;
+                text-align: center;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            
+        </style>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Top 10 Sales Report</h1>
+        
+        <%--report table--%>
+        <table>
+            <thead>
+                <tr style="height:70px">
+                    <th>Rank</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Unit Price</th>
+                    <th>Unit Sold</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            
+                
+                <%--access the top sales product record--%>
+                <% 
+                    ProductDa pda = new ProductDa(); 
+                    ResultSet rs=pda.topSalesProd();
+                    int count=1;
+                    
+                %>
+
+                <%  
+                    boolean hasData = false;
+                    while(rs.next()){
+                        hasData = true;
+                    
+                %>
+                <tr>
+                        <td><%=count%></td>
+                        <td><%=rs.getString(1)%></td>
+                        <td><%=rs.getString(2)%></td>
+                        <td><%=rs.getString(3)%></td>
+                        <td><%=rs.getDouble(4)%></td>
+                        <td><%=rs.getInt(5)%></td>
+                        <td><%=rs.getDouble(6)%></td>
+                </tr>        
+                <% 
+                        count++;
+                    }
+                        if (hasData==false) {
+                %>
+                
+                <tr>
+                    <td colspan="7" style="text-align:center; font-weight:bold; color:#808080;">No Record found!</td>
+                </tr>
+                <%
+                    }
+                %>
+                
+                
+            
+        </table>
+        
     </body>
 </html>

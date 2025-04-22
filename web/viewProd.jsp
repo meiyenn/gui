@@ -184,7 +184,7 @@
             <% if (displayList == null || displayList.isEmpty()) { %>
                 <tr>
                     <td colspan="12" style="text-align:center; font-weight:bold; color:#808080;">
-                        No such product found.
+                        No Record found!
                     </td>
                 </tr>
             <% } else { %>
