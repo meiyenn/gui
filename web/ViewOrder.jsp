@@ -25,8 +25,9 @@
     }
 
     BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.06));
-    BigDecimal shipping = subtotal.compareTo(BigDecimal.valueOf(200)) < 0 ? new BigDecimal("10.00") : BigDecimal.ZERO;
-    BigDecimal total = subtotal.add(tax).add(shipping);
+    BigDecimal shipping = subtotal.compareTo(BigDecimal.valueOf(1000)) < 0 ? new BigDecimal("25.00") : BigDecimal.ZERO;
+    BigDecimal discount = receipt.getDiscount() != null ? receipt.getDiscount() : BigDecimal.ZERO;
+    BigDecimal total = receipt.getTotal();
 %>
 
 <!DOCTYPE html>
@@ -129,6 +130,17 @@
             <td colspan="3" class="total">Subtotal:</td>
             <td colspan="2">RM <%= subtotal.setScale(2) %></td>
         </tr>
+        <% if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {%>
+        <tr>
+            <td colspan="3" class="total">
+                Voucher Applied:
+                <%= (receipt.getVoucherCode() != null) ? receipt.getVoucherCode() : ""%>
+            </td>
+            <td colspan="2" style="color: green;">
+                - RM <%= String.format("%.2f", discount)%>
+            </td>
+        </tr>
+        <% }%>
         <tr>
             <td colspan="3" class="total">Sales Tax (6%):</td>
             <td colspan="2">RM <%= tax.setScale(2) %></td>
@@ -137,7 +149,7 @@
             <td colspan="3" class="total">
                 Shipping:
                 <% if (shipping.compareTo(BigDecimal.ZERO) == 0) { %>
-                    <span style="color: green;">(Free over RM200)</span>
+                    <span style="color: green;">(Free over RM1000)</span>
                 <% } %>
             </td>
             <td colspan="2">RM <%= shipping.setScale(2) %></td>

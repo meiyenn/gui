@@ -13,7 +13,6 @@
         items = cartService.getCartItemsByReceiptId(receiptId);
     }
 
-    // Get customer info from session
     String fullName = (String) session.getAttribute("fullName");
     String email = (String) session.getAttribute("email");
     String phone = (String) session.getAttribute("phone");
@@ -26,67 +25,100 @@
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Receipt Details</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f3f4f6;
-            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            padding: 40px 20px;
         }
         .receipt-container {
-            background: white;
-            max-width: 800px;
+            background: #ffffff;
+            max-width: 850px;
             margin: auto;
-            padding: 30px;
+            padding: 30px 40px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         }
         h1 {
             text-align: center;
-            color: #111827;
+            color: #1e293b;
+            margin-bottom: 30px;
         }
         .section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            color: #334155;
         }
-        .section div {
-            margin-bottom: 5px;
+        .section h3 {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 10px;
         }
         th, td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+            border-bottom: 1px solid #e2e8f0;
             text-align: left;
         }
         th {
-            background-color: #f3f4f6;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
         }
         .totals {
-            text-align: right;
-            margin-top: 20px;
+            background: #f9fafb;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 16px;
+            color: #1e293b;
         }
         .totals div {
-            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .totals div:last-child {
+            font-weight: bold;
+            font-size: 18px;
+            color: #111827;
         }
         .btn {
             display: block;
             width: fit-content;
-            margin: 30px auto 0;
-            background: #2563eb;
+            margin: 40px auto 0;
+            background: #3b82f6;
             color: white;
-            padding: 10px 25px;
+            padding: 12px 30px;
             text-decoration: none;
             border-radius: 6px;
             transition: background 0.2s ease-in-out;
         }
         .btn:hover {
-            background: #1d4ed8;
+            background: #2563eb;
+        }
+
+        @media (max-width: 600px) {
+            .receipt-container {
+                padding: 20px;
+            }
+            th, td {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .totals div {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -128,40 +160,40 @@
             </tr>
             </thead>
             <tbody>
-            <%
-                for (CartItem item : items) {
-                    Product product = item.getProductid();
-                    int qty = item.getQuantitypurchased();
-                    BigDecimal price = item.getPrice();
-                    BigDecimal total = price.multiply(BigDecimal.valueOf(qty));
+            <% for (CartItem item : items) {
+                Product product = item.getProductid();
+                int qty = item.getQuantitypurchased();
+                BigDecimal price = item.getPrice();
+                BigDecimal rowTotal = price.multiply(BigDecimal.valueOf(qty));
             %>
             <tr>
                 <td><%= product.getProductname() %></td>
                 <td><%= qty %></td>
                 <td><%= String.format("%.2f", price) %></td>
-                <td><%= String.format("%.2f", total) %></td>
+                <td><%= String.format("%.2f", rowTotal) %></td>
             </tr>
             <% } %>
             </tbody>
         </table>
 
-            <div class="totals">
-                <div><strong>Subtotal:</strong> RM <%= receipt.getSubtotal() != null ? String.format("%.2f", receipt.getSubtotal()) : "0.00"%></div>
-                <div><strong>Discount:</strong> -RM <%= receipt.getDiscount() != null ? String.format("%.2f", receipt.getDiscount()) : "0.00"%></div>
-                <div><strong>Tax (6%):</strong> RM <%= receipt.getTax() != null ? String.format("%.2f", receipt.getTax()) : "0.00"%></div>
-                <div><strong>Shipping:</strong> RM <%= receipt.getShipping() != null ? String.format("%.2f", receipt.getShipping()) : "0.00"%></div>
-                <div><strong>Total Paid:</strong> <strong>RM <%= receipt.getTotal() != null ? String.format("%.2f", receipt.getTotal()) : "0.00"%></strong></div>
-            </div>
+        <div class="totals">
+            <div><span>Subtotal:</span> <span>RM <%= String.format("%.2f", receipt.getSubtotal()) %></span></div>
+            <% if (receipt.getDiscount() != null && receipt.getDiscount().compareTo(BigDecimal.ZERO) > 0) { %>
+                <div><span>Discount:</span> <span style="color:red;">- RM <%= String.format("%.2f", receipt.getDiscount()) %></span></div>
+            <% } %>
+            <div><span>Tax (6%):</span> <span>RM <%= String.format("%.2f", receipt.getTax()) %></span></div>
+            <div><span>Shipping:</span> <span>RM <%= String.format("%.2f", receipt.getShipping()) %></span></div>
+            <div><span>Total Paid:</span> <span><strong>RM <%= String.format("%.2f", receipt.getTotal()) %></strong></span></div>
+        </div>
 
     <% } else { %>
-        <p style="text-align:center; color: red;"> Receipt not found. Please check the receipt ID.</p>
+        <p style="text-align:center; color: red;">Receipt not found. Please check the receipt ID.</p>
     <% } %>
 
     <a class="btn" href="index.jsp">Continue Shopping</a>
 </div>
 
 <%
-    // Clean up session values after rendering
     session.removeAttribute("fullName");
     session.removeAttribute("email");
     session.removeAttribute("phone");
