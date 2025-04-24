@@ -7,9 +7,8 @@ import java.util.List;
 
 public class ReceiptService {
 
-    
     public String completeOrder(String custId) throws Exception {
-        String receiptId = "rec" + System.currentTimeMillis();                               
+        String receiptId = "rec" + System.currentTimeMillis(); // or use a UUID
         String cartId = null;
 
         try (Connection con = DBConnection.getConnection()) {

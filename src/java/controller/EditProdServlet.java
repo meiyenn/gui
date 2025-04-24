@@ -7,7 +7,6 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -151,7 +150,7 @@ public class EditProdServlet extends HttpServlet {
 
             
             prod.setProductname(prodName);
-            prod.setPrice(BigDecimal.valueOf(prodPrice));
+            prod.setPrice(prodPrice);
             prod.setQuantity(prodStock);
             prod.setProductdescription(prodDesc);
             prod.setStatus(prodStatus);

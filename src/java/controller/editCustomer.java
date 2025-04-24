@@ -35,6 +35,7 @@ public class editCustomer extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            request.setCharacterEncoding("UTF-8");
             String custId = request.getParameter("custId");
             String custName = request.getParameter("custName");
             String custContactNo = request.getParameter("custContactNo");

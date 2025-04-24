@@ -39,10 +39,10 @@ public class CartService {
     }
 
     // Add item to cart
-    public void addToCart(String custId, String productId, int quantity, double price) throws Exception {
+public void addToCart(String custId, String productId, int quantity, double price) throws Exception {
         try (Connection conn = DBConnection.getConnection()) {
 
-            // Check for active cart
+            // Step 1: Check for active cart
             String cartId = null;
             String findCartSql = "SELECT cartId FROM cart WHERE custId = ? AND checkOutStatus = FALSE";
             try (PreparedStatement stmt = conn.prepareStatement(findCartSql)) {
@@ -53,7 +53,7 @@ public class CartService {
                 }
             }
 
-            // Create cart 
+            // Step 2: Create cart if not found
             if (cartId == null) {
                 cartId = generateNextCartId();
                 String createCartSql = "INSERT INTO cart (cartId, custId, checkOutStatus) VALUES (?, ?, FALSE)";
@@ -64,7 +64,7 @@ public class CartService {
                 }
             }
 
-            //Check if product already in cart 
+            // Step 3: Check if product already in cart
             String cartItemId = null;
             int existingQty = 0;
             String findItemSql = "SELECT cartItemId, quantityPurchased FROM cart_item WHERE cartId = ? AND productId = ?";
@@ -79,7 +79,7 @@ public class CartService {
             }
 
             if (cartItemId != null) {
-                // Update quantity
+                // Step 4a: Update quantity
                 String updateSql = "UPDATE cart_item SET quantityPurchased = ? WHERE cartItemId = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
                     stmt.setInt(1, existingQty + quantity);
@@ -87,7 +87,7 @@ public class CartService {
                     stmt.executeUpdate();
                 }
             } else {
-                // Insert new cart item
+                // Step 4b: Insert new cart item
                 cartItemId = generateNextCartItemId();
                 String insertSql = "INSERT INTO cart_item (cartItemId, cartId, productId, quantityPurchased, price) VALUES (?, ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
@@ -103,11 +103,11 @@ public class CartService {
     }
 
 
-    // Get all cart items for a customer 
+    // Get all cart items for a customer
     public List<CartItem> getCartByCustomer(String custId) throws Exception {
     List<CartItem> itemList = new ArrayList<>();
     try (Connection con = DBConnection.getConnection()) {
-        //Get active cart
+        // Step 1: Get active cart
         String cartId = null;
         try (PreparedStatement stmt = con.prepareStatement("SELECT cartId FROM cart WHERE custId = ? AND checkOutStatus = FALSE")) {
             stmt.setString(1, custId);
@@ -117,7 +117,7 @@ public class CartService {
 
         if (cartId == null) return itemList;
 
-        // Get cart items
+        // Step 2: Get cart items
         String sql = "SELECT ci.*, p.productName, p.imgLocation FROM cart_item ci " +
                      "JOIN product p ON ci.productId = p.productId WHERE ci.cartId = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -168,7 +168,7 @@ public class CartService {
         }
     }
 
-    // Confirm the order: update checkout status 
+    // Confirm the order: update checkout status
     public void confirmOrder(String custId) throws Exception {
         try (Connection con = DBConnection.getConnection()) {
             String sql = "UPDATE cart SET checkOutStatus = TRUE WHERE custId = ? AND checkOutStatus = FALSE";
@@ -179,7 +179,6 @@ public class CartService {
         }
     }
     
-    //nextcartid
     public String generateNextCartItemId() {
         String lastId = null;
         String nextId = "itm001";
@@ -202,7 +201,6 @@ public class CartService {
         return nextId;
     }
     
-    //get receipt id
     public Receipt getReceiptById(String receiptId) throws Exception {
         Receipt receipt = null;
 
@@ -215,12 +213,7 @@ public class CartService {
                     receipt = new Receipt();
                     receipt.setReceiptid(receiptId);
                     receipt.setCreationtime(rs.getTimestamp("creationTime"));
-                    receipt.setSubtotal(rs.getBigDecimal("subtotal"));
-                    receipt.setDiscount(rs.getBigDecimal("discount"));
-                    receipt.setTax(rs.getBigDecimal("tax"));
-                    receipt.setShipping(rs.getBigDecimal("shipping"));
-                    receipt.setTotal(rs.getBigDecimal("total"));
-                    receipt.setVoucherCode(rs.getString("voucher_code"));
+                    // You can add more fields if needed
                 }
             }
         }
@@ -228,7 +221,6 @@ public class CartService {
         return receipt;
     }
     
-    // get receipt list by customer (one customer have many receipt)
     public List<Receipt> getReceiptsByCustomer(String custId) {
         List<Receipt> list = new ArrayList<>();
         String sql = "SELECT r.* FROM receipt r JOIN cart c ON r.cartId = c.cartId WHERE c.custId = ? ORDER BY r.creationTime DESC";
@@ -255,7 +247,6 @@ public class CartService {
         return list;
     }
     
-    
     public Receipt getLatestReceiptByCustomer(String custId) {
         Receipt receipt = null;
         String sql = "SELECT r.* FROM receipt r JOIN cart c ON r.cartId = c.cartId WHERE c.custId = ? ORDER BY r.creationTime DESC FETCH FIRST 1 ROWS ONLY";
@@ -279,15 +270,14 @@ public class CartService {
         return receipt;
     }
     
-    //get purchased item by receipt id
-    public List<CartItem> getCartItemsByReceiptId(String receiptId) {
+        public List<CartItem> getCartItemsByReceiptId(String receiptId) {
         List<CartItem> list = new ArrayList<>();
-        String sql = "SELECT rd.productId, rd.quantity, rd.price, p.productName, p.imgLocation "
-                + "FROM receipt_detail rd "
-                + "JOIN product p ON rd.productId = p.productId "
-                + "WHERE rd.receiptId = ?";
+        String sql = "SELECT rd.productId, rd.quantity, rd.price " +
+                     "FROM receipt_detail rd " +
+                     "WHERE rd.receiptId = ?";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, receiptId);
             ResultSet rs = stmt.executeQuery();
 
@@ -298,8 +288,7 @@ public class CartService {
 
                 Product p = new Product();
                 p.setProductid(rs.getString("productId"));
-                p.setProductname(rs.getString("productName"));   
-                p.setImglocation(rs.getString("imgLocation"));  
+                // Optional: load name and img if needed
                 item.setProductid(p);
 
                 list.add(item);
@@ -309,5 +298,7 @@ public class CartService {
         }
 
         return list;
-    }  
+    }
+
+   
 }

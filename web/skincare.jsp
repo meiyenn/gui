@@ -1,22 +1,25 @@
 <%@ page import="java.sql.*" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String categoryFilter = "makeup";
+%>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home | Skincare Store</title>
+    <title>Makeup Products</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #fff;
+            background-color: #fff0f5;
             margin: 0;
-            padding: 10px;
+            padding: 40px;
         }
 
         h1 {
             text-align: center;
             font-size: 28px;
             margin-bottom: 40px;
-            color: #1a1a1a;
+            color: #99004d;
         }
 
         .category-nav {
@@ -30,20 +33,21 @@
             padding-bottom: 10px;
         }
 
-        .category-nav span {
-            cursor: pointer;
-            color: #000;
+        .category-nav a {
+            text-decoration: none;
+            color: #777;
         }
 
-        .category-nav span:hover {
-            text-decoration: underline;
+        .category-nav a.active {
+            color: #000;
+            border-bottom: 2px solid black;
         }
 
         .product-row {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
             gap: 30px;
+            justify-content: center;
         }
 
         .product-card {
@@ -53,12 +57,7 @@
             overflow: hidden;
             text-align: center;
             padding: 10px;
-            background-color: #fafafa;
-            transition: box-shadow 0.3s;
-        }
-
-        .product-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
 
         .product-card img {
@@ -83,20 +82,6 @@
             color: #000;
         }
 
-        .product-rating {
-            margin: 8px 0;
-        }
-
-        .product-rating .star {
-            font-size: 16px;
-            color: #FFD700;
-            margin: 0 1px;
-        }
-
-        .product-rating .star.gray {
-            color: #ccc;
-        }
-
         .btn-add {
             display: block;
             background-color: #000;
@@ -107,72 +92,67 @@
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            border-radius: 4px;
         }
 
         .btn-add:hover {
             background-color: #444;
         }
-
-        .btn-view-all {
-            display: block;
-            margin: 40px auto 0;
-            padding: 10px 25px;
-            background-color: #000;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 5px;
-        }
-
-        .btn-view-all:hover {
-            background-color: #444;
-        }
-        
-        
     </style>
 </head>
 <body>
 
-<h1>DISCOVER OUR BESTSELLERS & NEW ICONS</h1>
+<h1>Makeup Products</h1>
 
-
+<div class="category-nav">
+    <a href="ProductPage.jsp">ALL</a>
+    <a href="makeup.jsp" class="active">MAKEUP</a>
+    <a href="skincare.jsp">SKINCARE</a>
+</div>
 
 <div class="product-row">
 <%
     try {
         Class.forName("org.apache.derby.jdbc.ClientDriver");
-        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/ass", "nbuser", "nbuser");
+        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/assignment", "nbuser", "nbuser");
 
-        String sql = "SELECT * FROM Product WHERE status = 1 FETCH FIRST 4 ROWS ONLY";
+        String sql = "SELECT * FROM Product WHERE status = 1 AND LOWER(productDescription) LIKE ?";
         PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, "%" + categoryFilter.toLowerCase() + "%");
+
         ResultSet rs = ps.executeQuery();
 
         while(rs.next()) {
 %>
     <div class="product-card">
-        <img src="<%= rs.getString("imgLocation") %>" alt="Product">
-        <div class="product-name"><%= rs.getString("productName") %></div>
-        <div class="product-price">RM <%= rs.getDouble("price") %></div>
-        <form method="get" action="AddToCart">
-            <input type="hidden" name="pid" value="<%= rs.getString("productId") %>">
+        <img src="<%= rs.getString("imgLocation")%>" alt="Product">
+        <div class="product-name"><%= rs.getString("productName")%></div>
+        <div class="product-size">One size only</div>
+        <div class="product-size"><%= rs.getString("productDescription")%></div>
+        <div class="product-price">RM <%= rs.getDouble("price")%></div>
+
+        <form method="get" action="AddToCartServlet">
+            <input type="hidden" name="pid" value="<%= rs.getString("productId")%>">
             <input type="hidden" name="pqty" value="1">
             <button class="btn-add" type="submit">Add to Cart</button>
         </form>
+
+        <form method="get" action="ProductDetails.jsp">
+            <input type="hidden" name="productId" value="<%= rs.getString("productId")%>">
+            <button class="btn-add" type="submit">View Details</button>
+        </form>
     </div>
+
 <%
         }
+
         rs.close();
         ps.close();
         conn.close();
     } catch(Exception e) {
-        out.println("<p>Error loading products: " + e.getMessage() + "</p>");
+        out.println("<p>Error: " + e.getMessage() + "</p>");
     }
 %>
 </div>
-
-<a href="ProductPage.jsp" class="btn-view-all">VIEW ALL PRODUCTS</a>
 
 </body>
 </html>

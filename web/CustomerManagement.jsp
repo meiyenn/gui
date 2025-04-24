@@ -203,19 +203,16 @@
                 <% if ("manager".equals(role)) { %>
                     <%= rs.getString("custPswd") %>
                 <% } else { %>
-                    •••••••• 
+                    ••••••••
                 <% } %>
             </td>
             <td style="text-align:center; vertical-align:middle;">
                 <% if ("manager".equals(role)) { %>
                     <!-- Edit Button -->
-                    <form action="EditCustomer.jsp" method="get" style="display:inline;">
-                        <input type="hidden" name="custId" value="<%= rs.getString("custId")%>">
-                        <input type="submit" value="Edit" class="btn-edit">
+                    <form action="editCustomer.jsp" method="get" style="display:inline;">
+                        <input type="hidden" name="custId" value="<%= rs.getString("custId") %>">
+                        <input type="submit" value="Edit" class="edit-btn">
                     </form>
-                    <% } else { %>
-                    <em>View Only</em>
-                <% } %>
             </td>
             <td style="text-align:center; vertical-align:middle;">
                     <!-- Delete Button -->

@@ -25,36 +25,13 @@
 <head>
     <title>My Orders</title>
     <style>
-        body { 
-            font-family: Arial; 
-            padding: 20px; 
-        }
-        h2 { 
-            text-align: center; 
-        }
-        table { 
-            width: 80%; 
-            margin: auto; 
-            border-collapse: collapse; 
-        }
-        th, td { 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            text-align: center; 
-        }
-        th { 
-            background-color: #f2f2f2; 
-        }
-        .btn { 
-            background-color: #3498db; 
-            color: white; 
-            padding: 6px 12px; 
-            border: none; 
-            cursor: pointer; 
-        }
-        .btn:hover { 
-            background-color: #2980b9; 
-        }
+        body { font-family: Arial; padding: 20px; }
+        h2 { text-align: center; }
+        table { width: 80%; margin: auto; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+        th { background-color: #f2f2f2; }
+        .btn { background-color: #3498db; color: white; padding: 6px 12px; border: none; cursor: pointer; }
+        .btn:hover { background-color: #2980b9; }
     </style>
 </head>
 <body>
