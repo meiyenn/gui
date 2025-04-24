@@ -51,27 +51,39 @@ public class Checkout extends HttpServlet {
                 return;
             }
 
+            // 🧮 Calculate subtotal
             BigDecimal subtotal = BigDecimal.ZERO;
             for (CartItem item : cartList) {
                 BigDecimal itemSubtotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantitypurchased()));
                 subtotal = subtotal.add(itemSubtotal);
             }
 
-            BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.06));
+            // Shipping
             BigDecimal shipping = BigDecimal.ZERO;
-            if ("delivery".equalsIgnoreCase(deliveryMethod) && subtotal.compareTo(BigDecimal.valueOf(200)) < 0) {
-                shipping = BigDecimal.valueOf(10);
+            if ("delivery".equalsIgnoreCase(deliveryMethod) && subtotal.compareTo(BigDecimal.valueOf(1000)) < 0) {
+                shipping = BigDecimal.valueOf(25);
             }
 
+            // Tax (6%)
+            BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.06));
+
+            // Voucher
             BigDecimal discount = BigDecimal.ZERO;
-            String voucherMsg = "";
             String voucherCode = (String) session.getAttribute("voucherCode");
             Voucher voucher = (Voucher) session.getAttribute("validVoucher");
+
+            // Load voucher message from session (from appliedVoucher)
+            String voucherMsg = (String) session.getAttribute("voucherMsg");
+            if (voucherMsg != null) {
+                session.removeAttribute("voucherMsg");
+            }
 
             if (voucher != null) {
                 if (voucherService.isValidForCart(voucher, subtotal)) {
                     discount = voucher.getDiscount();
-                    voucherMsg = "Voucher applied successfully!";
+                    if (voucherMsg == null) {
+                        voucherMsg = "Voucher applied successfully!";
+                    }
                     voucherCode = voucher.getCode();
                 } else {
                     voucherMsg = "Minimum spend not met (RM " + voucher.getMinspend() + ").";
@@ -79,8 +91,10 @@ public class Checkout extends HttpServlet {
                 }
             }
 
+            //Final total
             BigDecimal total = subtotal.add(tax).add(shipping).subtract(discount);
 
+            //Store values to show on JSP
             request.setAttribute("cartList", cartList);
             request.setAttribute("subtotal", subtotal);
             request.setAttribute("tax", tax);
@@ -91,6 +105,7 @@ public class Checkout extends HttpServlet {
             request.setAttribute("voucherCode", voucherCode);
             request.setAttribute("deliveryMethod", deliveryMethod);
 
+            //When user confirms checkout
             if ("processCheckout".equals(action)) {
                 if (voucher != null && discount.compareTo(BigDecimal.ZERO) > 0) {
                     voucherService.markVoucherAsUsed(voucher.getCode(), custId);
@@ -98,14 +113,15 @@ public class Checkout extends HttpServlet {
                     session.removeAttribute("voucherCode");
                 }
 
-                // Optionally mark the cart as completed
-                cartService.confirmOrder(custId); // Marks current cart as checked out
+                // Mark cart as checked out
+                cartService.confirmOrder(custId);
 
-                // You could also forward to a final confirmation page
+                // Redirect to confirmation page
                 response.sendRedirect("checkoutConfirmation.jsp");
                 return;
             }
 
+            //Forward to checkout page
             RequestDispatcher dispatcher = request.getRequestDispatcher("checkout.jsp");
             dispatcher.forward(request, response);
 

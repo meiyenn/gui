@@ -21,7 +21,7 @@ public class AddToCart extends HttpServlet {
         String qtyStr = request.getParameter("pqty");
 
         if (custId == null || pid == null || qtyStr == null || custId.isEmpty() || pid.isEmpty() || qtyStr.isEmpty()) {
-            response.getWriter().write("❌ Missing customer ID, product ID, or quantity.");
+            response.getWriter().write("Missing customer ID, product ID, or quantity.");
             return;
         }
 
@@ -29,7 +29,7 @@ public class AddToCart extends HttpServlet {
         try {
             quantity = Integer.parseInt(qtyStr);
         } catch (NumberFormatException e) {
-            response.getWriter().write("❌ Invalid quantity.");
+            response.getWriter().write("Invalid quantity.");
             return;
         }
 
@@ -46,7 +46,7 @@ public class AddToCart extends HttpServlet {
                 if (rs.next()) {
                     price = rs.getBigDecimal("PRICE").doubleValue();
                 } else {
-                    response.getWriter().write("❌ Product not found.");
+                    response.getWriter().write("Product not found.");
                     return;
                 }
             }
@@ -59,7 +59,7 @@ public class AddToCart extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("❌ Error: " + e.getMessage());
+            response.getWriter().write("Error: " + e.getMessage());
         }
     }
 

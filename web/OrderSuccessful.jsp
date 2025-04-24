@@ -1,4 +1,7 @@
+
+<%@ page import="model.Receipt, model.CartService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -118,13 +121,24 @@
     <p>
         Thank you for your payment.<br>
         Your order will be processed.<br>
-        <strong>Receipt ID:</strong> <%= request.getAttribute("receipt") != null ? ((model.Receipt) request.getAttribute("receipt")).getReceiptid() : "Unavailable"%>
+        <%
+            String receiptId = request.getParameter("receiptId");
+            Receipt receipt = null;
+
+            if (receiptId != null && !receiptId.isEmpty()) {
+                CartService cartService = new CartService(); // Or your ReceiptService if you have one
+                receipt = cartService.getReceiptById(receiptId);
+            }
+        %>
+        <strong>Receipt ID:</strong> <%= receiptId%>
     </p>
 
     <div class="btn-group">
-        <form action="OrderDetails.jsp" method="get">
+        <form action="ReceiptView.jsp" method="get">
+            <input type="hidden" name="receiptId" value="<%= receiptId%>">
             <button class="btn btn-view" type="submit">VIEW ORDER</button>
         </form>
+
         <form action="index.jsp" method="get">
             <button class="btn btn-continue" type="submit">CONTINUE SHOPPING</button>
         </form>

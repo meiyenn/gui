@@ -14,10 +14,10 @@
         body {
             font-family: 'Poppins', sans-serif;
             height: 100vh;
-            background-image: url('src/image/login-container.jpg'); /* Background image */
-            background-size: cover;  /* Ensures the image fills the container while maintaining its aspect ratio */
-            background-position: center;  /* Center the image */
-            background-repeat: no-repeat; /* Prevent image from repeating */
+            background-image: url('src/image/login-container.jpg'); 
+            background-size: cover;  
+            background-position: center;  
+            background-repeat: no-repeat; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -88,24 +88,35 @@
             text-decoration: underline;
         }
 
-        .error-message {
-            background-color: rgba(255, 0, 0, 0.1);
+        #passwordError {
             color: red;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            text-align: center;
+            display: none;
+            font-size: 0.85rem;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
+<%
+    String error = request.getParameter("error");
+    if ("exists".equals(error)) {
+%>
+    <script>
+        alert("This username or email is already registered. Please try another.");
+    </script>
+<%
+    } else if ("insert_failed".equals(error)) {
+%>
+    <script>
+        alert("Registration failed due to a system error. Please try again later.");
+    </script>
+<%
+    }
+%>
+
 <div class="form-container">
     <h2>Customer Registration</h2>
-
-    <% if (request.getAttribute("errorMessage") != null) { %>
-        <div class="error-message"><%= request.getAttribute("errorMessage") %></div>
-    <% } %>
 
     <form action="RegisterServlet" method="post" onsubmit="return validatePassword()">
         <div class="input-group">
@@ -125,7 +136,7 @@
         </div>
         <div class="input-group">
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required maxlength="25" oninput="validatePassword()">
-            <span id="passwordError" style="color: red; display: none;">Passwords do not match</span>
+            <div id="passwordError">Passwords do not match</div>
         </div>
 
         <button type="submit" class="login-btn" id="submitBtn">Register</button>
