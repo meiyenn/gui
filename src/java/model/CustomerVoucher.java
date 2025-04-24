@@ -20,7 +20,7 @@ public class CustomerVoucher {
     //voucher hardcode
     public void createVouchersForCustomer(String custId) {
         insertVoucher("voucher_rm200_" + custId, custId, "RM200OFF10", 10.00, 200.00);
-        insertVoucher("voucher_rm450_" + custId, custId, "RM350OFF15", 15.00, 350.00);
+        insertVoucher("voucher_rm350_" + custId, custId, "RM350OFF20", 20.00, 350.00);
         insertVoucher("voucher_first_" + custId, custId, "FIRSTORDER10", 10.00, 0.00);
     }
 

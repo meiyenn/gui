@@ -31,9 +31,14 @@
                <div class="col-md-6">
                   <h1 class="about_taital padding_top0">About company</h1>
                   <div class="border"></div>
-                  <p class="about_text">consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitationconsectetur adipiscing </p>
+                  <p class="about_text">At Unstoppable Beauty, we believe in empowering your natural beauty with the finest skincare and beauty products. 
+                      Our curated collection features top-quality skincare solutions, makeup, and wellness essentials designed to enhance your radiance and restore confidence. 
+                      Whether you're looking for nourishing skincare, innovative beauty tools, or the latest beauty trends, we offer a range of products to suit every need. 
+                      Join us on a journey to healthier, glowing skin!
+
+                  </p>
                   <div class="read_bt_1"><a href="index.jsp">Read More</a></div>
-                  <div class="image_1"><img src="src/image/img-1.png"></div>
+                  <div class="image_1"><img src="src/image/prod-home1.png"></div>
                </div>
             </div>
          </div>

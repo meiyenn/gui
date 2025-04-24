@@ -61,11 +61,10 @@ public class appliedVoucher extends HttpServlet {
                 voucherMsg = "Voucher applied successfully!";
                 session.setAttribute("validVoucher", voucher);
             }
-
-            // Store code + message
-            //session.setAttribute("voucherCode", voucherCode.trim());
-            //session.setAttribute("voucherMsg", voucherMsg);
-
+            
+            session.setAttribute("voucherMsg", voucherMsg);
+            session.setAttribute("voucherCode", voucherCode.trim());
+            
             // Redirect back to Checkout (recalculate totals)
             response.sendRedirect("Checkout");
 
