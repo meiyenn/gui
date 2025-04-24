@@ -262,8 +262,7 @@ public class ProductDa {
             "p.productName, " +
             "p.category, " +
             "p.price, " +
-            "SUM(ci.quantitypurchased) AS Units_Sold, " +
-            "SUM(ci.quantitypurchased * p.price) AS Total_Sales " +
+            "SUM(ci.quantitypurchased) AS Units_Sold " +
             "FROM cart_item ci " +
             "JOIN product p ON ci.productId = p.productId " +
             "WHERE p.status=1 " +
@@ -283,59 +282,94 @@ public class ProductDa {
         }
     
     
-    //testing
-    public static void main(String[] args) throws SQLException {
-        
-        List<Product> prod=new ArrayList<>();
-        ProductDa pda=new ProductDa();
-//        //get all prod()
-//        prod=pda.getAllProd();
-//        for (Product p : prod) {
-//            System.out.println(p);  // Automatically calls toString()
-//        }
-//        //end
-        
-//        //checkExist
-//        Product prod2=new Product();
-//        prod2=pda.checkExist("prod002");
-//        System.out.println(prod2.getProductid()+prod2.getProductname());
-//        //end
-        
-//        //add prod ()
-//        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
-//        boolean addStatus=pda.addProduct(p);
-//        System.out.println(addStatus);
+        public ResultSet salesRecord(String date1,String date2){
+        ResultSet rs=null;
+        //Product prod = new Product();
+        //prod=null; //initiale value
 
-        //System.out.println(pda.autoProdId());
-        
-//                //filterprod()
-//        prod=pda.filterProd("category","ake up");
-//        for (Product p : prod) {
-//            System.out.println(p);  // Automatically calls toString()
-//        }
-//        //end
+        try {
+            String salesRecordStr = "SELECT " +
+                "p.productId," +
+                "p.productName," +
+                "p.category," +
+                "p.price," +
+                "SUM(rd.quantity) AS Units_Sold," +
+                "SUM(rd.quantity * p.price) AS Total_Sales " +
+                "FROM receipt_detail rd " +
+                "JOIN product p ON rd.productId = p.productId " +
+                "JOIN receipt r ON rd.receiptId = r.receiptId " +
+                "WHERE p.status=1 AND r.creationTime BETWEEN ? AND ?" +
+                "GROUP BY p.productId, p.productName, p.category, p.price " +
+                "ORDER BY Total_Sales DESC";
 
-//        //is in use()
-//        boolean checkInUse=pda.isProdInUse("prod003");
-//        System.out.println(checkInUse);
+            stmt = conn.prepareStatement(salesRecordStr);
+            stmt.setString(1, date1);
+            stmt.setString(2, date2);
 
-        ResultSet rs=pda.topSalesProd();
-        while (rs.next()) {
-            String productId = rs.getString(1);
-            String productName = rs.getString(2);
-            String category = rs.getString(3);
-            int quantity = rs.getInt(4);
-            double price = rs.getDouble(5);
+            rs = stmt.executeQuery();
 
-            System.out.println("ID: " + productId);
-            System.out.println("Name: " + productName);
-            System.out.println("category: " + category);
-            System.out.println("Price: " + price);
-            System.out.println("Quantity: " + quantity);
-            System.out.println("-------------------------\n");
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return rs;
         }
-        
-    }
+    
+    
+//    //testing
+//    public static void main(String[] args) throws SQLException {
+//        
+//        List<Product> prod=new ArrayList<>();
+//        ProductDa pda=new ProductDa();
+////        //get all prod()
+////        prod=pda.getAllProd();
+////        for (Product p : prod) {
+////            System.out.println(p);  // Automatically calls toString()
+////        }
+////        //end
+//        
+////        //checkExist
+////        Product prod2=new Product();
+////        prod2=pda.checkExist("prod002");
+////        System.out.println(prod2.getProductid()+prod2.getProductname());
+////        //end
+//        
+////        //add prod ()
+////        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
+////        boolean addStatus=pda.addProduct(p);
+////        System.out.println(addStatus);
+//
+//        //System.out.println(pda.autoProdId());
+//        
+////                //filterprod()
+////        prod=pda.filterProd("category","ake up");
+////        for (Product p : prod) {
+////            System.out.println(p);  // Automatically calls toString()
+////        }
+////        //end
+//
+////        //is in use()
+////        boolean checkInUse=pda.isProdInUse("prod003");
+////        System.out.println(checkInUse);
+//
+//        ResultSet rs=pda.salesRecord("2025-03-11 15:00:00.000", "2025-03-11 18:00:00.000");
+//        while (rs.next()) {
+//            String productId = rs.getString(1);
+//            String productName = rs.getString(2);
+//            String category = rs.getString(3);
+//            double price1 = rs.getDouble(4);
+//            int quantity = rs.getInt(5);
+//            double price = rs.getDouble(6);
+//
+//            System.out.println("ID: " + productId);
+//            System.out.println("Name: " + productName);
+//            System.out.println("category: " + category);
+//            System.out.println("Price: " + price);
+//            System.out.println("Quantity: " + quantity);
+//            System.out.println("-------------------------\n");
+//        }
+//        
+//    }
 
 
 }

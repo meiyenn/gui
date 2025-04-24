@@ -67,7 +67,7 @@ public class LoginServlet extends HttpServlet {
                         response.addCookie(cookie);
                     }
 
-                    response.sendRedirect("StaffManagerDashboard.jsp"); // your admin/manager page
+                    response.sendRedirect("staffHeader.jsp"); // your admin/manager page
                     return;
                 }
             }
@@ -94,30 +94,30 @@ public class LoginServlet extends HttpServlet {
                 }
             }
 
-            // customer
-            String custSql = "SELECT * FROM customer WHERE custUserName = ? AND custPswd = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(custSql)) {
-                stmt.setString(1, username);
-                stmt.setString(2, password);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    
-                    session.setAttribute("custId", rs.getString("custId"));
-                    session.setAttribute("username", rs.getString("custUserName"));
-                    session.setAttribute("role", "customer");
-
-
-                    if (rememberMe) {
-                        Cookie cookie = new Cookie("username", username);
-                        cookie.setMaxAge(30 * 24 * 60 * 60);
-                        cookie.setPath("/");
-                        response.addCookie(cookie);
-                    }
-
-                    response.sendRedirect("index.jsp?login=success");
-                    return;
-                }
-            }
+//            // customer
+//            String custSql = "SELECT * FROM customer WHERE custUserName = ? AND custPswd = ?";
+//            try (PreparedStatement stmt = conn.prepareStatement(custSql)) {
+//                stmt.setString(1, username);
+//                stmt.setString(2, password);
+//                ResultSet rs = stmt.executeQuery();
+//                if (rs.next()) {
+//                    
+//                    session.setAttribute("custId", rs.getString("custId"));
+//                    session.setAttribute("username", rs.getString("custUserName"));
+//                    session.setAttribute("role", "customer");
+//
+//
+//                    if (rememberMe) {
+//                        Cookie cookie = new Cookie("username", username);
+//                        cookie.setMaxAge(30 * 24 * 60 * 60);
+//                        cookie.setPath("/");
+//                        response.addCookie(cookie);
+//                    }
+//
+//                    response.sendRedirect("index.jsp?login=success");
+//                    return;
+//                }
+//            }
 
             // 4. Failed login
             response.sendRedirect("CustomerLogin.jsp?error=Invalid username or password.");

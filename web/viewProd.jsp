@@ -164,9 +164,9 @@
                     displayList = filterList;
                 } else if (prodList != null) {
                     displayList = prodList;
-                } else {
+                } else { //if session is null redirect to servlet to get session for product
                     // Redirect to the session from servlet
-                    response.sendRedirect("ViewProdServlet");
+                    response.sendRedirect("AddProdServlet"); //view product get method at addprodservlet
                 }
             %>
             

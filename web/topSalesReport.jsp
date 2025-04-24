@@ -43,7 +43,6 @@
                     <th>Category</th>
                     <th>Unit Price</th>
                     <th>Unit Sold</th>
-                    <th>Total Sales</th>
                 </tr>
             </thead>
             
@@ -69,7 +68,6 @@
                         <td><%=rs.getString(3)%></td>
                         <td><%=rs.getDouble(4)%></td>
                         <td><%=rs.getInt(5)%></td>
-                        <td><%=rs.getDouble(6)%></td>
                 </tr>        
                 <% 
                         count++;
@@ -78,7 +76,7 @@
                 %>
                 
                 <tr>
-                    <td colspan="7" style="text-align:center; font-weight:bold; color:#808080;">No Record found!</td>
+                    <td colspan="6" style="text-align:center; font-weight:bold; color:#808080;">No Record found!</td>
                 </tr>
                 <%
                     }
