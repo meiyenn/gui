@@ -81,10 +81,8 @@ CREATE TABLE productRating (
     receiptId VARCHAR(7) NOT NULL,
     ratingDate TIMESTAMP NOT NULL,
     satisfaction INT NOT NULL,
-    comment VARCHAR(200) NOT NULL,
-    reply VARCHAR(200),
-    FOREIGN KEY (receiptId) REFERENCES receipt(receiptId),
-    FOREIGN KEY (productId) REFERENCES product(productId)
+    comment VARCHAR(80) NOT NULL,
+    FOREIGN KEY (receiptId) REFERENCES receipt(receiptId)
 );
 
 -- Voucher Table
