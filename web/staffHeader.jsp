@@ -86,20 +86,21 @@
         
         .dropdown-container {
             display: none;
-            background-color: #48525c;
-/*            padding-left: 8px;*/
+            background-color: #37495c;
+            padding-left: 5px;
         }
 
         .dropdown-container a {
             color: white;
             text-decoration: none;
             display: block;
+            margin: 20px 0;
         }
 
-        .dropdown-btn.active {
-            background-color: #444; /* Change background when active */
+/*        .dropdown-btn.active {
+            background-color: #444;
             color: white;
-        }
+        }*/
 
     </style>
 </head>
@@ -126,7 +127,7 @@
             <li><a href="StaffManagement.jsp">Staff Management</a></li>
             <li><a href="#" class="dropdown-btn">Reports <i class="fa fa-caret-down"></i></a></li>
                 <div class="dropdown-container">
-                    <a href="topSalesReport.jsp" class="dropdown-link">Top 10 Product</a>
+                    <a href="topSalesReport.jsp" class="dropdown-link">Top 10 Product Report</a>
                     <a href="salesReport.jsp" class="dropdown-link">Sales Report</a>
                 </div>
             
