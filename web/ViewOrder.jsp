@@ -28,6 +28,10 @@
     BigDecimal tax = total.multiply(BigDecimal.valueOf(0.06));
     BigDecimal shipping = total.compareTo(BigDecimal.valueOf(200)) < 0 ? new BigDecimal("10.00") : BigDecimal.ZERO;
     BigDecimal finalTotal = total.add(tax).add(shipping);
+    BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.06));
+    BigDecimal shipping = subtotal.compareTo(BigDecimal.valueOf(1000)) < 0 ? new BigDecimal("25.00") : BigDecimal.ZERO;
+    BigDecimal discount = receipt.getDiscount() != null ? receipt.getDiscount() : BigDecimal.ZERO;
+    BigDecimal total = receipt.getTotal();
 %>
 
 <!DOCTYPE html>
@@ -78,22 +82,63 @@
         <th>Subtotal (RM)</th>
     </tr>
 
-<%
-    for (CartItem item : items) {
-        Product p = item.getProductid();
-        BigDecimal sub = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantitypurchased()));
-%>
-    <tr>
-        <td>
-            <% if (p.getImglocation() != null) { %>
-                <img src="<%= p.getImglocation() %>" width="60"><br>
-            <% } %>
-            <%= p.getProductname() %> (<%= p.getProductid() %>)
-        </td>
-        <td><%= item.getPrice().setScale(2) %></td>
-        <td><%= item.getQuantitypurchased() %></td>
-        <td><%= sub.setScale(2) %></td>
-    </tr>
+        <% for (CartItem item : items) {
+            Product product = item.getProductid();
+            BigDecimal sub = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantitypurchased()));
+        %>
+        <tr>
+            <td>
+                <img src="<%= item.getProductid().getImglocation()%>" width="80"><br>
+                <%= item.getProductid().getProductname()%>
+            </td>
+            <td><%= item.getPrice().setScale(2) %></td>
+            <td><%= item.getQuantitypurchased() %></td>
+            <td><%= sub.setScale(2) %></td>
+            <td>
+                <form action="LeaveReview.jsp" method="get">
+                    <input type="hidden" name="productId" value="<%= product.getProductid() %>">
+                    <input type="hidden" name="receiptId" value="<%= receipt.getReceiptid() %>">
+                    <button type="submit" class="btn-review">✍️Write a Review</button>
+                </form>
+            </td>
+        </tr>
+        <% } %>
+
+        <tr>
+            <td colspan="3" class="total">Subtotal:</td>
+            <td colspan="2">RM <%= subtotal.setScale(2) %></td>
+        </tr>
+        <% if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {%>
+        <tr>
+            <td colspan="3" class="total">
+                Voucher Applied:
+                <%= (receipt.getVoucherCode() != null) ? receipt.getVoucherCode() : ""%>
+            </td>
+            <td colspan="2" style="color: green;">
+                - RM <%= String.format("%.2f", discount)%>
+            </td>
+        </tr>
+        <% }%>
+        <tr>
+            <td colspan="3" class="total">Sales Tax (6%):</td>
+            <td colspan="2">RM <%= tax.setScale(2) %></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="total">
+                Shipping:
+                <% if (shipping.compareTo(BigDecimal.ZERO) == 0) { %>
+                    <span style="color: green;">(Free over RM1000)</span>
+                <% } %>
+            </td>
+            <td colspan="2">RM <%= shipping.setScale(2) %></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="total">Total Paid:</td>
+            <td colspan="2"><strong>RM <%= total.setScale(2) %></strong></td>
+        </tr>
+    </table>
+<% } else { %>
+    <p style="text-align: center; color: #999;">No products found in this receipt.</p>
 <% } %>
 </table>
 

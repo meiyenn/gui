@@ -20,6 +20,10 @@ public class CustomerVoucher {
     public void createVouchersForCustomer(String custId) {
         // Define the SQL query for inserting vouchers
         String insertVoucherQuery = "INSERT INTO voucher (voucherId, custId, code, discount, minSpend, expiryDate, used) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        insertVoucher("voucher_rm200_" + custId, custId, "RM200OFF10", 10.00, 200.00);
+        insertVoucher("voucher_rm350_" + custId, custId, "RM350OFF20", 20.00, 350.00);
+        insertVoucher("voucher_first_" + custId, custId, "FIRSTORDER10", 10.00, 0.00);
+    }
 
         try (PreparedStatement pstVoucher = connection.prepareStatement(insertVoucherQuery)) {
             // Add first voucher (First-time order)

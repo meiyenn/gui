@@ -117,6 +117,12 @@ public class appliedVoucher extends HttpServlet {
             request.setAttribute("deliveryMethod", deliveryMethod);
 
             request.getRequestDispatcher("checkout.jsp").forward(request, response);
+            
+            session.setAttribute("voucherMsg", voucherMsg);
+            session.setAttribute("voucherCode", voucherCode.trim());
+            
+            // Redirect back to Checkout (recalculate totals)
+            response.sendRedirect("Checkout");
 
         } catch (Exception e) {
             getServletContext().log("Error in ApplyVoucher servlet: " + e.getMessage(), e);

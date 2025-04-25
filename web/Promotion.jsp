@@ -79,17 +79,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>OUR CURRENT OFFERS</h1>
+        <h1>OUR CURRENT OFFERS</h1><br><br>
         
         <div class="offers-container">
             <div class="offer-card">
                 <div class="offer-image">
                     <img src="src/image/offer1.jpg" alt="Fragrance Week" />
                 </div>
-                <h2 class="offer-title">FRAGRANCE WEEK</h2>
+                <h2 class="offer-title">FREE SHIPPING</h2>
                 <p class="offer-description">
-                    Earn double points on all Unstoppable Beauty fragrances from<br>
-                    16 - 30 April.
+                    Enjoy free delivery when you shop for RM1000 or more.<br>
+                    No hidden fees—just a great deal for you!
                 </p>
                 <p class="terms">*T&Cs apply</p>
                 <a href="ProductPage.jsp" class="shop-button">SHOP NOW</a>
@@ -99,11 +99,11 @@
                 <div class="offer-image">
                     <img src="src/image/offer2.jpg" alt="Join The Club" />
                 </div>
-                <h2 class="offer-title">JOIN THE CLUB</h2>
+                <h2 class="offer-title">JOIN THE MEMBERSHIP</h2>
                 <p class="offer-description">
-                    Enjoy 15% off + a miniature<br>
-                    fragrance when you<br>
-                    sign up and shop.
+                    Get RM10 off your first order<br>
+                    with no minimum spend!<br>
+                    Enjoy member benefits and discounts.
                 </p>
                 <p class="terms">*While stocks last. T&Cs apply.</p>
                 <a href="CustomerRegister.jsp" class="shop-button">SIGNUP NOW</a>
@@ -115,9 +115,9 @@
                 </div>
                 <h2 class="offer-title">YOUR MONTHLY GIFTS</h2>
                 <p class="offer-description">
-                    Seize 4-pc gifts when you spend<br>
-                    RM600 & 2-pc gifts when you<br>
-                    spend RM350.
+                    Free More Voucher<br>
+                    RM200OFF10 and RM350OFF20<br>
+                    when you register
                 </p>
                 <p class="terms">*While stocks last. T&Cs apply.</p>
                 <a href="ProductPage.jsp" class="shop-button">SHOP NOW</a>

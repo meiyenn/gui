@@ -74,6 +74,13 @@
                 <div class="voucher-message <%= msgClass %>">
                     <%= msgClass.equals("success") ? "✓" : "⚠" %> <%= voucherMsg %>
                 </div>
+                
+                    <%
+                            
+                            session.removeAttribute("voucherMsg");
+                            session.removeAttribute("voucherCode");
+                        
+                    %>
             <% } %>
         </form>
 
