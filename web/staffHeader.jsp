@@ -77,6 +77,11 @@
 
         .nav-links a:hover {
             text-decoration: underline;
+            
+        }
+        
+        ul li:hover{
+            background-color: #3b6387;
         }
         
         .fa-caret-down {
@@ -112,15 +117,16 @@
         <p><%= role.toUpperCase() %></p>
     </div>
 
+    <div class="nav-wrapper">
     <ul class="nav-links">
         <% if ("staff".equals(role)) { %>
-            <li><a href="#">Dashboard</a></li> 
+            <li><a href="adminDashboard.jsp">Dashboard</a></li> 
             <li><a href="StaffProfile.jsp">My Profile</a></li>
             <li><a href="CustomerManagement.jsp">Customer Management</a></li>
             <li><a href="viewProd.jsp">Product Management</a></li>
             <li><a href="ReviewManagement.jsp">Review Management</a></li>
         <% } else if ("admin".equals(role) || "manager".equals(role)) { %>
-            <li><a href="#">Dashboard</a></li> 
+            <li><a href="adminDashboard.jsp">Dashboard</a></li> 
             <li><a href="CustomerManagement.jsp">Customer Management</a></li>
             <li><a href="viewProd.jsp">Product Management</a></li>
             <li><a href="ReviewManagement">Review Management</a></li>
@@ -135,6 +141,7 @@
         <% } %>
         <li><a href="Logout">Logout</a></li>
     </ul>
+    </div>
 </div>
 
     
@@ -144,7 +151,6 @@
 
         <script>
         $(document).ready(function(){
-            // Use class selectors with the dot prefix
             $(".dropdown-btn").click(function(){
                 $(".dropdown-container").toggle();  // Use toggle to show/hide
             });
