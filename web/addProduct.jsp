@@ -11,6 +11,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <title>Add Product</title>
         
         <style>
@@ -70,7 +71,10 @@
 
         <div class="form-container">
             
+            <span onclick="window.history.back();" style="float:right; cursor:pointer;"><i class="fa fa-times" aria-hidden="true" style='font-size:25px'></i></span>
             <h1>Add Product</h1>
+            
+            
             <form action="AddProdServlet" id="prodForm" enctype="multipart/form-data" method="post">
 
                 <% ProductDa pda = new ProductDa();%>

@@ -9,7 +9,7 @@
 <%@page import="model.Product"%>
 <%@page import="model.ProductDa"%>
 <%@include file="staffHeader.jsp" %>
-<%--set session for admin and staff--%>
+
 
 <!DOCTYPE html>
 <html>
@@ -210,7 +210,11 @@
                 
                 <td>&nbsp;<a href="EditProdServlet?prodId=<%=prod.getProductid()%>" class="edit-btn">Edit</a>&nbsp;</td>
                 <%--<td>&nbsp;<a href="DeleteProdServlet?prodId=<%=prod.getProductid()%>" class="delete-btn">Delete</a>&nbsp;</td>--%>
+                
+                <% if ("manager".equals(role)) { %>
                 <td>&nbsp;<a href="#" onclick="confirmDelete('<%=prod.getProductid()%>')" class="delete-btn">Delete</a>&nbsp;</td>
+                <% } %>
+
             </tr>
             <%}%>
             <% } %>

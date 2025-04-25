@@ -206,8 +206,10 @@
                     ••••••••
                 <% } %>
             </td>
+            
+            <% if ("manager".equals(role)) { %>
             <td style="text-align:center; vertical-align:middle;">
-                <% if ("manager".equals(role)) { %>
+
                     <!-- Edit Button -->
                     <form action="editCustomer.jsp" method="get" style="display:inline;">
                         <input type="hidden" name="custId" value="<%= rs.getString("custId") %>">
@@ -221,9 +223,9 @@
                         <input type="submit" value="Delete" class="delete-btn" onclick="return confirm('Are you sure?')" style="text-align:center; vertical-align:middle;">
                     </form>
             </td>
-                <% } else { %>
-                <td colspan="2"><em>View Only</em></td>
-                <% } %>
+            <% } else { %>
+            <td colspan="2"><em>View Only</em></td>
+            <% } %>
             
         </tr>
         <%

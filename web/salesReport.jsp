@@ -9,12 +9,21 @@
 <%@ page import="java.sql.*" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="model.ProductDa" %>
+<%@include file="staffHeader.jsp" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Sales Report</title>
         <style>
+            .content-area {
+                flex: 2;
+                padding: 10px;
+                width:100%;
+                margin-left: 250px;
+                margin-right: 50px;
+            }
+            
             table {
               border-collapse: collapse;
               width: 100%;
@@ -28,11 +37,12 @@
 
             tr:nth-child(even) {
                 background-color: #f2f2f2;
-            }            
+            }          
             
         </style>
     </head>
     <body>
+        <div class="content-area">
         <h1>Sales Report</h1>
         
         <%
@@ -64,11 +74,13 @@
             <input type="datetime-local" id="endDate" name="endDate" value="<%= endDate.replace(' ', 'T').substring(0, 16) %>">
             <br><br>
             <%--checking--%>
-            <p>Querying sales from <%= startDate %> to <%= endDate %></p>
+            
             <input type="submit" value="Generate Report">
         </form>
 
     <hr>
+    <br>
+    <p>Querying sales from <%= startDate %> to <%= endDate %></p>
 
     <table>
         <tr>
@@ -101,6 +113,6 @@
             }
         %>
     </table>
-        
+    </div>    
     </body>
 </html>

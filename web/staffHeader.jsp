@@ -20,7 +20,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
@@ -75,7 +78,28 @@
         .nav-links a:hover {
             text-decoration: underline;
         }
+        
+        .fa-caret-down {
+            float: right;
+            padding-right: 8px;
+        }
+        
+        .dropdown-container {
+            display: none;
+            background-color: #48525c;
+/*            padding-left: 8px;*/
+        }
 
+        .dropdown-container a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-btn.active {
+            background-color: #444; /* Change background when active */
+            color: white;
+        }
 
     </style>
 </head>
@@ -98,7 +122,13 @@
             <li><a href="viewProd.jsp">Product Management</a></li>
             <li><a href="ReviewManagement">Review Management</a></li>
             <li><a href="StaffManagement.jsp">Staff Management</a></li>
-            <li><a href="Reports.jsp">Reports</a></li>
+            <li><a href="#" class="dropdown-btn">Reports <i class="fa fa-caret-down"></i></a></li>
+                <div class="dropdown-container">
+                    <a href="topSalesReport.jsp" class="dropdown-link">Top 10 Product</a>
+                    <a href="salesReport.jsp" class="dropdown-link">Sales Report</a>
+                </div>
+            
+            
         <% } %>
         <li><a href="Logout">Logout</a></li>
     </ul>
@@ -108,6 +138,16 @@
     <div>
         
     </div>
+
+        <script>
+        $(document).ready(function(){
+            // Use class selectors with the dot prefix
+            $(".dropdown-btn").click(function(){
+                $(".dropdown-container").toggle();  // Use toggle to show/hide
+            });
+        });
+        </script>
+
 </body>
 </html>
 

@@ -7,12 +7,23 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%@ page import="model.ProductDa" %>
+<%@include file="staffHeader.jsp" %>
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Top 10 Sales Report</title>
         <style>
+            
+            .content-area {
+                flex: 2;
+                padding: 10px;
+                width:100%;
+                margin-left: 250px;
+                margin-right: 50px;
+            }
+            
             table {
               border-collapse: collapse;
               width: 100%;
@@ -31,6 +42,7 @@
         </style>
     </head>
     <body>
+        <div class="content-area">
         <h1>Top 10 Sales Report</h1>
         
         <%--report table--%>
@@ -85,6 +97,6 @@
                 
             
         </table>
-        
+        </div>
     </body>
 </html>
