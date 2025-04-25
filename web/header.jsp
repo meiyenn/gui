@@ -54,7 +54,7 @@
                                 <a class="nav-link" href="ProductPage.jsp">Product</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="ProductReviewDisplay.jsp">Review</a>
+                                <a class="nav-link" href=".jsp">Review</a>
                             </li>
                             
                         </ul>
@@ -70,19 +70,7 @@
                                                href="<%="manager".equals(role) ? "StaffManagerDashboard.jsp"
                                                     : "staff".equals(role) ? "StaffManagerDashboard.jsp"
                                                     : "CustomerDashboard.jsp"%>">
-                                                <span>
-                                                    <%
-                                                        String displayRole = "";
-                                                        if ("manager".equals(role)) {
-                                                            displayRole = "Manager ";
-                                                        } else if ("staff".equals(role)) {
-                                                            displayRole = "Staff ";
-                                                        } else {
-                                                            displayRole = "Customer ";
-                                                        }
-                                                    %>
-                                                    <%= "Profile " + displayRole + username%>
-                                                </span>
+                                                <span><%= "Profile " + username %></span>
                                             </a>
                                             <div class="logout-dropdown">
                                                 <a href="Logout">Logout</a>

@@ -129,11 +129,15 @@
         .btn-view-all:hover {
             background-color: #444;
         }
+        
+        
     </style>
 </head>
 <body>
 
 <h1>DISCOVER OUR BESTSELLERS & NEW ICONS</h1>
+
+
 
 <div class="product-row">
 <%
@@ -151,18 +155,11 @@
         <img src="<%= rs.getString("imgLocation") %>" alt="Product">
         <div class="product-name"><%= rs.getString("productName") %></div>
         <div class="product-price">RM <%= rs.getDouble("price") %></div>
-
-        <% if ("customer".equals(role)) { %>
-            <!-- Customer: can add to cart -->
-            <form method="get" action="AddToCart">
-                <input type="hidden" name="pid" value="<%= rs.getString("productId") %>">
-                <input type="hidden" name="pqty" value="1">
-                <button class="btn-add" type="submit">Add to Cart</button>
-            </form>
-        <% } else { %>
-            <!-- Guest: must login first -->
-            <button class="btn-add" type="button" onclick="redirectToLogin()">Add to Cart</button>
-        <% } %>
+        <form method="get" action="AddToCart">
+            <input type="hidden" name="pid" value="<%= rs.getString("productId") %>">
+            <input type="hidden" name="pqty" value="1">
+            <button class="btn-add" type="submit">Add to Cart</button>
+        </form>
     </div>
 <%
         }
@@ -176,13 +173,6 @@
 </div>
 
 <a href="ProductPage.jsp" class="btn-view-all">VIEW ALL PRODUCTS</a>
-
-<script>
-    function redirectToLogin() {
-        alert("Please log in to add items to your cart.");
-        window.location.href = 'login.jsp';
-    }
-</script>
 
 </body>
 </html>
