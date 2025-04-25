@@ -113,11 +113,13 @@
 
     <ul class="nav-links">
         <% if ("staff".equals(role)) { %>
+            <li><a href="#">Dashboard</a></li> 
             <li><a href="StaffProfile.jsp">My Profile</a></li>
             <li><a href="CustomerManagement.jsp">Customer Management</a></li>
             <li><a href="viewProd.jsp">Product Management</a></li>
             <li><a href="ReviewManagement.jsp">Review Management</a></li>
         <% } else if ("admin".equals(role) || "manager".equals(role)) { %>
+            <li><a href="#">Dashboard</a></li> 
             <li><a href="CustomerManagement.jsp">Customer Management</a></li>
             <li><a href="viewProd.jsp">Product Management</a></li>
             <li><a href="ReviewManagement">Review Management</a></li>
