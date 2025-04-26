@@ -14,7 +14,7 @@ public class updateCart extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
 
-        String cartItemId = request.getParameter("cartItemId"); 
+        String cartItemId = request.getParameter("cartItemId"); // 🔁 FIXED
         int currentQty = Integer.parseInt(request.getParameter("quantity"));
         String action = request.getParameter("action");
 
@@ -27,7 +27,7 @@ public class updateCart extends HttpServlet {
 
         try {
             CartService cartService = new CartService();
-            cartService.updateQuantity(cartItemId, newQty); 
+            cartService.updateQuantity(cartItemId, newQty); // 🔁 FIXED
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,5 +45,10 @@ public class updateCart extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "Updates item quantity in cart";
     }
 }

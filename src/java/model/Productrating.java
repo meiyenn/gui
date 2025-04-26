@@ -33,8 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Productrating.findByRatingid", query = "SELECT p FROM Productrating p WHERE p.ratingid = :ratingid"),
     @NamedQuery(name = "Productrating.findByRatingdate", query = "SELECT p FROM Productrating p WHERE p.ratingdate = :ratingdate"),
     @NamedQuery(name = "Productrating.findBySatisfaction", query = "SELECT p FROM Productrating p WHERE p.satisfaction = :satisfaction"),
-    @NamedQuery(name = "Productrating.findByComment", query = "SELECT p FROM Productrating p WHERE p.comment = :comment"),
-    @NamedQuery(name = "Productrating.findByReply", query = "SELECT p FROM Productrating p WHERE p.reply = :reply")})
+    @NamedQuery(name = "Productrating.findByComment", query = "SELECT p FROM Productrating p WHERE p.comment = :comment")})
 public class Productrating implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,15 +54,9 @@ public class Productrating implements Serializable {
     private int satisfaction;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 200)
+    @Size(min = 1, max = 80)
     @Column(name = "COMMENT")
     private String comment;
-    @Size(max = 255)
-    @Column(name = "REPLY")
-    private String reply;
-    @JoinColumn(name = "PRODUCTID", referencedColumnName = "PRODUCTID")
-    @ManyToOne(optional = false)
-    private Product productid;
     @JoinColumn(name = "RECEIPTID", referencedColumnName = "RECEIPTID")
     @ManyToOne(optional = false)
     private Receipt receiptid;
@@ -112,22 +105,6 @@ public class Productrating implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public String getReply() {
-        return reply;
-    }
-
-    public void setReply(String reply) {
-        this.reply = reply;
-    }
-
-    public Product getProductid() {
-        return productid;
-    }
-
-    public void setProductid(Product productid) {
-        this.productid = productid;
     }
 
     public Receipt getReceiptid() {

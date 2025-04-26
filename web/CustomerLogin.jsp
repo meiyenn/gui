@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,49 +26,51 @@
             background-repeat: no-repeat; 
         }
 
+        /* Container with background image */
         .container {
             display: flex;
             height: 70vh;
             width: 60%;
-            background-image: url('src/image/login-container.jpg'); 
-            background-size: cover;  
-            background-position: center;  
-            background-repeat: no-repeat;
+            background-image: url('src/image/login-container.jpg'); /* Background image */
+            background-size: cover;  /* Ensures the image fills the container while maintaining its aspect ratio */
+            background-position: center;  /* Center the image */
+            background-repeat: no-repeat; /* Prevent image from repeating */
             border-radius: 10px 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
 
-        
+        /* Left Section Styles */
         .left-section {
             width: 50%;
-            height: 100%;
+            height: 100%;  /* Ensure full height */
             padding: 20px;
             color: #333;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
-            overflow: hidden; 
+            position: relative;  /* Needed for absolute positioning */
+            overflow: hidden; /* Prevents the image from overflowing */
         }
 
-        
+
+        /* Welcome heading styling */
         .left-section h1 {
             font-size: 2.5rem;
             margin-bottom: 50px;
             font-weight: 700;
-            z-index: 1; 
+            z-index: 1;  /* Ensure text stays above the image */
             color:white;
         }
 
-  
+        /* Paragraph text styling */
         .left-section p {
             color:white;
             font-size: 1rem;
             line-height: 1.6;
             font-weight: 300;
-            z-index: 1;  
+            z-index: 1;  /* Ensure text stays above the image */
         }
 
         .right-section {

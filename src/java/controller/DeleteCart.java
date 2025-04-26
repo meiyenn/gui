@@ -14,12 +14,12 @@ public class DeleteCart extends HttpServlet {
 
         response.setContentType("text/html;charset=UTF-8");
 
-        String cartItemId = request.getParameter("cartItemId"); 
+        String cartItemId = request.getParameter("cartItemId"); // 🔁 FIXED
         CartService cartService = new CartService();
 
         try {
             if (cartItemId != null && !cartItemId.isEmpty()) {
-                cartService.removeFromCart(cartItemId); 
+                cartService.removeFromCart(cartItemId); // 🔁 FIXED
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -37,6 +37,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Customer.findByCustpswd", query = "SELECT c FROM Customer c WHERE c.custpswd = :custpswd")})
 public class Customer implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 6)
+    @Column(name = "CUSTID")
+    private String custid;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
@@ -62,14 +69,6 @@ public class Customer implements Serializable {
     @Size(min = 1, max = 25)
     @Column(name = "CUSTPSWD")
     private String custpswd;
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 6)
-    @Column(name = "CUSTID")
-    private String custid;
     @OneToMany(mappedBy = "custid")
     private Collection<Voucher> voucherCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "custid")
@@ -99,6 +98,45 @@ public class Customer implements Serializable {
         this.custid = custid;
     }
 
+    public String getCustname() {
+        return custname;
+    }
+
+    public void setCustname(String custname) {
+        this.custname = custname;
+    }
+
+    public String getCustcontactno() {
+        return custcontactno;
+    }
+
+    public void setCustcontactno(String custcontactno) {
+        this.custcontactno = custcontactno;
+    }
+
+    public String getCustemail() {
+        return custemail;
+    }
+
+    public void setCustemail(String custemail) {
+        this.custemail = custemail;
+    }
+
+    public String getCustusername() {
+        return custusername;
+    }
+
+    public void setCustusername(String custusername) {
+        this.custusername = custusername;
+    }
+
+    public String getCustpswd() {
+        return custpswd;
+    }
+
+    public void setCustpswd(String custpswd) {
+        this.custpswd = custpswd;
+    }
 
     @XmlTransient
     public Collection<Voucher> getVoucherCollection() {
@@ -141,46 +179,6 @@ public class Customer implements Serializable {
     @Override
     public String toString() {
         return "model.Customer[ custid=" + custid + " ]";
-    }
-
-    public String getCustname() {
-        return custname;
-    }
-
-    public void setCustname(String custname) {
-        this.custname = custname;
-    }
-
-    public String getCustcontactno() {
-        return custcontactno;
-    }
-
-    public void setCustcontactno(String custcontactno) {
-        this.custcontactno = custcontactno;
-    }
-
-    public String getCustemail() {
-        return custemail;
-    }
-
-    public void setCustemail(String custemail) {
-        this.custemail = custemail;
-    }
-
-    public String getCustusername() {
-        return custusername;
-    }
-
-    public void setCustusername(String custusername) {
-        this.custusername = custusername;
-    }
-
-    public String getCustpswd() {
-        return custpswd;
-    }
-
-    public void setCustpswd(String custpswd) {
-        this.custpswd = custpswd;
     }
     
 }

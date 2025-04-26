@@ -8,7 +8,8 @@
 <%@page import="java.util.List"%>
 <%@page import="model.Product"%>
 <%@page import="model.ProductDa"%>
-<%--set session for admin and staff--%>
+<%@include file="staffHeader.jsp" %>
+
 
 <!DOCTYPE html>
 <html>
@@ -16,10 +17,20 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Product Listing</title>
         <style>
+            
+            .content-area {
+                flex: 2;
+                padding: 10px;
+                width:100%;
+                margin-left: 250px;
+                margin-right: 50px;
+            }
+            
             table {
                 font-family: arial, sans-serif;
                 border-collapse: collapse;
                 width: 100%;
+                
               }
               
               thead{
@@ -90,12 +101,13 @@
                 align-items: center;
                 margin-bottom: 20px;
             }
-              
+
               
         </style>
     </head>
     <body>
-        <h1>Product Listing</h1>
+        <div class="content-area">
+        <h1>Product Management</h1>
 
         <%--filter--%>
         <div class="filter">
@@ -152,9 +164,9 @@
                     displayList = filterList;
                 } else if (prodList != null) {
                     displayList = prodList;
-                } else {
+                } else { //if session is null redirect to servlet to get session for product
                     // Redirect to the session from servlet
-                    response.sendRedirect("ViewProdServlet");
+                    response.sendRedirect("AddProdServlet"); //view product get method at addprodservlet
                 }
             %>
             
@@ -172,7 +184,7 @@
             <% if (displayList == null || displayList.isEmpty()) { %>
                 <tr>
                     <td colspan="12" style="text-align:center; font-weight:bold; color:#808080;">
-                        No such product found.
+                        No Record found!
                     </td>
                 </tr>
             <% } else { %>
@@ -198,7 +210,11 @@
                 
                 <td>&nbsp;<a href="EditProdServlet?prodId=<%=prod.getProductid()%>" class="edit-btn">Edit</a>&nbsp;</td>
                 <%--<td>&nbsp;<a href="DeleteProdServlet?prodId=<%=prod.getProductid()%>" class="delete-btn">Delete</a>&nbsp;</td>--%>
+                
+                <% if ("manager".equals(role)) { %>
                 <td>&nbsp;<a href="#" onclick="confirmDelete('<%=prod.getProductid()%>')" class="delete-btn">Delete</a>&nbsp;</td>
+                <% } %>
+
             </tr>
             <%}%>
             <% } %>
@@ -214,6 +230,6 @@
             }
         }
         </script>
-
+        </div>
     </body>
 </html>
