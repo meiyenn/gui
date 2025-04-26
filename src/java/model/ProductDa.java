@@ -180,8 +180,6 @@ public class ProductDa {
                 }
                 
             }
-            
-            
 
         }catch (Exception e) {
             System.out.println(e.getMessage());
@@ -282,7 +280,7 @@ public class ProductDa {
         }
     
     
-        public ResultSet salesRecord(String date1,String date2){
+    public ResultSet salesRecord(String date1,String date2){
         ResultSet rs=null;
         //Product prod = new Product();
         //prod=null; //initiale value
@@ -314,44 +312,131 @@ public class ProductDa {
 
             return rs;
         }
+        
+
+    public int countRecord(String column, String table){
+        int countRecord = 0;
+
+        try {
+            String totalCustStr="select count("+ column+ ") from " + table;
+            stmt = conn.prepareStatement(totalCustStr);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                countRecord = rs.getInt(1);
+            }
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return countRecord;
+    }
+    
+    public double totalRevenue(){
+        double totalRevenue = 0.0;
+
+        try {
+            String totalRevenueStr="select sum(total) from receipt";
+            stmt = conn.prepareStatement(totalRevenueStr);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                totalRevenue = rs.getDouble(1);
+            }
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return totalRevenue;
+    }
+    
+    public int totalProductSold(){
+        int totalProductSold = 0;
+
+        try {
+            String totalProductSoldStr="select sum(quantity) from receipt_detail";
+            stmt = conn.prepareStatement(totalProductSoldStr);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                totalProductSold = rs.getInt(1);
+            }
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return totalProductSold;
+    }
+    
+    public ResultSet recentOrder(){
+        ResultSet rs=null;
+
+        try {
+            String recentOrderStr = "SELECT " +
+            "r.receiptId," +
+            "c.custName," +
+            "p.productName," +
+            "rd.quantity," +
+            "rd.price," +
+            "r.creationTime " +
+            "FROM receipt r JOIN cart ct ON r.cartId = ct.cartId " +
+            "JOIN customer c ON ct.custId = c.custId " +
+            "JOIN receipt_detail rd ON r.receiptId = rd.receiptId " +
+            "JOIN product p ON rd.productId = p.productId " +
+            "ORDER BY r.creationTime DESC " +
+            "FETCH FIRST 10 ROWS ONLY ";
+
+            stmt = conn.prepareStatement(recentOrderStr);
+
+            rs = stmt.executeQuery();
+
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return rs;
+    }
     
     
-//    //testing
-//    public static void main(String[] args) throws SQLException {
-//        
-//        List<Product> prod=new ArrayList<>();
-//        ProductDa pda=new ProductDa();
-////        //get all prod()
-////        prod=pda.getAllProd();
-////        for (Product p : prod) {
-////            System.out.println(p);  // Automatically calls toString()
-////        }
-////        //end
-//        
-////        //checkExist
-////        Product prod2=new Product();
-////        prod2=pda.checkExist("prod002");
-////        System.out.println(prod2.getProductid()+prod2.getProductname());
-////        //end
-//        
-////        //add prod ()
-////        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
-////        boolean addStatus=pda.addProduct(p);
-////        System.out.println(addStatus);
-//
-//        //System.out.println(pda.autoProdId());
-//        
-////                //filterprod()
-////        prod=pda.filterProd("category","ake up");
-////        for (Product p : prod) {
-////            System.out.println(p);  // Automatically calls toString()
-////        }
-////        //end
-//
-////        //is in use()
-////        boolean checkInUse=pda.isProdInUse("prod003");
-////        System.out.println(checkInUse);
-//
+    //testing
+    public static void main(String[] args) throws SQLException {
+        
+        List<Product> prod=new ArrayList<>();
+        ProductDa pda=new ProductDa();
+//        //get all prod()
+//        prod=pda.getAllProd();
+//        for (Product p : prod) {
+//            System.out.println(p);  // Automatically calls toString()
+//        }
+//        //end
+        
+//        //checkExist
+//        Product prod2=new Product();
+//        prod2=pda.checkExist("prod002");
+//        System.out.println(prod2.getProductid()+prod2.getProductname());
+//        //end
+        
+//        //add prod ()
+//        Product p=new Product("123", "123", "testing", 55.5, 100,"Skincare", "a", 1);
+//        boolean addStatus=pda.addProduct(p);
+//        System.out.println(addStatus);
+
+        //System.out.println(pda.autoProdId());
+        
+//                //filterprod()
+//        prod=pda.filterProd("category","ake up");
+//        for (Product p : prod) {
+//            System.out.println(p);  // Automatically calls toString()
+//        }
+//        //end
+
+//        //is in use()
+//        boolean checkInUse=pda.isProdInUse("prod003");
+//        System.out.println(checkInUse);
+
 //        ResultSet rs=pda.salesRecord("2025-03-11 15:00:00.000", "2025-03-11 18:00:00.000");
 //        while (rs.next()) {
 //            String productId = rs.getString(1);
@@ -368,8 +453,9 @@ public class ProductDa {
 //            System.out.println("Quantity: " + quantity);
 //            System.out.println("-------------------------\n");
 //        }
-//        
-//    }
+
+        
+    }
 
 
 }

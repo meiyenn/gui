@@ -77,6 +77,11 @@
 
         .nav-links a:hover {
             text-decoration: underline;
+            
+        }
+        
+        ul li:hover{
+            background-color: #3b6387;
         }
         
         .fa-caret-down {
@@ -86,20 +91,21 @@
         
         .dropdown-container {
             display: none;
-            background-color: #48525c;
-/*            padding-left: 8px;*/
+            background-color: #37495c;
+            padding-left: 5px;
         }
 
         .dropdown-container a {
             color: white;
             text-decoration: none;
             display: block;
+            margin: 20px 0;
         }
 
-        .dropdown-btn.active {
-            background-color: #444; /* Change background when active */
+/*        .dropdown-btn.active {
+            background-color: #444;
             color: white;
-        }
+        }*/
 
     </style>
 </head>
@@ -111,22 +117,23 @@
         <p><%= role.toUpperCase() %></p>
     </div>
 
+    <div class="nav-wrapper">
     <ul class="nav-links">
         <% if ("staff".equals(role)) { %>
-            <li><a href="#">Dashboard</a></li> 
+            <li><a href="adminDashboard.jsp">Dashboard</a></li> 
             <li><a href="StaffProfile.jsp">My Profile</a></li>
             <li><a href="CustomerManagement.jsp">Customer Management</a></li>
             <li><a href="viewProd.jsp">Product Management</a></li>
             <li><a href="ReviewManagement.jsp">Review Management</a></li>
         <% } else if ("admin".equals(role) || "manager".equals(role)) { %>
-            <li><a href="#">Dashboard</a></li> 
+            <li><a href="adminDashboard.jsp">Dashboard</a></li> 
             <li><a href="CustomerManagement.jsp">Customer Management</a></li>
             <li><a href="viewProd.jsp">Product Management</a></li>
             <li><a href="ReviewManagement">Review Management</a></li>
             <li><a href="StaffManagement.jsp">Staff Management</a></li>
             <li><a href="#" class="dropdown-btn">Reports <i class="fa fa-caret-down"></i></a></li>
                 <div class="dropdown-container">
-                    <a href="topSalesReport.jsp" class="dropdown-link">Top 10 Product</a>
+                    <a href="topSalesReport.jsp" class="dropdown-link">Top 10 Product Report</a>
                     <a href="salesReport.jsp" class="dropdown-link">Sales Report</a>
                 </div>
             
@@ -134,6 +141,7 @@
         <% } %>
         <li><a href="Logout">Logout</a></li>
     </ul>
+    </div>
 </div>
 
     
@@ -143,7 +151,6 @@
 
         <script>
         $(document).ready(function(){
-            // Use class selectors with the dot prefix
             $(".dropdown-btn").click(function(){
                 $(".dropdown-container").toggle();  // Use toggle to show/hide
             });
