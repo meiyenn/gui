@@ -89,7 +89,7 @@ public class LoginServlet extends HttpServlet {
                         response.addCookie(cookie);
                     }
 
-                    response.sendRedirect("index.jsp?login=success");
+                    response.sendRedirect("staffHeader.jsp");
                     return;
                 }
             }
