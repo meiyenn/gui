@@ -67,7 +67,7 @@ public class LoginServlet extends HttpServlet {
                         response.addCookie(cookie);
                     }
 
-                    response.sendRedirect("staffHeader.jsp"); // your admin/manager page
+                    response.sendRedirect("adminDashboard.jsp"); // your admin/manager page
                     return;
                 }
             }

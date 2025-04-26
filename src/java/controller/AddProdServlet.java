@@ -74,22 +74,34 @@ public class AddProdServlet extends HttpServlet {
 
             //obtain file name
             String imgName = Paths.get(imgPath.getSubmittedFileName()).getFileName().toString();
-            String mdfName=prodId+"_"+imgName;
+            
+            //extension
+            String extension = imgName.substring(imgName.lastIndexOf("."));
+            
+//            String mdfName=prodId+"_"+imgName;
+            String mdfName=prodId+extension;
 
             InputStream imgContent = imgPath.getInputStream();
 
             // Construct the path to store the images
             String uploadDirectory = getServletContext().getRealPath("/imgUpload");
+            //String projectBase = System.getProperty("user.dir");
+            //String uploadDirectory = projectBase + File.separator + "web" + File.separator + "imgUpload";
+
+
+            //out.println("projectBase = (" + projectBase + ")");
+
+            
             File uploadDir = new File(uploadDirectory);
             if (!uploadDir.exists()) {
-                uploadDir.mkdir();
+                uploadDir.mkdirs();
+                boolean created=uploadDir.mkdirs();
+                out.println("projectBase = (" + created + ")");
             }
 
             // Save the images to the folder
             Path storeImg = Paths.get(uploadDirectory, mdfName);
             Files.copy(imgContent, storeImg);
-
-            response.getWriter().print("The image file uploaded sucessfully.");
 
             Product prod = new Product(prodId,prodName,mdfName,prodPrice,prodStock,prodCat,prodDesc,prodStatus);
         
@@ -112,8 +124,8 @@ public class AddProdServlet extends HttpServlet {
                 //set the prodlist session
                 session.setAttribute("prodList", prodList);
                 //out.write("setTimeout(function(){window.location.href='viewProd.jsp'},5000);");
-                RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");//
-                rd.forward(request, response);
+//                RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");//
+//                rd.forward(request, response);
             }else{
                 response.sendRedirect("addProduct.jsp?error=Failed to add new product! Product (" + prodId + ") already exists in the database!");
                 out.println("<script type=\"text/javascript\">");
@@ -130,7 +142,10 @@ public class AddProdServlet extends HttpServlet {
                 
         }catch (Exception ex) {
             //ex.printStackTrace();
-            out.println("<script>alert('ERROR: " + ex.getMessage() + "');</script>");
+//            out.println("<script>alert('ERROR: " + ex.getMessage() + "');</script>");
+//                            out.println("<script type=\"text/javascript\">");
+//                out.println("alert('Successful to add new product! Product (" + ex.getMessage()+ ")');");
+//                out.println("</script>");
             response.sendRedirect("addProduct.jsp?error=An error occurred.");
         }
         
