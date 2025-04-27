@@ -34,27 +34,62 @@ public class AddToCart extends HttpServlet {
         }
 
         double price = 0.0;
+        int stock = 0;
+        int existingQty = 0;
 
         try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/ass", "nbuser", "nbuser")) {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
-            String sql = "SELECT PRICE FROM PRODUCT WHERE PRODUCTID = ?";
+            // 1. Check product price and stock
+            String sql = "SELECT price, quantity FROM product WHERE productId = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, pid);
                 ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
-                    price = rs.getBigDecimal("PRICE").doubleValue();
+                    price = rs.getBigDecimal("price").doubleValue();
+                    stock = rs.getInt("quantity");
                 } else {
                     response.getWriter().write("Product not found.");
                     return;
                 }
             }
 
-            // Add to cart using CartService
+            // 2. Check existing quantity in cart (if any)
+            String cartId = null;
+            String findCartSql = "SELECT cartId FROM cart WHERE custId = ? AND checkOutStatus = FALSE";
+            try (PreparedStatement stmt = conn.prepareStatement(findCartSql)) {
+                stmt.setString(1, custId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    cartId = rs.getString("cartId");
+                }
+            }
+
+            if (cartId != null) {
+                String findItemSql = "SELECT quantityPurchased FROM cart_item WHERE cartId = ? AND productId = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(findItemSql)) {
+                    stmt.setString(1, cartId);
+                    stmt.setString(2, pid);
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        existingQty = rs.getInt("quantityPurchased");
+                    }
+                }
+            }
+
+            // 3. Validate stock
+            if ((existingQty + quantity) > stock) {
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write("<script>alert('❗ Not enough stock. Only " + (stock - existingQty) + " more available.');window.history.back();</script>");
+                return;
+            }
+
+            // 4. Add to cart using CartService
             CartService cartService = new CartService();
             cartService.addToCart(custId, pid, quantity, price);
 
+            // 5. Redirect
             response.sendRedirect("ShoppingCart.jsp");
 
         } catch (Exception e) {

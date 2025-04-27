@@ -84,6 +84,70 @@
             transform: translateY(-1px);
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
         }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5); /* dark transparent background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+        
+        .star-rating {
+            direction: rtl;
+            display: flex;
+            justify-content: flex-start;
+            font-size: 2em;
+        }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+        }
+        textarea {
+            width: 100%;
+            resize: none;
+            margin-top: 10px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -117,11 +181,9 @@
             <td><%= item.getQuantitypurchased() %></td>
             <td><%= sub.setScale(2) %></td>
             <td>
-                <form action="LeaveReview.jsp" method="get">
-                    <input type="hidden" name="productId" value="<%= product.getProductid() %>">
-                    <input type="hidden" name="receiptId" value="<%= receipt.getReceiptid() %>">
-                    <button type="submit" class="btn-review">✍️Write a Review</button>
-                </form>
+                <button type="button" class="btn-review" onclick="openReviewModal('<%= product.getProductid()%>', '<%= receipt.getReceiptid()%>')">
+                    ✍️ Write a Review
+                </button>
             </td>
         </tr>
         <% } %>
@@ -159,9 +221,47 @@
             <td colspan="2"><strong>RM <%= total.setScale(2) %></strong></td>
         </tr>
     </table>
+        
+        <!-- Review Modal -->
+        <div id="reviewModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeReviewModal()">&times;</span>
+                <h2>Write a Review</h2>
+                <form action="submitReview" method="post" id="reviewForm">
+                    <input type="hidden" name="productId" id="reviewProductId">
+                    <input type="hidden" name="receiptId" id="reviewReceiptId">
+
+                    <div class="star-rating" style="display: flex; justify-content: center; font-size: 2em; direction: rtl; margin: 20px 0;">
+                        <input type="radio" id="star5" name="rating" value="5" required><label for="star5">&#9733;</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+                    </div>
+
+                    <textarea name="comment" rows="5" maxlength="200" style="width: 100%;" placeholder="Write your comment..." required></textarea>
+
+                    <button type="submit" class="btn-review" style="margin-top: 20px;">Submit Review</button>
+                </form>
+            </div>
+        </div>
+
+            
 <% } else { %>
     <p style="text-align: center; color: #999;">No products found in this receipt.</p>
 <% } %>
+
+<script>
+function openReviewModal(productId, receiptId) {
+    document.getElementById('reviewModal').style.display = 'flex';
+    document.getElementById('reviewProductId').value = productId;
+    document.getElementById('reviewReceiptId').value = receiptId;
+}
+
+function closeReviewModal() {
+    document.getElementById('reviewModal').style.display = 'none';
+}
+</script>
 
 </body>
 </html>

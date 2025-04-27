@@ -1,35 +1,17 @@
 // Document ready function to ensure DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initDeliveryOptions();
+document.addEventListener('DOMContentLoaded', function () {
     initPaymentMethodHandling();
     initCardFormatting();
     initFormValidation();
 });
 
 
-function initDeliveryOptions() {
-    document.querySelectorAll('.delivery-option').forEach(option => {
-        option.addEventListener('click', function () {
-            // Update visual selection
-            document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('selected'));
-            this.classList.add('selected');
-
-            // Set the radio button checked
-            const input = this.querySelector('input[type="radio"]');
-            input.checked = true;
-
-            // Directly use this input's value to control address section
-            toggleShippingAddressFields(input.value);
-        });
-    });
-}
-
 
 
 function toggleShippingAddressFields(deliveryValue) {
     const shippingAddressSection = document.querySelector('.shipping-address');
     const addressFields = ['street', 'city', 'postalCode', 'state'];
-    
+
     if (deliveryValue === 'delivery') {
         shippingAddressSection.style.display = 'block';
         // Make address fields required

@@ -113,7 +113,7 @@
             Product product = review.getProductid();
     %>
     <div class="review-box">
-        <img src="<%= product.getImglocation()%>" class="product-img" alt="Product Image">
+        <img src="imgUpload/<%= product.getImglocation()%>" class="product-img" alt="Product Image">
         <div class="review-details">
             <span class="product-name"><%= product.getProductname()%></span>
             <div class="stars">

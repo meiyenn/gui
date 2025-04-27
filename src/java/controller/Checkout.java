@@ -51,7 +51,7 @@ public class Checkout extends HttpServlet {
                 return;
             }
 
-            // 🧮 Calculate subtotal
+            // Calculate subtotal
             BigDecimal subtotal = BigDecimal.ZERO;
             for (CartItem item : cartList) {
                 BigDecimal itemSubtotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantitypurchased()));

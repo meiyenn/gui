@@ -126,20 +126,7 @@
             <input type="hidden" name="shipping" value="<%= shipping %>">
             <input type="hidden" name="grandTotal" value="<%= grandTotal %>">
 
-            <!-- Delivery Method -->
-            <div class="form-group">
-                <label class="required">Delivery Method</label>
-                <div class="delivery-options">
-                    <div class="delivery-option <%= "delivery".equals(deliveryMethod) ? "selected" : "" %>">
-                        <input type="radio" id="delivery" name="deliveryMethod" value="delivery" <%= "delivery".equals(deliveryMethod) ? "checked" : "" %>>
-                        <label for="delivery">Delivery</label>
-                    </div>
-                    <div class="delivery-option <%= "pickup".equals(deliveryMethod) ? "selected" : "" %>">
-                        <input type="radio" id="pickup" name="deliveryMethod" value="pickup" <%= "pickup".equals(deliveryMethod) ? "checked" : "" %>>
-                        <label for="pickup">Pick up</label>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Payment Method -->
             <div class="form-group">
