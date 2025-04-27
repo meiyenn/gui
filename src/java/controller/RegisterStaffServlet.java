@@ -50,6 +50,8 @@ public class RegisterStaffServlet extends HttpServlet {
             out.println("Staff <b>" + stfId + "</b> has been added to the database<br>");
             Staff s = stfDA.getStaffById(stfId);
             out.println("The staff " + s.getStfname() + " is now added to the database.");
+            
+            response.sendRedirect("StaffManagement.jsp");
         } catch (Exception ex) {
             out.println(ex.getMessage());
         } finally {

@@ -94,57 +94,59 @@ public class EditProdServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+ 
+        String prodId=request.getParameter("prodId");
+        String prodName=request.getParameter("prodName");
+        double prodPrice = Double.parseDouble(request.getParameter("prodPrice"));
+        int prodStock=Integer.parseInt(request.getParameter("prodStock"));
+        String prodCat=request.getParameter("prodCat");
+        String prodDesc=request.getParameter("prodDesc");
+        int prodStatus=Integer.parseInt(request.getParameter("prodStatus"));
 
-        try {
+        //current upload button
+        String mdfName;
+        Part imgPath=request.getPart("prodImage");
+//        String imgName = Paths.get(imgPath.getSubmittedFileName()).getFileName().toString();
+//
+//        String extension = imgName.substring(imgName.lastIndexOf("."));
+//        mdfName=prodId+extension;
+
+        //old image
+        String oldImgName = request.getParameter("oldProdImage");
+
+        //make directory called /imgUpload if doesnt exist
+        String uploadDirectory = getServletContext().getRealPath("/imgUpload");
+        File uploadDir = new File(uploadDirectory);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        // Save new image and delete old one
+        if (imgPath != null && imgPath.getSize() > 0) { //if user got upload
+            File oldImageFile = new File(uploadDir, oldImgName);
+
+            if (oldImageFile.exists()) { //delete existing file if exist
+                oldImageFile.delete();
+            }
             
-            String prodId=request.getParameter("prodId");
-            String prodName=request.getParameter("prodName");
-            double prodPrice = Double.parseDouble(request.getParameter("prodPrice"));
-            int prodStock=Integer.parseInt(request.getParameter("prodStock"));
-            String prodCat=request.getParameter("prodCat");
-            String prodDesc=request.getParameter("prodDesc");
-            int prodStatus=Integer.parseInt(request.getParameter("prodStatus"));
-
-
-            //current upload button
-            String mdfName;
-            Part imgPath = request.getPart("prodImage");
             String imgName = Paths.get(imgPath.getSubmittedFileName()).getFileName().toString();
 
             String extension = imgName.substring(imgName.lastIndexOf("."));
             mdfName=prodId+extension;
+            //then store the new uploaded image
+            Path storeImg = Paths.get(uploadDirectory, mdfName);
+            //Files.copy(imgPath.getInputStream(), storeImg, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(imgPath.getInputStream(), storeImg);
 
-            //old image
-            //Part oldImgPath = request.getPart("oldProdImage");
-            String oldImgName = request.getParameter("oldProdImage");
+        } else { //if user doesnt upload (indicate user doesnt want change image)
+            // Use old image name if no new one is uploaded
+            mdfName = oldImgName;
+        }
 
-            //make directory called /imgUpload if doesnt exist
-            String uploadDirectory = getServletContext().getRealPath("/imgUpload");
-            File uploadDir = new File(uploadDirectory);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-
-            // Save new image and delete old one
-            if (imgPath != null && imgPath.getSize() > 0) { //if user got upload
-                File oldImageFile = new File(uploadDir, oldImgName);
-
-                if (oldImageFile.exists()) { //delete existing file if exist
-                    oldImageFile.delete();
-                }
-                //then store the new uploaded image
-                Path storeImg = Paths.get(uploadDirectory, mdfName);
-                //Files.copy(imgPath.getInputStream(), storeImg, StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(imgPath.getInputStream(), storeImg);
-
-            } else { //if user doesnt upload (indicate user doesnt want change image)
-                // Use old image name if no new one is uploaded
-                mdfName = oldImgName;
-            }
-
-            // Update product
-            ProdService prodService = new ProdService(em);
+        // Update product
+        ProdService prodService = new ProdService(em);
             
+        try{    
 
             Product prod = prodService.findProduct(prodId);
             //out.println("<script>alert('Update: " + (prod==null) + "');</script>");
