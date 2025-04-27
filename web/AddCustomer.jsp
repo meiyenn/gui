@@ -25,13 +25,6 @@
                 border-radius: 3px;
             }
             
-            select{
-                width: 100%;
-                padding: 12px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                resize: vertical;
-            }
             
             label{
                 margin: 12px 12px 10px 0;

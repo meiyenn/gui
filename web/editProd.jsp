@@ -7,9 +7,8 @@
 <%@ page import="model.Product" %>
 
 <%
-        // Simulate login session (remove this block in actual implementation)
     session.getAttribute("role"); // or "staff"
-//
+
     String role = (String) session.getAttribute("role");
     
     if (role == null) { //not admin and not staff
@@ -23,7 +22,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Update Product</title>
-                <style>
+        <style>
             body{
                 background-color: #f9f9f9;
             }
@@ -62,7 +61,7 @@
             }
 
             .right {
-                flex: 2; /* larger portion */
+                flex: 2;
                 max-width: 70%;
                 padding: 25px;
                 border: 1px solid #ccc;
@@ -130,7 +129,8 @@
         
         <%Product prod = (Product) session.getAttribute("editProd");%>
         <div class="h1-wrapper">
-            <h1>Update Product</h1></div>
+            
+        <h1>Update Product</h1></div>
         <form action="EditProdServlet" class="form" enctype="multipart/form-data" method="post">
             <div class="form-container">
             <%--show prod image--%>

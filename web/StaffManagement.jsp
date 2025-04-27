@@ -153,12 +153,6 @@
 </head>
 <body>
 
-<div class="top-bar">
-    <p>Logged in as: <%= role %> | <a href="Logout">Logout</a></p>
-    <% if ("manager".equals(role)) { %>
-        <a href="AddStaff.jsp" class="btn-add">Add New Staff</a>
-    <% } %>
-</div>
     
 <div class="content-area">
     <h1>Staff List</h1>
@@ -213,7 +207,7 @@
             <% if ("manager".equals(role)) { %>
             <td style="text-align:center; vertical-align:middle;">
                 <!-- Edit Button -->
-                <form action="editStaff.jsp" method="get" style="display:inline;">
+                <form action="EditStaffServlet" method="get" style="display:inline;">
                     <input type="hidden" name="staffId" value="<%= rs.getString("staffId") %>">
                     <input type="submit" value="Edit" class="edit-btn">
                 </form>

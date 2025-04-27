@@ -84,7 +84,7 @@ public class DeleteProdServlet extends HttpServlet {
                 }else{ //false - product is not in use
 
                     //remove img from file folder when we need to delete from db
-                    String imagePath = getServletContext().getRealPath("/imgUpload/" + prodImage); // or the correct folder path
+                    String imagePath = getServletContext().getRealPath("/imgUpload/" + prodImage);
 
                     File imageFile = new File(imagePath);
                     if (imageFile.exists()) {

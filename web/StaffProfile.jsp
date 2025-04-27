@@ -133,6 +133,16 @@
 
             <button type="submit">Update Profile</button>
             <button type="button" onclick="window.history.back()">Back</button>
+            
+            <% String message = request.getParameter("message");
+                String error = request.getParameter("error");
+                if (message != null) {
+             %>
+                 <p style="color: green; font-weight: bold;"><%= message %></p>
+             <% } else if (error != null) { %>
+                 <p style="color: red; font-weight: bold;"><%= error %></p>
+             <% } %>
+            
         </form>
     </div>
 </div>
