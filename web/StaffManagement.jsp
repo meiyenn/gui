@@ -153,12 +153,12 @@
 </head>
 <body>
 
-<!--<div class="top-bar">
+<div class="top-bar">
     <p>Logged in as: <%= role %> | <a href="Logout">Logout</a></p>
     <% if ("manager".equals(role)) { %>
         <a href="AddStaff.jsp" class="btn-add">Add New Staff</a>
     <% } %>
-</div>-->
+</div>
     
 <div class="content-area">
     <h1>Staff List</h1>
