@@ -85,7 +85,7 @@
 
 %>
     <div class="product-card" onclick="showProductModal('<%= pid %>', '<%= name.replace("'", "\\'") %>', '<%= img %>', <%= price %>, '<%= desc.replace("'", "\\'") %>', <%= rating %>)">
-        <img src="<%= img %>" alt="<%= name %>">
+        <img src="imgUpload/<%= img %>" alt="<%= name %>">
         <div class="product-name"><%= name %></div>
         <div class="product-price">RM <%= price %></div>
         <div class="product-stock">Stock left: <%= stock %></div>
@@ -164,7 +164,7 @@
 
     function showProductModal(pid, name, img, price, desc, rating) {
         document.getElementById("modalName").innerText = name;
-        document.getElementById("modalImg").src = img;
+        document.getElementById("modalImg").src = "imgUpload/" + img;;
         document.getElementById("modalPrice").innerText = "RM " + parseFloat(price).toFixed(2);
         document.getElementById("modalDesc").innerText = desc;
         document.getElementById("modalPid").value = pid;

@@ -6,6 +6,18 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="model.Product" %>
 
+<%
+        // Simulate login session (remove this block in actual implementation)
+    session.getAttribute("role"); // or "staff"
+//
+    String role = (String) session.getAttribute("role");
+    
+    if (role == null) { //not admin and not staff
+        response.sendRedirect("NoAccess.jsp");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -148,7 +160,7 @@
                 <input type="number" id="prodPrice" name="prodPrice" value="<%=prod.getPrice()%>" min="1" max="5000" step=any required></br>
 
                 <label for="prodStock">Stock:</label>
-                <input type="number" id="prodStock" name="prodStock" value="<%=prod.getQuantity()%>" min="1" max="5000" step=any required></br>
+                <input type="number" id="prodStock" name="prodStock" value="<%=prod.getQuantity()%>" min="1" max="5000" step="1" required></br>
 
                 <label for="prodCat">Category</label>
                 <select id="prodCat" name="prodCat">

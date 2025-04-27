@@ -122,7 +122,7 @@
         %>
             <tr>
                 <td>
-                    <img src="<%= item.getProductid().getImglocation() %>" width="80"><br>
+                    <img src="imgUpload/<%= item.getProductid().getImglocation() %>" width="80"><br>
                     <%= item.getProductid().getProductname() %> (<%= item.getProductid().getProductid() %>)
                 </td>
                 <td><%= item.getPrice() %></td>

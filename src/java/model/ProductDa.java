@@ -5,6 +5,7 @@
 package model;
 
 import controller.DBConnection;
+import java.math.BigDecimal;
 import model.Product;
 import java.sql.*;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class ProductDa {
                         prod.setProductid(rs.getString(1));
                         prod.setProductname(rs.getString(2));
                         prod.setImglocation(rs.getString(3));
-                        prod.setPrice(rs.getBigDecimal(4));
+                        prod.setPrice(BigDecimal.valueOf(rs.getDouble(4)));
                         prod.setQuantity(rs.getInt(5));
                         prod.setCategory(rs.getString(6));
                         prod.setProductdescription(rs.getString(7));
@@ -104,7 +105,7 @@ public class ProductDa {
                 prod.setProductid(rs.getString(1));
                 prod.setProductname(rs.getString(2));
                 prod.setImglocation(rs.getString(3));
-                prod.setPrice(rs.getBigDecimal(4));
+                prod.setPrice(BigDecimal.valueOf(rs.getDouble(4)));
                 prod.setQuantity(rs.getInt(5));
                 prod.setCategory(rs.getString(6));
                 prod.setProductdescription(rs.getString(7));
@@ -137,7 +138,8 @@ public class ProductDa {
                 stmt.setString(1, prod.getProductid());
                 stmt.setString(2, prod.getProductname());
                 stmt.setString(3, prod.getImglocation());
-                stmt.setBigDecimal(4, prod.getPrice());
+                stmt.setDouble(4, prod.getPrice().doubleValue());
+                //prod.setPrice(BigDecimal.valueOf(prod.getPrice()));
                 stmt.setInt(5, prod.getQuantity());
                 stmt.setString(6, prod.getCategory());
                 stmt.setString(7, prod.getProductdescription());
@@ -181,8 +183,6 @@ public class ProductDa {
                 }
                 
             }
-            
-            
 
         }catch (Exception e) {
             System.out.println(e.getMessage());
@@ -210,7 +210,7 @@ public class ProductDa {
                     prod.setProductid(rs.getString(1));
                     prod.setProductname(rs.getString(2));
                     prod.setImglocation(rs.getString(3));
-                    prod.setPrice(rs.getBigDecimal(4));
+                    prod.setPrice(BigDecimal.valueOf(rs.getDouble(4)));
                     prod.setQuantity(rs.getInt(5));
                     prod.setCategory(rs.getString(6));
                     prod.setProductdescription(rs.getString(7));
@@ -226,10 +226,10 @@ public class ProductDa {
             return prodList;
     }
     
-    public boolean isProdInUse(String prodId){
+    public boolean isProdInUse(String table,String prodId){
 
         try {
-            String countInUse="SELECT COUNT(*) FROM cart WHERE productid = ?"; 
+            String countInUse="SELECT COUNT(*) FROM "+ table+" WHERE productid = ?"; 
             //count how many time this prod id appear in cart table
 
             stmt = conn.prepareStatement(countInUse);
@@ -252,10 +252,162 @@ public class ProductDa {
 
     }
     
+    public ResultSet topSalesProd(){
+        ResultSet rs=null;
+        //Product prod = new Product();
+        //prod=null; //initiale value
+
+        try {
+            String topSalesStr = "SELECT " +
+            "p.productId, " +
+            "p.productName, " +
+            "p.category, " +
+            "p.price, " +
+            "SUM(ci.quantitypurchased) AS Units_Sold " +
+            "FROM cart_item ci " +
+            "JOIN product p ON ci.productId = p.productId " +
+            "WHERE p.status=1 " +
+            "GROUP BY p.productId, p.productName, p.category, p.price " +
+            "ORDER BY Units_Sold DESC " +
+            "FETCH FIRST 10 ROWS ONLY ";
+
+            stmt = conn.prepareStatement(topSalesStr);
+
+            rs = stmt.executeQuery();
+
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return rs;
+        }
+    
+    
+    public ResultSet salesRecord(String date1,String date2){
+        ResultSet rs=null;
+        //Product prod = new Product();
+        //prod=null; //initiale value
+
+        try {
+            String salesRecordStr = "SELECT " +
+                "p.productId," +
+                "p.productName," +
+                "p.category," +
+                "p.price," +
+                "SUM(rd.quantity) AS Units_Sold," +
+                "SUM(rd.quantity * p.price) AS Total_Sales " +
+                "FROM receipt_detail rd " +
+                "JOIN product p ON rd.productId = p.productId " +
+                "JOIN receipt r ON rd.receiptId = r.receiptId " +
+                "WHERE p.status=1 AND r.creationTime BETWEEN ? AND ?" +
+                "GROUP BY p.productId, p.productName, p.category, p.price " +
+                "ORDER BY Total_Sales DESC";
+
+            stmt = conn.prepareStatement(salesRecordStr);
+            stmt.setString(1, date1);
+            stmt.setString(2, date2);
+
+            rs = stmt.executeQuery();
+
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return rs;
+        }
+        
+
+    public int countRecord(String column, String table){
+        int countRecord = 0;
+
+        try {
+            String totalCustStr="select count("+ column+ ") from " + table;
+            stmt = conn.prepareStatement(totalCustStr);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                countRecord = rs.getInt(1);
+            }
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return countRecord;
+    }
+    
+    public double totalRevenue(){
+        double totalRevenue = 0.0;
+
+        try {
+            String totalRevenueStr="select sum(total) from receipt";
+            stmt = conn.prepareStatement(totalRevenueStr);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                totalRevenue = rs.getDouble(1);
+            }
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return totalRevenue;
+    }
+    
+    public int totalProductSold(){
+        int totalProductSold = 0;
+
+        try {
+            String totalProductSoldStr="select sum(quantity) from receipt_detail";
+            stmt = conn.prepareStatement(totalProductSoldStr);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                totalProductSold = rs.getInt(1);
+            }
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return totalProductSold;
+    }
+    
+    public ResultSet recentOrder(){
+        ResultSet rs=null;
+
+        try {
+            String recentOrderStr = "SELECT " +
+            "r.receiptId," +
+            "c.custName," +
+            "p.productName," +
+            "rd.quantity," +
+            "rd.price," +
+            "r.creationTime " +
+            "FROM receipt r JOIN cart ct ON r.cartId = ct.cartId " +
+            "JOIN customer c ON ct.custId = c.custId " +
+            "JOIN receipt_detail rd ON r.receiptId = rd.receiptId " +
+            "JOIN product p ON rd.productId = p.productId " +
+            "ORDER BY r.creationTime DESC " +
+            "FETCH FIRST 10 ROWS ONLY ";
+
+            stmt = conn.prepareStatement(recentOrderStr);
+
+            rs = stmt.executeQuery();
+
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return rs;
+    }
+    
     public Product getProductById(String productId) {
         Product product = null;
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM product WHERE productId = ?")) {
+        try (Connection conn = DBConnection.getConnection(); 
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM product WHERE productId = ?")) {
 
             stmt.setString(1, productId);
             ResultSet rs = stmt.executeQuery();
@@ -278,7 +430,7 @@ public class ProductDa {
     
     
 //    //testing
-//    public static void main(String[] args) {
+//    public static void main(String[] args) throws SQLException {
 //        
 //        List<Product> prod=new ArrayList<>();
 //        ProductDa pda=new ProductDa();
@@ -309,9 +461,27 @@ public class ProductDa {
 ////        }
 ////        //end
 //
-//        //is in use()
-//        boolean checkInUse=pda.isProdInUse("prod003");
-//        System.out.println(checkInUse);
+////        //is in use()
+////        boolean checkInUse=pda.isProdInUse("prod003");
+////        System.out.println(checkInUse);
+//
+////        ResultSet rs=pda.salesRecord("2025-03-11 15:00:00.000", "2025-03-11 18:00:00.000");
+////        while (rs.next()) {
+////            String productId = rs.getString(1);
+////            String productName = rs.getString(2);
+////            String category = rs.getString(3);
+////            double price1 = rs.getDouble(4);
+////            int quantity = rs.getInt(5);
+////            double price = rs.getDouble(6);
+////
+////            System.out.println("ID: " + productId);
+////            System.out.println("Name: " + productName);
+////            System.out.println("category: " + category);
+////            System.out.println("Price: " + price);
+////            System.out.println("Quantity: " + quantity);
+////            System.out.println("-------------------------\n");
+////        }
+//
 //        
 //    }
 

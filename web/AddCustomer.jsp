@@ -3,58 +3,64 @@
 <html>
 <head>
     <title>Add Customer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 40px;
-        }
+            body{
+                background-color: #f9f9f9;
+            }
+            
+            .form-container{
+                width: 600px;
+                margin: 100px auto;
+                padding: 40px;
+                border: 1px solid #ccc;
+                background-color: white;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            }
+            
+            input[type=text],input[type=number],input[type=email],input[type=password] {
+                width: 95%;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+            
+            select{
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                resize: vertical;
+            }
+            
+            label{
+                margin: 12px 12px 10px 0;
+                display: inline-block;
+            }
+            
+            input[type="submit"],
+            input[type="reset"]{
+                width:49%;
+                margin:15px 0px;
+                box-sizing:border-box;
+                height:50px;
+                font-weight: bold;
+                font-size: 20px;
+                background-color: #e3e1e1;
+                border: none;
+                color: #595959;
+            }
 
-        .container {
-            max-width: 700px;
-            margin: auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            color: #2c3e50;
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 10px 18px;
-            background-color: #0277bd;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #01579b;
-        }
+            .shadow:hover {
+                box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+            }
+            
     </style>
 </head>
 <body>
-    <div class="container">
+        <div class="form-container">
+            
+        <span onclick="window.location.href='CustomerManagement.jsp';" style="float:right; cursor:pointer;"><i class="fa fa-times" aria-hidden="true" style='font-size:25px'></i></span>
         <h2>Add New Customer</h2>
         <form action="AddCustomer" method="post">
             <label>Name:</label>
@@ -72,8 +78,8 @@
             <label>Password:</label>
             <input type="password" name="custPswd" required>
 
-            <button type="submit">Add Customer</button>
-            <button type="button" onclick="window.location.href='CustomerManagement.jsp'">Back</button>
+            <input type="reset" value="RESET" class="shadow">
+            <input type="submit" value="ADD CUSTOMER" class="shadow">
         </form>
     </div>
 </body>

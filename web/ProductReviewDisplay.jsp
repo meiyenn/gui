@@ -69,7 +69,7 @@
 <div class="product-box">
     <div style="display: flex; gap: 20px; align-items: flex-start;">
         <!-- Product Image -->
-        <img src="<%= product.getImglocation()%>" alt="Product Image" width="100" height="100" style="object-fit: cover; border-radius: 8px;" />
+        <img src="imgUpload/<%= product.getImglocation()%>" alt="Product Image" width="100" height="100" style="object-fit: cover; border-radius: 8px;" />
 
         <!-- Product Info -->
         <div style="flex: 1;">

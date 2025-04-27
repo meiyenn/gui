@@ -4,6 +4,7 @@
  */
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -50,7 +51,15 @@ public class DeleteProdServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String prodId=request.getParameter("prodId");
-            
+        String prodImage=request.getParameter("imgLocation");
+        
+        HttpSession session = request.getSession();
+        String role=(String)session.getAttribute("role");   
+        
+        if (role == null) { //not admin and not staff
+            response.sendRedirect("NoAccess.jsp");
+            return;
+        }
         
         ProdService prodService = new ProdService(em);
         ProductDa pda = new ProductDa();
@@ -62,9 +71,10 @@ public class DeleteProdServlet extends HttpServlet {
         try {
             if(prodExist){
                 //check whether product is in use(already add to cart/checkout by customer)
-                boolean checkInUse=pda.isProdInUse(prodId);
+                boolean checkInUse=pda.isProdInUse("cart_item",prodId);
+                boolean isRatingInUse=pda.isProdInUse("productrating",prodId);
                 
-                if(checkInUse){ //true - product is in use
+                if(checkInUse || isRatingInUse){ //true - product is in use
                     // Show alert and redirect back
                     out.println("<script type='text/javascript'>");
                     out.println("alert('This product is currently in use and cannot be deleted. You may change its status to \"Hide\" instead.');");
@@ -73,15 +83,21 @@ public class DeleteProdServlet extends HttpServlet {
                     
                 }else{ //false - product is not in use
 
+                    //remove img from file folder when we need to delete from db
+                    String imagePath = getServletContext().getRealPath("/imgUpload/" + prodImage); // or the correct folder path
+
+                    File imageFile = new File(imagePath);
+                    if (imageFile.exists()) {
+                        imageFile.delete();
+                    }
+                    
                     utx.begin();
                     prodService.deleteProduct(prodId);
                     utx.commit();
-                    //out.println("alert('after remove! " + prodId + "');");
-                    //window pop box
 
                     //set product session
                     List<Product> prodList = prodService.findAll();
-                    HttpSession session = request.getSession();
+
                     session.setAttribute("prodList", prodList);
 
                     //redirect to view prod page

@@ -58,7 +58,7 @@
         </div>
     <% } else { %>
 
-    <!-- 🛒 Cart Section -->
+    <!--Cart Section -->
     <div class="cart-section">
         <h2 class="section-title">Your Cart</h2>
         <% for (CartItem item : cartItems) {
@@ -66,7 +66,7 @@
         %>
         <div class="cart-item">
             <div class="cart-item-image">
-                <img src="<%= product.getImglocation() %>" alt="">
+                <img src="imgUpload/<%= product.getImglocation() %>" alt="">
             </div>
             <div class="cart-item-details">
                 <div class="cart-item-title"><%= product.getProductname() %></div>
@@ -76,7 +76,7 @@
         </div>
         <% } %>
 
-        <!-- 🎁 Voucher Form -->
+        <!--Voucher Form -->
         <form method="post" action="appliedVoucher">
             <input type="hidden" name="custId" value="<%= custId %>">
             <input type="hidden" name="deliveryMethod" value="<%= deliveryMethod %>">
@@ -100,7 +100,7 @@
             <% } %>
         </form>
 
-        <!-- 💰 Totals -->
+        <!--Totals -->
         <div class="summary-item"><span>Subtotal</span><span>RM <%= String.format("%.2f", subtotal) %></span></div>
         <div class="summary-item"><span>Shipping</span><span>RM <%= String.format("%.2f", shipping) %></span></div>
         <% if (discount > 0) { %>
@@ -114,7 +114,7 @@
         </a>
     </div>
 
-    <!-- 🚚 Shipping & Payment -->
+    <!-- Shipping & Payment -->
     <div class="shipping-section">
         <form method="post" action="CompleteOrder" id="checkoutForm">
             <input type="hidden" name="custId" value="<%= custId %>">

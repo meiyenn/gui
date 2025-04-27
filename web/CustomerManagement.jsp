@@ -1,10 +1,13 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
+<%@include file="staffHeader.jsp" %>
 
 <%
-
-    String role = (String) session.getAttribute("role");
+    // Simulate login session (remove this block in actual implementation)
+//    // session.setAttribute("role", "manager"); // or "staff"
+//
+//    String role = (String) session.getAttribute("role");
     if (role == null) {
         response.sendRedirect("login.jsp");
         return;
@@ -49,71 +52,132 @@
     <meta charset="UTF-8">
     <title>Customer Management</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-        }
-        table { 
-            width: 90%; 
-            margin: auto; 
-            border-collapse: collapse; 
-        }
-        th, td { 
-            border: 1px solid #ccc; 
-            padding: 8px; 
-            text-align: center; 
-        }
-        th { 
-            background-color: #eee; 
-        }
-        form { 
-            text-align: center; 
-            margin: 20px; 
-        }
-        .btn-delete { 
-            background-color: red; 
-            color: white; 
-            border: none; 
-            padding: 5px 10px; 
-            cursor: pointer; 
-        }
-        .btn-search, .btn-edit { 
-            padding: 5px 10px; 
-        }
-        .role-banner { 
-            text-align: center; 
-            margin-bottom: 10px; 
-            color: darkblue; 
-            font-weight: bold; 
-        }
+        
+            .content-area {
+                flex: 2;
+                padding: 10px;
+                width:100%;
+                margin-left: 250px;
+                margin-right: 50px;
+            }
+            
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+                
+              }
+              
+              thead{
+                  background-color: #f2f2f2;
+                  font-weight: bold;
+              }
+
+              td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+              }
+
+              .edit-btn{
+                background-color:#8cd98c;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+              }
+              
+              .delete-btn{
+                background-color:#ff704d;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+              }
+
+              .search{
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 15px;
+              }
+              
+              
+              #searchText{
+                height:30px;
+              }
+              
+              #search-btn,#filter{
+                height:35px;
+              }
+              
+              .btn-add{
+                background-color:#5c85d6;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold; 
+                display: inline-block;
+                align-items: center;
+                justify-content: center;
+                height: 55px;
+              }
+              
+            .filter {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .role-banner{ 
+                text-align: center; 
+                margin-bottom: 10px; 
+                color: darkblue; 
+                font-weight: bold; 
+            }
+            
     </style>
 </head>
 <body>
+    
+<div class="content-area">
+   
+<h1>Customer List</h1>
 
-<div class="role-banner">
-    Logged in as: <%= role %> | <a href="logout.jsp">Logout</a>
-</div>
+<%--filter--%>
+<div class="filter">
+    
+    <div style="text-align: center; margin-bottom: 20px;display: inline-block; align-items: center; justify-content: center;">
+        <form action="AddCustomer.jsp" method="get">
+            <button type="submit" class="btn-add">
+               Add Customer
+            </button>
+        </form>
+    </div>
 
-<h2 style="text-align:center;">Customer List</h2>
-
+<div class="search">
+    
 <!-- Search Form -->
-<div style="text-align: center; margin: 20px;">
-    <form method="get" style="display: inline-block;">
-        <input type="text" name="search" placeholder="Search by ID or Name" value="<%= (keyword != null ? keyword : "")%>">
-        <input type="submit" value="Search" class="btn-search">
-    </form>
-
-    <form action="AddCustomer.jsp" method="get" style="display: inline-block; margin-left: 10px;">
-        <button type="submit" class="btn-add" style="padding: 6px 12px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
-           Add Customer
-        </button>
-    </form>
+<form method="get">
+    <input type="text" id="searchText" name="search" placeholder="Search by ID or Name" value="<%= (keyword != null ? keyword : "") %>">
+    <input type="submit" value="Search" id="search-btn">
+</form>
 </div>
-
+</div>
 
 <!-- Customer Table -->
+
 <table>
     <thead>
-        <tr>
+        <tr style="height:70px">
             <th>ID</th>
             <th>Name</th>
             <th>Contact No</th>
@@ -124,7 +188,7 @@
             <% } else { %>
                 <th>Password</th>
             <% } %>
-            <th>Action</th>
+            <th colspan="2">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -143,37 +207,42 @@
                 <% if ("manager".equals(role)) { %>
                     <%= rs.getString("custPswd") %>
                 <% } else { %>
-                    •••••••• 
+                    ••••••••
                 <% } %>
             </td>
-            <td>
-                <% if ("manager".equals(role)) { %>
+            
+            <% if ("manager".equals(role)) { %>
+            <td style="text-align:center; vertical-align:middle;">
+
+                    <!-- Edit Button -->
+                    <form action="EditCustomer.jsp" method="get" style="display:inline;">
+                        <input type="hidden" name="custId" value="<%= rs.getString("custId") %>">
+                        <input type="submit" value="Edit" class="edit-btn">
+                    </form>
+            </td>
+            <td style="text-align:center; vertical-align:middle;">
                     <!-- Delete Button -->
                     <form method="get" style="display:inline;">
                         <input type="hidden" name="delete" value="<%= rs.getString("custId") %>">
-                        <input type="submit" value="Delete" class="btn-delete" onclick="return confirm('Are you sure?')">
+                        <input type="submit" value="Delete" class="delete-btn" onclick="return confirm('Are you sure?')" style="text-align:center; vertical-align:middle;">
                     </form>
-                    <!-- Edit Button -->
-                    <form action="EditCustomer.jsp" method="get" style="display:inline;">
-                        <input type="hidden" name="custId" value="<%= rs.getString("custId")%>">
-                        <input type="submit" value="Edit" class="btn-edit">
-                    </form>
-                    <% } else { %>
-                    <em>View Only</em>
-                <% } %>
             </td>
+            <% } else { %>
+            <td colspan="2"><em>View Only</em></td>
+            <% } %>
+            
         </tr>
         <%
             }
             if (!hasData) {
         %>
-        <tr><td colspan="7">No customers found.</td></tr>
+        <tr><td colspan="8">No customers found.</td></tr>
         <%
             }
         %>
     </tbody>
 </table>
-
+</div>
 </body>
 </html>
 

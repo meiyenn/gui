@@ -1,31 +1,39 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="controller.DBConnection" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@include file="staffHeader.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Product Review Management</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        h2 {
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
+        .content-area {
+            flex: 2;
             padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
+            width:100%;
+            margin-left: 250px;
+            margin-right: 50px;
         }
-        th {
-            background-color: #f0f0f0;
+        
+        table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+                
         }
+
+        thead{
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        
         img {
             max-width: 80px;
             height: auto;
@@ -34,29 +42,39 @@
             padding: 6px 10px;
             background-color: #2563eb;
             color: white;
-            border: none;
-            border-radius: 4px;
+/*            border: none;*/
+            border: 1px solid green;
+/*            border-radius: 4px;*/
             cursor: pointer;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
         }
+        
         .btn-reply:hover {
             background-color: #1e40af;
         }
     </style>
 </head>
 <body>
+  
+<div class="content-area">
 <h2>Product Review Management</h2>
 
 <table>
-    <tr>
-        <th>Customer ID</th>
-        <th>Product</th>
-        <th>Date</th>
-        <th>Rating</th>
-        <th>Comment</th>
-        <th>Reply</th>
-        <th>Action</th>
-    </tr>
-
+    <thead
+        <tr>
+            <th>Customer ID</th>
+            <th>Product</th>
+            <th>Date</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Reply</th>
+            <th>Action</th>
+        </tr>
+    </thead>
 <%
     Connection conn = null;
     PreparedStatement stmt = null;
@@ -86,7 +104,7 @@
     <tr>
         <td><%= custId %></td>
         <td>
-            <img src="<%= imgLocation %>" alt="Product Image"><br>
+            <img src="imgUpload/<%= imgLocation %>" alt="Product Image"><br>
             <%= productName %>
         </td>
         <td><%= date %></td>
@@ -104,7 +122,7 @@
             <form method="get" action="ReplyRating.jsp">
                 <input type="hidden" name="ratingId" value="<%= ratingId %>">
                 <input type="hidden" name="comment" value="<%= comment %>">
-                <button type="submit" class="btn-reply">Reply</button>
+                <button type="submit" class="btn-reply" onclick="openModal('.jsp'); return false;">Reply</button>
             </form>
         </td>
     </tr>
@@ -123,6 +141,6 @@
     }
 %>
 </table>
-
+</div>
 </body>
 </html>

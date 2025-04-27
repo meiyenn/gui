@@ -1,10 +1,12 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
+<%@include file="staffHeader.jsp" %>
+
 <%
     // Simulate session role (REMOVE in production)
-    // session.setAttribute("role", "manager"); // or "staff"
+//     session.setAttribute("role", "manager"); // or "staff"
 
-    String role = (String) session.getAttribute("role");
+    //String role = (String) session.getAttribute("role");
     if (role == null) {
         response.sendRedirect("login.jsp");
         return;
@@ -57,45 +59,129 @@
     <meta charset="UTF-8">
     <title>Staff List</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 90%; margin: auto; border-collapse: collapse; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background-color: #f2f2f2; }
-        .btn-delete, .btn-edit, .btn-add {
-            padding: 5px 10px;
-            border: none;
-            color: white;
-            cursor: pointer;
-        }
-        .btn-delete { background-color: red; }
-        .btn-edit { background-color: orange; }
-        .btn-add { background-color: green; text-decoration: none; display: inline-block; }
-        .top-bar { text-align: center; margin: 20px; }
-        form.search-form { text-align: center; margin-bottom: 20px; }
-        input[type="text"] { padding: 5px; width: 250px; }
-        input[type="submit"] { padding: 5px 10px; }
+        .content-area {
+                flex: 2;
+                padding: 10px;
+                width:100%;
+                margin-left: 250px;
+                margin-right: 50px;
+            }
+            
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+                
+              }
+              
+              thead{
+                  background-color: #f2f2f2;
+                  font-weight: bold;
+              }
+
+              td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+              }
+
+              .edit-btn{
+                background-color:#8cd98c;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+              }
+              
+              .delete-btn{
+                background-color:#ff704d;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+              }
+
+              .search{
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 15px;
+              }
+              
+              
+              #searchText{
+                height:30px;
+              }
+              
+              #search-btn,#filter{
+                height:35px;
+              }
+
+              .addStaff{
+                background-color:#5c85d6;
+                color:#ffffff;
+                border: 1px solid green;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                font-weight: bold; 
+                display: inline-block;
+                align-items: center;
+                justify-content: center;
+                height: 30px;
+              }
+              
+            .filter {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .role-banner{ 
+                text-align: center; 
+                margin-bottom: 10px; 
+                color: darkblue; 
+                font-weight: bold; 
+            }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
+<!--<div class="top-bar">
     <p>Logged in as: <%= role %> | <a href="Logout">Logout</a></p>
     <% if ("manager".equals(role)) { %>
         <a href="AddStaff.jsp" class="btn-add">Add New Staff</a>
     <% } %>
-</div>
+</div>-->
+    
+<div class="content-area">
+    <h1>Staff List</h1>
+    <div class="filter">
+        
+        <div style="text-align: center; margin-bottom: 20px;display: inline-block; align-items: center; justify-content: center;">
+            <% if ("manager".equals(role)) { %>
+                <a href="AddStaff.jsp" class="addStaff">Add New Staff</a>
+            <% } %>
+        </div>
 
-<h2 style="text-align:center;">Staff List</h2>
-
-<!-- Search Form -->
-<form method="get" class="search-form">
-    <input type="text" name="search" placeholder="Search by Staff ID or Name" value="<%= keyword != null ? keyword : "" %>">
-    <input type="submit" value="Search">
-</form>
+        <div class="search">
+            <!-- Search Form -->
+            <form method="get" class="search-form">
+                <input type="text" id="searchText" name="search" placeholder="Search by Staff ID or Name" value="<%= keyword != null ? keyword : "" %>">
+                <input type="submit" value="Search" id="search-btn">
+            </form>
+        </div>
+    </div>
 
 <table>
     <thead>
-        <tr>
+        <tr style="height:70px">
             <th>ID</th>
             <th>Name</th>
             <th>Email</th>
@@ -104,7 +190,7 @@
             <th>Username</th>
             <th>Password</th>
             <% if ("manager".equals(role)) { %>
-                <th>Actions</th>
+                <th colspan="2">Action</th>
             <% } %>
         </tr>
     </thead>
@@ -125,16 +211,18 @@
                 <%= "manager".equals(role) ? rs.getString("stfPswd") : "••••••••" %>
             </td>
             <% if ("manager".equals(role)) { %>
-            <td>
+            <td style="text-align:center; vertical-align:middle;">
                 <!-- Edit Button -->
                 <form action="editStaff.jsp" method="get" style="display:inline;">
                     <input type="hidden" name="staffId" value="<%= rs.getString("staffId") %>">
-                    <input type="submit" value="Edit" class="btn-edit">
+                    <input type="submit" value="Edit" class="edit-btn">
                 </form>
+            </td>
+            <td style="text-align:center; vertical-align:middle;">
                 <!-- Delete Button -->
                 <form method="get" style="display:inline;">
                     <input type="hidden" name="delete" value="<%= rs.getString("staffId") %>">
-                    <input type="submit" value="Delete" class="btn-delete" onclick="return confirm('Are you sure?')">
+                    <input type="submit" value="Delete" class="delete-btn" onclick="return confirm('Are you sure?')">
                 </form>
             </td>
             <% } %>
@@ -144,14 +232,15 @@
             if (!hasData) {
         %>
         <tr>
-            <td colspan="<%= "manager".equals(role) ? "8" : "7" %>">No staff found.</td>
+            <td colspan="<%= "manager".equals(role) ? "9" : "8" %>">No staff found.</td>
         </tr>
         <%
             }
         %>
     </tbody>
 </table>
-
+</div>
+    
 </body>
 </html>
 

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,22 +75,28 @@ public class AddProdServlet extends HttpServlet {
 
             //obtain file name
             String imgName = Paths.get(imgPath.getSubmittedFileName()).getFileName().toString();
-            String mdfName=prodId+"_"+imgName;
+            
+            //extension
+            String extension = imgName.substring(imgName.lastIndexOf("."));
+            
+//            String mdfName=prodId+"_"+imgName;
+            String mdfName=prodId+extension;
 
             InputStream imgContent = imgPath.getInputStream();
 
             // Construct the path to store the images
             String uploadDirectory = getServletContext().getRealPath("/imgUpload");
+    
             File uploadDir = new File(uploadDirectory);
             if (!uploadDir.exists()) {
-                uploadDir.mkdir();
+                uploadDir.mkdirs();
+                boolean created=uploadDir.mkdirs();
+                out.println("projectBase = (" + created + ")");
             }
 
             // Save the images to the folder
             Path storeImg = Paths.get(uploadDirectory, mdfName);
             Files.copy(imgContent, storeImg);
-
-            response.getWriter().print("The image file uploaded sucessfully.");
 
             Product prod = new Product(prodId,prodName,mdfName,prodPrice,prodStock,prodCat,prodDesc,prodStatus);
         
@@ -112,8 +119,9 @@ public class AddProdServlet extends HttpServlet {
                 //set the prodlist session
                 session.setAttribute("prodList", prodList);
                 //out.write("setTimeout(function(){window.location.href='viewProd.jsp'},5000);");
-                RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");//
-                rd.forward(request, response);
+//                RequestDispatcher rd = request.getRequestDispatcher("viewProd.jsp");//
+//                rd.forward(request, response);
+                response.sendRedirect("AddProdServlet");
             }else{
                 response.sendRedirect("addProduct.jsp?error=Failed to add new product! Product (" + prodId + ") already exists in the database!");
                 out.println("<script type=\"text/javascript\">");
@@ -129,9 +137,8 @@ public class AddProdServlet extends HttpServlet {
             response.sendRedirect("addProduct.jsp?error=Please fill in all input field.");
                 
         }catch (Exception ex) {
-            //ex.printStackTrace();
-            out.println("<script>alert('ERROR: " + ex.getMessage() + "');</script>");
-            response.sendRedirect("addProduct.jsp?error=An error occurred.");
+            response.sendRedirect("AddProdServlet");
+            //response.sendRedirect("addProduct.jsp?error=" + URLEncoder.encode(ex.getMessage(), "UTF-8"));
         }
         
     }
@@ -143,7 +150,6 @@ public class AddProdServlet extends HttpServlet {
             ProductDa pda=new ProductDa();
             List<Product> prodList = pda.getAllProd();
             HttpSession session = request.getSession();
-            //add admin staff session
             
             //remove filterlist before proceed to viewProd.jsp since user doesnt perform search
             session.removeAttribute("filterList");

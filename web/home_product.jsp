@@ -148,7 +148,7 @@
         while(rs.next()) {
 %>
     <div class="product-card">
-        <img src="<%= rs.getString("imgLocation") %>" alt="Product">
+        <img src="imgUpload/<%= rs.getString("imgLocation")%>" alt="Product">
         <div class="product-name"><%= rs.getString("productName") %></div>
         <div class="product-price">RM <%= rs.getDouble("price") %></div>
 

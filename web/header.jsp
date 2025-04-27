@@ -113,19 +113,14 @@
 
                                     <!-- Search Form -->
                                     <li>
-                                        <form method="get" action="ProductPage.jsp" style="display: flex; align-items: center;">
-                                            <input type="text" name="search" placeholder="Search products..." 
+                                        <div style="display: flex; align-items: center;">
+                                            <input type="text" id="searchInput" placeholder="Search products..." 
                                                    style="padding: 5px; font-size: 14px;" />
 
-                                            <% if (currentCategory != null && !currentCategory.isEmpty()) { %>
-                                            <input type="hidden" name="category" value="<%= currentCategory %>" />
-                                            <% } %>
-
-                                            <button type="submit" style="border: none; background: none; cursor: pointer;">
-                                                <img src="src/image/search-icon.png" alt="Search" 
-                                                     style="width: 20px; height: 20px;">
+                                            <button type="button" onclick="goToProductPage()" style="margin-left: 8px; border: none; background: none; cursor: pointer;">
+                                                <img src="src/image/search-icon.png" alt="Search" style="width: 20px; height: 20px;">
                                             </button>
-                                        </form>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
@@ -140,6 +135,16 @@
                 alert("Please login first to view your cart.");
                 window.location.href = "CustomerLogin.jsp";
             }
+            
+            function goToProductPage() {
+                var searchValue = document.getElementById("searchInput").value.trim();
+                if (searchValue) {
+                    window.location.href = "ProductPage.jsp?search=" + encodeURIComponent(searchValue);
+                } else {
+                    // Optional: If empty, still go to ProductPage.jsp
+                    window.location.href = "ProductPage.jsp";
+                }
+            }           
         </script>
     </body>
 </html>

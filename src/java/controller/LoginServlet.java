@@ -67,7 +67,7 @@ public class LoginServlet extends HttpServlet {
                         response.addCookie(cookie);
                     }
 
-                    response.sendRedirect("StaffManagerDashboard.jsp"); // your admin/manager page
+                    response.sendRedirect("adminDashboard.jsp"); // your admin/manager page
                     return;
                 }
             }
@@ -89,7 +89,7 @@ public class LoginServlet extends HttpServlet {
                         response.addCookie(cookie);
                     }
 
-                    response.sendRedirect("index.jsp?login=success");
+                    response.sendRedirect("adminDashboard.jsp");
                     return;
                 }
             }

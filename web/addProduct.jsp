@@ -7,10 +7,22 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.Product"%>
 <%@page import="model.ProductDa"%>
+
+<%
+//
+    String role = (String) session.getAttribute("role"); //either no login - as a guess
+    
+    if (role == null) { //not admin and not staff
+        response.sendRedirect("NoAccess.jsp");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <title>Add Product</title>
         
         <style>
@@ -67,12 +79,13 @@
         </style>
     </head>
     <body>
-        <%@include file="StaffManagerDashboard.jsp"%>
-        
-        
+
         <div class="form-container">
             
+            <span onclick="window.location.href='AddProdServlet';" style="float:right; cursor:pointer;"><i class="fa fa-times" aria-hidden="true" style='font-size:25px'></i></span>
             <h1>Add Product</h1>
+            
+            
             <form action="AddProdServlet" id="prodForm" enctype="multipart/form-data" method="post">
 
                 <% ProductDa pda = new ProductDa();%>
@@ -86,7 +99,7 @@
                 <input type="number" id="prodPrice" name="prodPrice" min="1" max="5000" step=any required></br>
 
                 <label for="prodStock">Stock:</label>
-                <input type="number" id="prodStock" name="prodStock" min="1" max="5000" step=any required></br>
+                <input type="number" id="prodStock" name="prodStock" min="1" max="5000" step="1" required></br>
 
                 <label for="prodCat">Category</label>
                 <select id="prodCat" name="prodCat" required>

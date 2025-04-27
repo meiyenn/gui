@@ -9,25 +9,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initDeliveryOptions() {
     document.querySelectorAll('.delivery-option').forEach(option => {
-        option.addEventListener('click', function() {
+        option.addEventListener('click', function () {
             // Update visual selection
             document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('selected'));
             this.classList.add('selected');
-            
-            // Update radio button state
-            this.querySelector('input').checked = true;
-            
-            // Update hidden fields in all forms to maintain consistent state
-            const deliveryValue = this.querySelector('input').value;
-            document.querySelectorAll('input[name="deliveryMethod"]').forEach(input => {
-                input.value = deliveryValue;
-            });
-            
-            // Toggle shipping address visibility based on selection
-            toggleShippingAddressFields(deliveryValue);
+
+            // Set the radio button checked
+            const input = this.querySelector('input[type="radio"]');
+            input.checked = true;
+
+            // Directly use this input's value to control address section
+            toggleShippingAddressFields(input.value);
         });
     });
 }
+
 
 
 function toggleShippingAddressFields(deliveryValue) {
